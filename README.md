@@ -19,7 +19,7 @@
 
 AgentCloud answers questions about building on the cloud **from the official documentation** — every step cites the exact source page, so you get real APIs and real steps, not hallucinations. Ask a *how-to* and get cited steps; say *"design …"* and it proposes a full architecture (components, data flow, trade-offs, the questions it needs answered) and renders it as an **interactive 3D diagram** you can orbit and zoom. It runs **locally** with an embedded vector store — no database, no Docker, your questions stay yours.
 
-> **AWS is available today. Azure & Google Cloud are coming next** — same agent, same 3D designs, grounded in each provider's docs.
+> **AWS and Azure are available today. Google Cloud is coming next** — same agent, same 3D designs, grounded in each provider's docs.
 
 ## Install
 
@@ -47,8 +47,8 @@ Only **Python 3.10+** is required — no Docker, no database. On first run it as
 
 | Cloud | Status |
 |---|---|
-| **AWS** | ✅ Available |
-| **Azure** | 🔜 Coming soon |
+| **AWS** | ✅ Available — 373 services |
+| **Azure** | ✅ Available — 20 core services |
 | **Google Cloud** | 🔜 Coming soon |
 
 ## Quickstart with your own docs
@@ -72,6 +72,17 @@ rag-app ask "How do I enable S3 versioning?" --filter service="Amazon Simple Sto
 ```
 
 Every chunk is tagged with its service, so you can scope any question to one service. The CSVs (service guides, whitepapers, Well-Architected, prescriptive guidance) were generated from AWS's documentation sitemap.
+
+### Or load Azure's docs (20 core services)
+
+```bash
+# sparse-clone the Markdown docs, then index (tagged per Azure service)
+git clone --depth 1 --filter=blob:none --sparse https://github.com/MicrosoftDocs/azure-docs _azure_src
+rag-app ingest-azure --src _azure_src
+rag-app ask "How do I deploy a container to Azure Container Apps?"
+```
+
+Azure docs are sourced from [MicrosoftDocs/azure-docs](https://github.com/MicrosoftDocs/azure-docs); each chunk links back to its `learn.microsoft.com` page. They index into the **same** store as AWS, so you can mix providers in one deployment.
 
 ## How it works
 

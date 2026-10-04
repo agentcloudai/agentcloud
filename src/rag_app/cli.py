@@ -115,6 +115,14 @@ def cmd_feedback(args) -> None:
         print(json.dumps(feedback.stats(), indent=2))
 
 
+def cmd_ingest_azure(args) -> None:
+    from rag_app.ingest.azure import run_azure_index
+
+    n = run_azure_index(args.src, get_settings())
+    print(f"Indexed {n} Azure chunks from {args.src}.")
+    print("Next: ask an Azure question, e.g. rag-app ask \"How do I deploy a container on Azure Container Apps?\"")
+
+
 def cmd_index(args) -> None:
     import shutil
     from pathlib import Path
@@ -222,6 +230,10 @@ def main() -> None:
     p_col.add_argument("--port", type=int, default=9000)
     p_col.add_argument("--out", default="collected.jsonl")
     p_col.set_defaults(func=lambda a: __import__("rag_app.collector", fromlist=["serve"]).serve(a.host, a.port, a.out))
+
+    p_az = sub.add_parser("ingest-azure", help="Index Azure docs (markdown clone of MicrosoftDocs/azure-docs)")
+    p_az.add_argument("--src", default="_azure_src", help="Path to the azure-docs clone")
+    p_az.set_defaults(func=cmd_ingest_azure)
 
     p_index = sub.add_parser("index", help="Load, chunk, embed and store documents")
     p_index.add_argument("--url", action="append", help="Index a web page instead of the data folder (repeatable)")
