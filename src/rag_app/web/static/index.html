@@ -71,6 +71,13 @@
   .d3dhint{position:absolute;left:10px;bottom:8px;font-size:11px;color:var(--muted);background:#0b0e1399;padding:2px 8px;border-radius:10px;pointer-events:none}
   .mermaid{text-align:center}
   .muted{color:var(--muted)}
+  .fb{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .fbq{color:var(--muted);font-size:13px;margin-right:4px}
+  .fbbtn{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 11px;font-size:13px;cursor:pointer}
+  .fbbtn:hover{border-color:var(--accent2)} .fbbtn.sel{border-color:var(--accent);background:#2a2410}
+  .fbbox{display:none;flex-basis:100%;gap:8px;margin-top:8px} .fbbox.open{display:flex}
+  .fbta{flex:1;min-height:68px;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px;font-size:13px;resize:vertical;font-family:inherit}
+  .fbok{display:none;color:#3fb950;font-size:13px}
   .spinner{width:17px;height:17px;border:3px solid #333;border-top-color:var(--accent);border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:-3px}
   @keyframes spin{to{transform:rotate(360deg)}}
   .examples{max-width:960px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
@@ -129,6 +136,13 @@ function addBot(h){thread.insertAdjacentHTML("beforeend",`<div class="msg"><div 
 const down=()=>{chat.scrollTop=chat.scrollHeight;};
 function setCtx(){if(designCtx){ctxpill.style.display="";ctxpill.innerHTML=`Refining: <b>${esc(designCtx.base)}</b> <a id="cc">✕ new topic</a>`;document.getElementById("cc").onclick=()=>{designCtx=null;setCtx();};}else ctxpill.style.display="none";}
 function srcHtml(x){return (x||[]).map(s=>{const p=s.page?`, p.${esc(String(s.page))}`:"";const l=s.url?`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.service||s.file)}</a>`:esc(s.service||s.file);return `<div class="src"><span class="id">${esc(s.id)}</span><span>${l} — ${esc(s.guide||"")}${p}</span></div>`;}).join("");}
+function fbBar(iid){ if(!iid) return ""; return `<div class="card fb" data-iid="${esc(iid)}">
+  <span class="fbq">Was this helpful?</span>
+  <button class="fbbtn up">👍</button><button class="fbbtn down">👎</button>
+  <button class="fbbtn more">✎ suggest a better answer</button>
+  <div class="fbbox"><textarea class="fbta" placeholder="Write the ideal answer — saved for training (RLHF)…"></textarea><button class="fbbtn send">Submit</button></div>
+  <span class="fbok">thanks — saved for training ✓</span></div>`; }
+function sendFeedback(iid,extra){return fetch("/api/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.assign({interaction_id:iid},extra))}).catch(()=>{});}
 
 /* ---------- 3D architecture scene ---------- */
 function nodeColor(s){s=(s||"").toLowerCase();const m=[[/(s3|bucket|efs|fsx|storage|lake|glacier)/,0x3b82f6],
@@ -222,16 +236,30 @@ function buildThree(el,graph){
     const ic=icon3D(n.service||n.label);ic.position.set(x,y,z);
     ic.userData={label:n.label,service:n.service,detail:n.detail||"",base:y,hot:false};scene.add(ic);icons.push(ic);
     const spr=makeLabel(n.label,n.service);spr.position.set(x,y+1.9,z);spr.userData={sync:ic,dy:1.9};scene.add(spr);sprites.push(spr);});
-  const flows=[];
+  const flows=[],UP=new THREE.Vector3(0,1,0);
   edges.forEach(e=>{const a=pos[e.source],b=pos[e.target];if(!a||!b)return;
-    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:0x4a9eff,transparent:true,opacity:0.4}));scene.add(line);
-    if(e.label){const m=a.clone().lerp(b,0.5);m.y+=0.35;const el=makeEdgeLabel(e.label);el.position.copy(m);scene.add(el);}
-    for(let k=0;k<3;k++){const dot=new THREE.Mesh(new THREE.SphereGeometry(0.15,12,12),new THREE.MeshBasicMaterial({color:0xffc24a}));scene.add(dot);flows.push({a,b,dot,t:k/3});}});
-  const spanX=(maxL+1)*colS,maxRows=Math.max(...layerKeys.map(L=>byLayer[L].length)),spanY=maxRows*rowS;
-  camera.position.set(0,1.2,Math.max(14,Math.max(spanX,spanY)*1.15));
+    const dir=new THREE.Vector3().subVectors(b,a).normalize();
+    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:0x4a9eff,transparent:true,opacity:0.5}));scene.add(line);
+    // arrowhead near the target so the data-flow DIRECTION is unmistakable
+    const head=new THREE.Mesh(new THREE.ConeGeometry(0.26,0.72,14),new THREE.MeshBasicMaterial({color:0x6fb4ff}));
+    head.position.copy(b).addScaledVector(dir,-1.7);head.quaternion.setFromUnitVectors(UP,dir);scene.add(head);
+    if(e.label){const m=a.clone().lerp(b,0.5);m.y+=0.4;const el=makeEdgeLabel(e.label);el.position.copy(m);scene.add(el);}
+    // ONE calm pulse per edge, moving source -> target
+    const dot=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12),new THREE.MeshBasicMaterial({color:0xffc24a}));scene.add(dot);flows.push({a,b,dot,t:Math.random()});});
+  // Fit the camera to the whole graph so zoom/pan work at any architecture size.
+  const bb=new THREE.Box3();nodes.forEach(n=>bb.expandByPoint(pos[n.id]));
+  const center=bb.getCenter(new THREE.Vector3()),size=bb.getSize(new THREE.Vector3());
+  const radius=Math.max(size.x,size.y,size.z,4)/2+2.4;              // + tile half-size
+  const fov=camera.fov*Math.PI/180,dist=(radius/Math.sin(fov/2))*1.1;
+  camera.near=Math.max(0.1,dist/100);camera.far=dist*20;camera.updateProjectionMatrix();
+  camera.position.set(center.x,center.y+size.y*0.12,center.z+dist);
   const controls=new THREE.OrbitControls(camera,renderer.domElement);
-  controls.enableDamping=true;controls.dampingFactor=0.08;controls.autoRotate=true;controls.autoRotateSpeed=0.9;
-  controls.addEventListener("start",()=>controls.autoRotate=false);
+  controls.target.copy(center);
+  controls.enableDamping=true;controls.dampingFactor=0.08;
+  controls.enablePan=true;controls.screenSpacePanning=true;controls.panSpeed=0.9;controls.zoomSpeed=1.1;
+  controls.minDistance=radius*0.35;controls.maxDistance=dist*5;
+  controls.autoRotate=false;   // still by default — you control the view
+  controls.update();
   const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
   let tip=document.createElement("div");tip.className="tip3d";el.appendChild(tip);
   function move(ev){const r=el.getBoundingClientRect();mouse.x=((ev.clientX-r.left)/r.width)*2-1;mouse.y=-((ev.clientY-r.top)/r.height)*2+1;
@@ -244,26 +272,25 @@ function buildThree(el,graph){
   el.addEventListener("pointermove",move);
   let raf;
   function tick(){raf=requestAnimationFrame(tick);const now=performance.now(),dt=0.016;
-    flows.forEach(f=>{f.t=(f.t+dt*0.35)%1;f.dot.position.lerpVectors(f.a,f.b,f.t);});
-    icons.forEach((ic,i)=>{ic.position.y=ic.userData.base+Math.sin(now*0.0012+i)*0.09;ic.rotation.y+=0.012;
-      const tg=ic.userData.hot?1.2:1;ic.scale.x+=(tg-ic.scale.x)*0.2;ic.scale.y+=(tg-ic.scale.y)*0.2;ic.scale.z+=(tg-ic.scale.z)*0.2;
+    flows.forEach(f=>{f.t=(f.t+dt*0.3)%1;f.dot.position.lerpVectors(f.a,f.b,f.t);});   // directional pulse only
+    icons.forEach((ic)=>{const tg=ic.userData.hot?1.18:1;ic.scale.x+=(tg-ic.scale.x)*0.2;ic.scale.y+=(tg-ic.scale.y)*0.2;ic.scale.z+=(tg-ic.scale.z)*0.2;
       ic.traverse(o=>{const ms=o.material?(Array.isArray(o.material)?o.material:[o.material]):[];
         ms.forEach(m=>{if(m&&m.emissive){const base=m.map?0.25:0.45;m.emissiveIntensity=ic.userData.hot?base+0.4:base;}});});});
     sprites.forEach(s=>{if(s.userData&&s.userData.sync)s.position.y=s.userData.sync.position.y+s.userData.dy;});
     controls.update();renderer.render(scene,camera);}
   tick();
   const ro=new ResizeObserver(()=>{const w=el.clientWidth||880,h=el.clientHeight||460;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);});ro.observe(el);
-  el.insertAdjacentHTML("beforeend",`<div class="d3dhint">drag to orbit · scroll to zoom · hover a block</div>`);
+  el.insertAdjacentHTML("beforeend",`<div class="d3dhint">left-drag orbit · right-drag pan · scroll zoom · hover a block</div>`);
   return ()=>{cancelAnimationFrame(raf);ro.disconnect();el.removeEventListener("pointermove",move);renderer.dispose();if(renderer.domElement.parentNode)renderer.domElement.remove();};
 }
-function render2D(el){el.classList.remove("diag3d");el.style.height="auto";el.innerHTML=`<pre class="mermaid">${esc(el.dataset.mermaid||"")}</pre>`;
+function render2D(el){el.classList.remove("diag3d");el.style.height="auto";el.innerHTML=`<pre class="mermaid">${esc(decodeURIComponent(el.dataset.mermaid||""))}</pre>`;
   const p=el.querySelector(".mermaid");if(p&&p.textContent.trim()){try{mermaid.run({nodes:[p]});}catch(e){}}}
 function diagramCard(graph,mermaidCode){const id="dg"+(++seq);
   return `<div class="card"><h3 class="sec">Architecture — interactive 3D</h3>
-    <div class="diag3d" id="${id}" data-graph='${esc(JSON.stringify(graph||{nodes:[],edges:[]}))}' data-mermaid="${esc(mermaidCode||"")}"></div></div>`;}
+    <div class="diag3d" id="${id}" data-graph="${encodeURIComponent(JSON.stringify(graph||{nodes:[],edges:[]}))}" data-mermaid="${encodeURIComponent(mermaidCode||"")}"></div></div>`;}
 function activateDiagrams(){
   thread.querySelectorAll(".diag3d:not([data-done])").forEach(el=>{el.setAttribute("data-done","1");
-    let graph={};try{graph=JSON.parse(el.dataset.graph||"{}");}catch(e){}
+    let graph={};try{graph=JSON.parse(decodeURIComponent(el.dataset.graph||"%7B%7D"));}catch(e){}
     if(!graph.nodes||!graph.nodes.length){render2D(el);return;}
     if(liveDiag){try{liveDiag.dispose();}catch(e){}render2D(liveDiag.el);liveDiag=null;}  // keep one live WebGL scene
     try{liveDiag={el,dispose:buildThree(el,graph)};}catch(e){render2D(el);}});
@@ -291,7 +318,8 @@ function renderAnswer(d){if(d.error)return `<div class="card">Error: ${esc(d.err
   return `<div class="card"><div class="answer">${esc(d.answer)}</div></div>
     ${steps?`<div class="card"><h3 class="sec">Steps</h3><ol class="steps">${steps}</ol></div>`:""}
     ${(d.graph&&d.graph.nodes&&d.graph.nodes.length)?diagramCard(d.graph,d.architecture_mermaid):""}
-    ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}`;}
+    ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}
+    ${fbBar(d.interaction_id)}`;}
 function renderDesign(d){if(d.error)return `<div class="card">Error: ${esc(d.error)}</div>`;
   if(d.insufficient_context)return `<div class="card muted">Not enough in the indexed docs to design this. Try naming the workload or services.</div>`;
   const asks=(d.clarifying_questions||[]).map(c=>`<button data-q="${esc(c)}">${esc(c)}</button>`).join("");
@@ -305,8 +333,16 @@ function renderDesign(d){if(d.error)return `<div class="card">Error: ${esc(d.err
     ${flow?`<div class="card"><h3 class="sec">Data flow</h3><ul class="flow">${flow}</ul></div>`:""}
     ${cons?`<div class="card"><h3 class="sec">Key considerations (cost · scale · security · reliability)</h3><ul class="plain">${cons}</ul></div>`:""}
     ${asm?`<div class="card"><h3 class="sec">Assumptions</h3><ul class="plain">${asm}</ul></div>`:""}
-    ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}`;}
+    ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}
+    ${fbBar(d.interaction_id)}`;}
 thread.addEventListener("click",e=>{const b=e.target.closest(".ask .qs button");if(b){qEl.value=qEl.value?qEl.value+"; "+b.dataset.q:b.dataset.q;qEl.focus();}});
+thread.addEventListener("click",e=>{const bar=e.target.closest(".fb");if(!bar)return;const iid=bar.dataset.iid,t=e.target;
+  if(t.classList.contains("up")||t.classList.contains("down")){const rating=t.classList.contains("up")?1:-1;
+    bar.querySelectorAll(".up,.down").forEach(x=>x.classList.remove("sel"));t.classList.add("sel");
+    sendFeedback(iid,{rating});bar.querySelector(".fbok").style.display="inline";}
+  else if(t.classList.contains("more")){bar.querySelector(".fbbox").classList.toggle("open");}
+  else if(t.classList.contains("send")){const ta=bar.querySelector(".fbta"),correction=ta.value.trim();if(!correction)return;
+    sendFeedback(iid,{rating:-1,correction});bar.querySelector(".fbbox").classList.remove("open");bar.querySelector(".fbok").style.display="inline";ta.value="";}});
 
 /* immersive particle-network background */
 (function(){const cv=document.getElementById("bg");if(!cv)return;const x=cv.getContext("2d");let w,h,pts;

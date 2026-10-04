@@ -105,6 +105,16 @@ def cmd_serve(args) -> None:
     serve(host=args.host, port=args.port)
 
 
+def cmd_feedback(args) -> None:
+    from rag_app import feedback
+
+    if args.export:
+        print(json.dumps(feedback.export_rlhf(), indent=2))
+        print("Wrote sft.jsonl + preferences.jsonl (prompt/response & prompt/chosen/rejected).")
+    else:
+        print(json.dumps(feedback.stats(), indent=2))
+
+
 def cmd_index(args) -> None:
     import shutil
     from pathlib import Path
@@ -202,6 +212,10 @@ def main() -> None:
     p_serve.add_argument("--host", default="127.0.0.1")
     p_serve.add_argument("--port", type=int, default=8000)
     p_serve.set_defaults(func=cmd_serve)
+
+    p_fb = sub.add_parser("feedback", help="Interaction/feedback stats; --export builds RLHF datasets")
+    p_fb.add_argument("--export", action="store_true", help="Export SFT + preference-pair JSONL for RLHF/DPO")
+    p_fb.set_defaults(func=cmd_feedback)
 
     p_index = sub.add_parser("index", help="Load, chunk, embed and store documents")
     p_index.add_argument("--url", action="append", help="Index a web page instead of the data folder (repeatable)")

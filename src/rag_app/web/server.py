@@ -33,6 +33,13 @@ class ArtRequest(BaseModel):
     services: list[str] = []
 
 
+class FeedbackRequest(BaseModel):
+    interaction_id: str
+    rating: int | None = None      # 1 = helpful, -1 = not helpful
+    comment: str = ""
+    correction: str = ""           # a human-written "ideal" answer
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="rag-app", description="Ask AWS how-to questions with cited, visualized answers")
 
@@ -55,12 +62,16 @@ def create_app() -> FastAPI:
             return JSONResponse({"error": "empty question"}, status_code=400)
         from rag_app.generation.design import is_design_question
 
+        from rag_app.feedback import log_interaction
+
         filters = {"service": req.service} if req.service else None
         svc = _service()
 
         # Architecture/design questions get the detailed design payload.
         if is_design_question(req.question):
-            return svc.design(req.question, filters)
+            payload = svc.design(req.question, filters)
+            payload["interaction_id"] = log_interaction(req.question, "design", payload)
+            return payload
 
         result = svc.ask(req.question, filters)
         payload = result.to_payload()
@@ -73,7 +84,15 @@ def create_app() -> FastAPI:
         else:
             payload["architecture_mermaid"] = payload["steps_mermaid"] = ""
             payload["graph"] = {"nodes": [], "edges": []}
+        payload["interaction_id"] = log_interaction(req.question, "answer", payload)
         return payload
+
+    @app.post("/api/feedback")
+    def feedback(req: FeedbackRequest):
+        from rag_app.feedback import add_feedback
+
+        add_feedback(req.model_dump())
+        return {"ok": True}
 
     @app.post("/api/art")
     def art(req: ArtRequest):
