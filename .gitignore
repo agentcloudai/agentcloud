@@ -17,6 +17,8 @@ data/raw/*
 data/chroma/
 data/feedback/
 data/**/_sources.csv
+_azure_src/
+*.tar.gz
 
 # run artifacts
 *.log

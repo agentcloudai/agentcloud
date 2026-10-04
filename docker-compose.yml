@@ -1,34 +1,45 @@
-# The app runs on its own with the default embedded Chroma store — no database:
+# AgentCloud AI — run the whole app with one command (Airflow-style, no pip):
 #
-#   docker compose up -d --build          # one command: build + start the app
-#   docker compose exec app rag-app download --csv aws_service_guides.csv
-#   docker compose exec app rag-app index
-#   docker compose exec app rag-app ask "How do I enable S3 versioning?"
+#   curl -LfO https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docker-compose.yml
+#   echo "OPENAI_API_KEY=sk-..." > .env       # needed for ask/design (not for indexing)
+#   docker compose up -d                        # pulls the image, starts the web UI
+#   # open http://localhost:8000
 #
-# Postgres/pgvector is OPTIONAL (for large / multi-tenant / SaaS deployments). Turn
-# it on with the "pgvector" profile and point the app at it:
+# First time, build a knowledge base into the mounted volume (pick any/all):
+#   docker compose run --rm app rag-app download --csv aws_service_guides.csv && \
+#     docker compose run --rm app rag-app index          # AWS
+#   docker compose run --rm app rag-app ingest-gcp        # Google Cloud
+#   docker compose run --rm app rag-app ingest-azure --src /app/data/_azure_src   # Azure
 #
-#   RAG_VECTOR_BACKEND=pgvector docker compose --profile pgvector up -d --build
+# Postgres/pgvector is OPTIONAL (large / multi-tenant):
+#   RAG_VECTOR_BACKEND=pgvector docker compose --profile pgvector up -d
 #
 services:
   app:
-    build: .
+    image: ghcr.io/agentcloudai/agentcloud:latest
+    # To hack on the code instead of pulling, comment the line above and uncomment:
+    # build: .
+    pull_policy: always
+    ports:
+      - "8000:8000"                 # web UI → http://localhost:8000
     environment:
       RAG_VECTOR_BACKEND: ${RAG_VECTOR_BACKEND:-chroma}
       RAG_DATA_DIR: /app/data
       RAG_CHROMA_PATH: /app/data/chroma
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # Prebuilt multi-cloud index (AWS + Azure + GCP). On first boot the container
+      # downloads it into the volume so the app already "knows everything". Unset it
+      # to start empty and build your own with the ingest commands.
+      RAG_INDEX_URL: ${RAG_INDEX_URL:-}
       # Used only when RAG_VECTOR_BACKEND=pgvector:
       RAG_PG_HOST: db
       RAG_PG_PORT: "5432"
       RAG_PG_USER: rag
       RAG_PG_PASSWORD: rag
       RAG_PG_DATABASE: rag
-      # Only needed for `rag-app ask`; set it in .env or your shell.
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
     volumes:
-      - ./data:/app/data           # PDFs, manifest and the Chroma index persist on the host
-      - modelcache:/root/.cache    # cache embedding/reranker models across runs
-    command: ["sleep", "infinity"] # stay alive so `docker compose exec` works
+      - agentcloud-data:/app/data   # the vector index + downloaded docs persist here
+    restart: unless-stopped
 
   # Optional: only started with `--profile pgvector`.
   db:
@@ -38,8 +49,6 @@ services:
       POSTGRES_USER: rag
       POSTGRES_PASSWORD: rag
       POSTGRES_DB: rag
-    ports:
-      - "5544:5432"                # avoids clashing with a local Postgres on 5432
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -49,5 +58,5 @@ services:
       retries: 20
 
 volumes:
+  agentcloud-data:
   pgdata:
-  modelcache:

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>AgentCloud AI — your private cloud solutions agent</title>
-<meta name="description" content="AgentCloud AI: ask how-tos with cited steps and design cloud architectures in live 3D, grounded in official docs. AWS & Azure available now; GCP coming soon." />
+<meta name="description" content="AgentCloud AI: ask how-tos with cited steps and design cloud architectures in live 3D, grounded in official docs. AWS, Azure & Google Cloud available now." />
 <style>
   :root{--bg:#0e1117;--panel:#171b22;--panel2:#1f242d;--border:#2b313b;--text:#e6edf3;--muted:#9aa4b2;--accent:#ff9900;--accent2:#4a9eff}
   *{box-sizing:border-box} html{scroll-behavior:smooth}
@@ -85,12 +85,12 @@
   <div class="tabs" id="tabs">
     <div class="tab active" data-cloud="aws"><img src="https://api.iconify.design/logos/aws.svg?height=22" alt=""/>AWS <span class="st">Available</span></div>
     <div class="tab" data-cloud="azure"><img src="https://api.iconify.design/logos/microsoft-azure.svg?height=22" alt=""/>Azure <span class="st">Available</span></div>
-    <div class="tab locked" data-cloud="gcp"><img src="https://api.iconify.design/logos/google-cloud.svg?height=22" alt=""/>Google Cloud <span class="st">Coming soon</span></div>
+    <div class="tab" data-cloud="gcp"><img src="https://api.iconify.design/logos/google-cloud.svg?height=22" alt=""/>Google Cloud <span class="st">Available</span></div>
   </div>
 
   <div class="demo" id="demo">
     <div class="hint">live demo · drag to orbit · scroll to zoom · hover a service</div>
-    <div class="lockmsg" id="lockmsg"><div class="big">🔒 Coming soon</div><div class="sm">AWS and Azure are live today. Google Cloud is on the way — same agent, same 3D designs, grounded in each provider’s docs.</div></div>
+    <div class="lockmsg" id="lockmsg"><div class="big">🔒 Coming soon</div><div class="sm">All three clouds are live. Pick a provider and explore a real 3D architecture, grounded in that provider’s docs.</div></div>
   </div>
   <div class="note">↑ a real AgentCloud 3D architecture (serverless web app on AWS). This exact view is generated for any question in the app.</div>
 </div></header>
@@ -104,7 +104,7 @@
     <div class="card"><div class="ic">🔒</div><h3>Private & local</h3><p>Runs on your machine with an embedded vector store. No Docker, no database to set up. Your questions stay yours.</p></div>
     <div class="card"><div class="ic">💬</div><h3>Terminal or web</h3><p>Work in your shell with <code>agtcld</code>, or open the immersive web app. Answer the agent’s follow-ups to refine a design in place.</p></div>
     <div class="card"><div class="ic">🧩</div><h3>Real topology</h3><p>Diagrams reflect the actual architecture — fan-out, tiers, monitoring and scaling links — with real service icons, not a straight line.</p></div>
-    <div class="card"><div class="ic">☁️</div><h3>Multi-cloud</h3><p>One workflow across AWS, Azure and Google Cloud. AWS and Azure are live today; GCP is coming next.</p></div>
+    <div class="card"><div class="ic">☁️</div><h3>Multi-cloud</h3><p>One workflow across AWS, Azure and Google Cloud — all three live today, same agent, same 3D designs.</p></div>
   </div>
 </div></section>
 
@@ -131,12 +131,12 @@ rag-app index                 <span class="c"># build the local knowledge base</
 rag-app ask <span class="k">"How do I enable S3 versioning?"</span>
 rag-app serve                 <span class="c"># http://127.0.0.1:8000 (immersive web UI)</span>
 </pre>
-  <p class="note">On first run AgentCloud asks for your LLM key and explains storage. AWS &amp; Azure are supported today; GCP is on the roadmap.</p>
+  <p class="note">On first run AgentCloud asks for your LLM key and explains storage. AWS, Azure &amp; Google Cloud are all supported.</p>
 </div></section>
 
 <footer><div class="wrap">
   AgentCloud AI · your private cloud solutions agent · <a href="#">GitHub</a><br>
-  Available on AWS &amp; Azure today — Google Cloud coming soon.
+  Available on AWS, Azure &amp; Google Cloud.
 </div></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -178,14 +178,36 @@ const AZURE_GRAPH={nodes:[
   {source:"fd",target:"apim",label:"/api"},{source:"apim",target:"fn",label:"invokes"},
   {source:"fn",target:"st",label:"reads/writes"},{source:"fn",target:"sb",label:"events"}]};
 
+/* ---- baked sample Google Cloud architecture (serverless web app) ---- */
+const GCP_GRAPH={nodes:[
+  {id:"u",label:"User",service:"user"},
+  {id:"cdn",label:"Cloud CDN",service:"Cloud CDN",detail:"Global edge cache over HTTPS"},
+  {id:"gcs",label:"Cloud Storage",service:"Cloud Storage",detail:"Static website assets"},
+  {id:"run",label:"Cloud Run",service:"Cloud Run",detail:"Serverless container for API logic"},
+  {id:"sql",label:"Cloud SQL",service:"Cloud SQL",detail:"Managed relational database"},
+  {id:"bq",label:"BigQuery",service:"BigQuery",detail:"Serverless analytics warehouse"},
+  {id:"log",label:"Cloud Logging",service:"Cloud Logging",detail:"Logs, metrics & tracing"}],
+ edges:[{source:"u",target:"cdn",label:"HTTPS"},{source:"cdn",target:"gcs",label:"static"},
+  {source:"cdn",target:"run",label:"/api"},{source:"run",target:"sql",label:"reads/writes"},
+  {source:"run",target:"bq",label:"events"},{source:"run",target:"log",label:"logs"}]};
+
 function nodeColor(s){s=(s||"").toLowerCase();const m=[[/functions/,0x0062ad],[/s3|bucket|storage/,0x3b82f6],[/lambda|compute/,0xff9900],
   [/dynamodb|database|cosmos/,0x10b981],[/service bus|event/,0xa855f7],
   [/cloudfront|api gateway|network|front door|api management|application gateway|load balancer|static web|app service|container apps/,0x06b6d4],
-  [/cloudwatch|monitor|insights/,0xa855f7],[/user/,0x94a3b8]];
+  [/cloudwatch|monitor|insights/,0xa855f7],
+  [/bigquery|cloud run|compute engine|cloud sql|cloud cdn|apigee|kubernetes|gke|cloud logging|looker|virtual private cloud|identity and access|google cloud/,0x4285f4],
+  [/user/,0x94a3b8]];
   for(const[r,c]of m)if(r.test(s))return c;return 0x7c8699;}
 function iconUrl(s){s=(s||"").toLowerCase();const L=[[/s3/,"aws-s3"],[/lambda/,"aws-lambda"],[/dynamodb/,"aws-dynamodb"],
   [/cloudfront/,"aws-cloudfront"],[/api gateway/,"aws-api-gateway"],[/cloudwatch/,"aws-cloudwatch"]];
   for(const[r,n]of L)if(r.test(s))return "https://api.iconify.design/logos/"+n+".svg?height=224";
+  // Google Cloud: official full-colour per-service icons (gcp: set).
+  const G=[[/bigquery/,"bigquery"],[/cloud run/,"cloud-run"],[/kubernetes|gke/,"google-kubernetes-engine"],
+    [/compute engine/,"compute-engine"],[/cloud storage/,"cloud-storage"],[/cloud sql/,"cloud-sql"],
+    [/apigee/,"apigee-api-platform"],[/cloud cdn/,"cloud-cdn"],[/identity and access/,"identity-and-access-management"],
+    [/virtual private cloud/,"virtual-private-cloud"],[/cloud monitoring/,"cloud-monitoring"],[/cloud logging/,"cloud-logging"]];
+  for(const[r,n]of G)if(r.test(s))return "https://api.iconify.design/gcp/"+n+".svg?height=224";
+  if(/looker|google cloud/.test(s))return "https://api.iconify.design/logos/google-cloud.svg?height=224";
   // Azure has no per-service brand icons on Iconify — use distinct category glyphs (MDI), tinted light.
   if(s.includes("azure")){const AZ=[[/function/,"mdi:flash"],[/front door/,"mdi:transit-connection-variant"],
     [/static web/,"mdi:web"],[/api management/,"mdi:api"],[/storage|blob/,"mdi:database"],
@@ -251,7 +273,7 @@ function buildDemo(graph){const el=document.getElementById("demo");const W=el.cl
 
 /* ---- cloud tabs ---- */
 const lockmsg=document.getElementById("lockmsg");
-const GRAPHS={aws:DEMO_GRAPH,azure:AZURE_GRAPH};  // gcp = still locked
+const GRAPHS={aws:DEMO_GRAPH,azure:AZURE_GRAPH,gcp:GCP_GRAPH};
 function selectCloud(c){
   const t=document.querySelector('.tab[data-cloud="'+c+'"]');
   if(!t||t.classList.contains("locked")){lockmsg.style.display="flex";return;}

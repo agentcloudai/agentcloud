@@ -150,7 +150,8 @@ function nodeColor(s){s=(s||"").toLowerCase();const m=[[/(s3|bucket|efs|fsx|stor
   [/(glue|athena|emr|quicksight|kinesis|analytic|lake formation)/,0xa855f7],[/(cloudfront|route|vpc|elb|load balancer|api gateway|network)/,0x06b6d4],
   [/(iam|kms|secret|cognito|security|guardduty|waf)/,0xef4444],[/(sqs|sns|eventbridge|step functions|queue|messaging|service bus|event hub|event grid)/,0xf59e0b],
   [/(user|client|source|external)/,0x94a3b8],
-  [/(functions|front door|api management|application gateway|app service|static web|logic apps|data factory|iot|backup|site recovery|azure)/,0x0078d4]];
+  [/(functions|front door|api management|application gateway|app service|static web|logic apps|data factory|iot|backup|site recovery|azure)/,0x0078d4],
+  [/(bigquery|cloud run|compute engine|cloud sql|cloud cdn|apigee|kubernetes|gke|cloud logging|cloud monitoring|looker|virtual private cloud|cloud storage|identity and access|google cloud)/,0x4285f4]];
   for(const[r,c]of m)if(r.test(s))return c;return 0x7c8699;}
 /* Map an AWS service to an Iconify icon: real AWS logo when we have one, else a
    category tech icon (guaranteed to exist), else a generic cube. */
@@ -189,9 +190,18 @@ const AZURE_ICONS=[
   [/virtual network|load balancer|application gateway|front/,"mdi:lan"],[/data factory|synapse|stream analytics/,"mdi:chart-sankey-variant"],
   [/backup|site recovery/,"mdi:backup-restore"],[/iot/,"mdi:access-point"],[/logic apps/,"mdi:sitemap"],
 ];
+/* Google Cloud ships official full-colour per-service icons (Iconify "gcp:" set). */
+const GCP_ICONS=[
+  [/bigquery/,"bigquery"],[/cloud run/,"cloud-run"],[/kubernetes|gke/,"google-kubernetes-engine"],
+  [/compute engine/,"compute-engine"],[/cloud storage/,"cloud-storage"],[/cloud sql/,"cloud-sql"],
+  [/apigee/,"apigee-api-platform"],[/cloud cdn/,"cloud-cdn"],[/identity and access/,"identity-and-access-management"],
+  [/virtual private cloud/,"virtual-private-cloud"],[/cloud monitoring/,"cloud-monitoring"],[/cloud logging/,"cloud-logging"],
+];
 function iconUrls(service){const s=(service||"").toLowerCase();let logo=null,cat="mdi:cube-outline";
-  const u=id=>{const[p,nm]=id.split(":");return `https://api.iconify.design/${p}/${nm}.svg?height=224`+(p!=="logos"?"&color=%23dfe7f0":"");};
+  const u=id=>{const[p,nm]=id.split(":");return `https://api.iconify.design/${p}/${nm}.svg?height=224`+((p!=="logos"&&p!=="gcp")?"&color=%23dfe7f0":"");};
   if(s.includes("azure")){let g="mdi:microsoft-azure";for(const[r,n]of AZURE_ICONS)if(r.test(s)){g=n;break;}return {primary:u(g),fallback:u(g)};}
+  for(const[r,n]of GCP_ICONS)if(r.test(s)){const g="gcp:"+n;return {primary:u(g),fallback:u(g)};}
+  if(/looker|google cloud/.test(s)){const g="logos:google-cloud";return {primary:u(g),fallback:u(g)};}
   for(const[r,n]of AWS_LOGOS)if(r.test(s)){logo="logos:"+n;break;}
   for(const[r,n]of CAT_ICONS)if(r.test(s)){cat=n;break;}
   return {primary:logo?u(logo):u(cat),fallback:u(cat)};}

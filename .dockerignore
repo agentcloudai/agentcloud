@@ -5,12 +5,16 @@
 .git/
 .gitignore
 
-# Downloaded data and run artifacts should never go into the image.
-data/raw/*
-!data/raw/.gitkeep
+# Downloaded data, the vector index and run artifacts never go into the image.
+data/
+_azure_src/
 eval/results/
 crawl_debug.png
 *.pdf
+*.log
+*.log.err
+*.err
+*.pid
 
 # Local config / secrets
 .env

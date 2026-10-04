@@ -19,19 +19,46 @@
 
 AgentCloud answers questions about building on the cloud **from the official documentation** — every step cites the exact source page, so you get real APIs and real steps, not hallucinations. Ask a *how-to* and get cited steps; say *"design …"* and it proposes a full architecture (components, data flow, trade-offs, the questions it needs answered) and renders it as an **interactive 3D diagram** you can orbit and zoom. It runs **locally** with an embedded vector store — no database, no Docker, your questions stay yours.
 
-> **AWS and Azure are available today. Google Cloud is coming next** — same agent, same 3D designs, grounded in each provider's docs.
+> **AWS, Azure and Google Cloud are all available today** — one agent, the same 3D designs, grounded in each provider's docs.
 
-## Install
+## Install — Docker (recommended)
+
+Run the whole app with one command — no Python, no pip, no database to set up:
+
+```bash
+# 1. grab the compose file
+curl -LfO https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docker-compose.yml
+
+# 2. add your LLM key (only needed for ask/design, not for indexing)
+echo "OPENAI_API_KEY=sk-..." > .env
+
+# 3. pull the image + start the web UI
+docker compose up -d
+```
+
+Open **http://localhost:8000**. The image ships with the embedding + reranker models baked in, so it works offline on first run. The vector index and any downloaded docs persist in a Docker volume across restarts and upgrades.
+
+**Build a knowledge base** (first run — pick any or all; it persists):
+
+```bash
+docker compose run --rm app rag-app ingest-gcp                         # Google Cloud
+docker compose run --rm app rag-app download --csv aws_service_guides.csv \
+  && docker compose run --rm app rag-app index                         # AWS
+```
+
+Upgrade any time with `docker compose pull && docker compose up -d`.
+
+<details>
+<summary><b>Prefer pip? (Python 3.10+)</b></summary>
 
 ```bash
 pip install agtcld
 agtcld            # shows the logo, asks: work in the terminal, or open the web app?
 ```
 
-Only **Python 3.10+** is required — no Docker, no database. On first run it asks for your LLM key and explains storage.
-
 - **Terminal mode** → an interactive agent in your shell (`(~) agentcloud >`).
 - **Web app** → `http://127.0.0.1:8000` with the live 3D architecture view (`rag-app serve`, or choose "web").
+</details>
 
 ## What makes it different
 
@@ -49,7 +76,7 @@ Only **Python 3.10+** is required — no Docker, no database. On first run it as
 |---|---|
 | **AWS** | ✅ Available — 373 services |
 | **Azure** | ✅ Available — 20 core services |
-| **Google Cloud** | 🔜 Coming soon |
+| **Google Cloud** | ✅ Available — 13 core services |
 
 ## Quickstart with your own docs
 
@@ -83,6 +110,16 @@ rag-app ask "How do I deploy a container to Azure Container Apps?"
 ```
 
 Azure docs are sourced from [MicrosoftDocs/azure-docs](https://github.com/MicrosoftDocs/azure-docs); each chunk links back to its `learn.microsoft.com` page. They index into the **same** store as AWS, so you can mix providers in one deployment.
+
+### Or load Google Cloud's docs (13 core services)
+
+```bash
+rag-app ingest-gcp                         # crawls docs.cloud.google.com, tagged per service
+rag-app ingest-gcp --service run --service bigquery   # or a subset of services
+rag-app ask "How do I deploy a container to Cloud Run?"
+```
+
+Google Cloud docs aren't open-sourced as Markdown, so AgentCloud crawls the (server-rendered) pages at `docs.cloud.google.com`, extracts the article body, and tags each chunk with its service + source URL — again into the same store, so AWS, Azure and GCP live side by side.
 
 ## How it works
 
@@ -134,13 +171,14 @@ Site adapters live in `src/rag_app/ingest/sites/`; the fallback keeps any `.pdf`
 </details>
 
 <details>
-<summary><b>Run in Docker</b></summary>
+<summary><b>Build the image yourself</b></summary>
+
+The published image (`ghcr.io/agentcloudai/agentcloud`) is what `docker compose up` pulls. To build from source instead, edit `docker-compose.yml` to comment `image:` and uncomment `build: .`, then:
 
 ```bash
 docker compose up -d --build
-docker compose exec app rag-app index
 ```
-Still no database — the embedded store lives on a mounted volume.
+The embedded store lives on a mounted volume — still no database required.
 </details>
 
 <details>

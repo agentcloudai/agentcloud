@@ -123,6 +123,30 @@ def cmd_ingest_azure(args) -> None:
     print("Next: ask an Azure question, e.g. rag-app ask \"How do I deploy a container on Azure Container Apps?\"")
 
 
+def cmd_ingest_gcp(args) -> None:
+    from rag_app.ingest.gcp import run_gcp_index
+
+    n = run_gcp_index(services=args.service, max_pages=args.max_pages)
+    print(f"Indexed {n} Google Cloud chunks.")
+    print("Next: ask a GCP question, e.g. rag-app ask \"How do I deploy a container to Cloud Run?\"")
+
+
+def cmd_export_index(args) -> None:
+    from rag_app.storage.index_bundle import export_index
+
+    out = export_index(args.out, get_settings())
+    print(f"Wrote {out} ({out.stat().st_size / 1e9:.1f} GB).")
+    print("Host it anywhere (HuggingFace dataset, object store, release asset), then set")
+    print("RAG_INDEX_URL to its download URL so containers auto-fetch it on first boot.")
+
+
+def cmd_fetch_index(args) -> None:
+    from rag_app.storage.index_bundle import fetch_index
+
+    installed = fetch_index(url=args.url, s=get_settings(), force=args.force)
+    print("Index installed." if installed else "Nothing fetched (already present or no URL).")
+
+
 def cmd_index(args) -> None:
     import shutil
     from pathlib import Path
@@ -234,6 +258,20 @@ def main() -> None:
     p_az = sub.add_parser("ingest-azure", help="Index Azure docs (markdown clone of MicrosoftDocs/azure-docs)")
     p_az.add_argument("--src", default="_azure_src", help="Path to the azure-docs clone")
     p_az.set_defaults(func=cmd_ingest_azure)
+
+    p_gcp = sub.add_parser("ingest-gcp", help="Index Google Cloud docs (crawled from docs.cloud.google.com)")
+    p_gcp.add_argument("--service", action="append", help="Only this GCP service slug, e.g. run, bigquery (repeatable)")
+    p_gcp.add_argument("--max-pages", type=int, default=150, help="Max pages to crawl per service")
+    p_gcp.set_defaults(func=cmd_ingest_gcp)
+
+    p_exp = sub.add_parser("export-index", help="Bundle the vector index into a .tar.gz for hosting")
+    p_exp.add_argument("--out", default="agentcloud-index.tar.gz", help="Output bundle path")
+    p_exp.set_defaults(func=cmd_export_index)
+
+    p_fetch = sub.add_parser("fetch-index", help="Download + extract a prebuilt index bundle (RAG_INDEX_URL)")
+    p_fetch.add_argument("--url", help="Bundle URL (defaults to RAG_INDEX_URL)")
+    p_fetch.add_argument("--force", action="store_true", help="Overwrite an existing index")
+    p_fetch.set_defaults(func=cmd_fetch_index)
 
     p_index = sub.add_parser("index", help="Load, chunk, embed and store documents")
     p_index.add_argument("--url", action="append", help="Index a web page instead of the data folder (repeatable)")

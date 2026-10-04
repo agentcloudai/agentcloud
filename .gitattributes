@@ -1,0 +1,5 @@
+# Shell scripts and Docker build files must use LF so they run inside Linux images,
+# regardless of the committer's platform / core.autocrlf setting.
+*.sh text eol=lf
+docker-entrypoint.sh text eol=lf
+Dockerfile text eol=lf

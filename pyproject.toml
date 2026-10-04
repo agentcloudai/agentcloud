@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agtcld"
-version = "0.1.3"
-description = "AgentCloud AI — your private cloud solutions agent: ask, design & visualize cloud architectures, grounded in official docs (AWS & Azure today; GCP coming soon)"
+version = "0.1.4"
+description = "AgentCloud AI — your private cloud solutions agent: ask, design & visualize cloud architectures, grounded in official docs (AWS, Azure & Google Cloud)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [{ name = "Ruturaj Dixit" }]
-keywords = ["aws", "rag", "llm", "agent", "architecture", "cloud", "bedrock", "chatbot"]
+keywords = ["aws", "azure", "gcp", "google-cloud", "rag", "llm", "agent", "architecture", "cloud", "bedrock", "chatbot"]
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -29,7 +29,8 @@ dependencies = [
   "llama-index-llms-openai",               # OpenAI chat models
   "llama-index-llms-openai-like",          # any OpenAI-compatible server (vLLM)
   "sentence-transformers",                 # cross-encoder reranker
-  "httpx",                                 # downloader
+  "httpx",                                 # downloader + GCP docs crawler
+  "beautifulsoup4",                        # extract article text from GCP docs HTML
   "pydantic-settings>=2",
   "fastapi",                               # web UI + API (rag-app serve / agtcld)
   "uvicorn",                               # ASGI server
