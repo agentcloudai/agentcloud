@@ -272,12 +272,17 @@ function activateDiagrams(){
 async function send(){
   const raw=qEl.value.trim();if(!raw)return;addUser(raw);qEl.value="";askBtn.disabled=true;
   let query=raw;if(designCtx){designCtx.addl.push(raw);query=designCtx.base+"\n\nAdditional requirements from the user: "+designCtx.addl.join("; ");}
-  const ld=document.createElement("div");ld.className="msg";ld.innerHTML=`<div class="bubble bot"><div class="card"><span class="spinner"></span> &nbsp;Searching AWS docs &amp; whitepapers…</div></div>`;thread.appendChild(ld);down();
+  const isDesign=/\b(design|architect|data lake|data warehouse|platform|highly available|disaster recovery|multi[- ]region|scalab|end[- ]to[- ]end|well[- ]architected)\b/i.test(raw);
+  const msg0=isDesign?"Designing the architecture — components, data flow &amp; 3D model":"Searching AWS docs &amp; whitepapers";
+  const ld=document.createElement("div");ld.className="msg";
+  ld.innerHTML=`<div class="bubble bot"><div class="card"><span class="spinner"></span> &nbsp;${msg0}… <span id="ldsec" class="muted"></span>${isDesign?`<div class="muted" style="margin-top:6px;font-size:12.5px">grounding in AWS docs &amp; whitepapers — designs take ~15s</div>`:""}</div></div>`;
+  thread.appendChild(ld);down();
+  let secs=0;const timer=setInterval(()=>{secs++;const e=document.getElementById("ldsec");if(e)e.textContent="("+secs+"s)";},1000);
   try{const res=await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:query,service:svcEl.value||null})});
-    const d=await res.json();ld.remove();
+    const d=await res.json();clearInterval(timer);ld.remove();
     if(d.mode==="design"){if(!designCtx)designCtx={base:raw,addl:[]};setCtx();addBot(renderDesign(d));}else addBot(renderAnswer(d));
     activateDiagrams();
-  }catch(err){ld.remove();addBot(`<div class="card">Error: ${esc(String(err))}</div>`);}
+  }catch(err){clearInterval(timer);ld.remove();addBot(`<div class="card">Error: ${esc(String(err))}</div>`);}
   askBtn.disabled=false;qEl.focus();
 }
 function renderAnswer(d){if(d.error)return `<div class="card">Error: ${esc(d.error)}</div>`;

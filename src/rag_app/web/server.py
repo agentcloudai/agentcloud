@@ -98,5 +98,14 @@ def create_app() -> FastAPI:
 def serve(host: str = "127.0.0.1", port: int = 8000) -> None:
     import uvicorn
 
-    log.info("Starting rag-app UI at http://%s:%d", host, port)
-    uvicorn.run(create_app(), host=host, port=port, log_level="info")
+    app = create_app()
+    # Warm up embed + rerank models at startup so the FIRST user query isn't a
+    # cold start (otherwise the reranker loads on first request, adding ~10s).
+    log.info("Warming up models…")
+    try:
+        _service()
+        log.info("Models ready.")
+    except Exception as exc:  # noqa: BLE001
+        log.warning("Warmup skipped: %s", exc)
+    log.info("AgentCloud UI at http://%s:%d", host, port)
+    uvicorn.run(app, host=host, port=port, log_level="info")
