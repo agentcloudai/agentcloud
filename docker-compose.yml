@@ -1,15 +1,20 @@
-# AgentCloud AI — run the whole app with one command (Airflow-style, no pip):
+# AgentCloud AI — your private multi-cloud architect. Two commands:
 #
 #   curl -LfO https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docker-compose.yml
-#   echo "OPENAI_API_KEY=sk-..." > .env       # needed for ask/design (not for indexing)
-#   docker compose up -d                        # pulls the image, starts the web UI
-#   # open http://localhost:8000
+#   docker compose up -d
 #
-# First time, build a knowledge base into the mounted volume (pick any/all):
-#   docker compose run --rm app rag-app download --csv aws_service_guides.csv && \
-#     docker compose run --rm app rag-app index          # AWS
-#   docker compose run --rm app rag-app ingest-gcp        # Google Cloud
-#   docker compose run --rm app rag-app ingest-azure --src /app/data/_azure_src   # Azure
+# Then open http://localhost:8000 and paste your OpenAI key when it asks (or put
+# OPENAI_API_KEY=sk-... in a .env file next to this one to skip the prompt).
+#
+# First boot downloads the prebuilt index — AWS, Azure and Google Cloud — into the
+# volume, so there is nothing to ingest. Upgrade with:
+#   docker compose pull && docker compose up -d
+#
+# To build your OWN index instead, set RAG_INDEX_URL= (blank) and run any of:
+#   docker compose run --rm app rag-app ingest-gcp
+#   docker compose run --rm app rag-app download --csv aws_service_guides.csv
+#   docker compose run --rm app rag-app index
+#   docker compose run --rm app sh -c "git clone --depth 1 --filter=blob:none --sparse https://github.com/MicrosoftDocs/azure-docs /app/data/_azure_src && rag-app ingest-azure --src /app/data/_azure_src"
 #
 # Postgres/pgvector is OPTIONAL (large / multi-tenant):
 #   RAG_VECTOR_BACKEND=pgvector docker compose --profile pgvector up -d

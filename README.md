@@ -9,7 +9,7 @@
 [![PyPI](https://img.shields.io/pypi/v/agtcld.svg)](https://pypi.org/project/agtcld/)
 [![Python](https://img.shields.io/pypi/pyversions/agtcld.svg)](https://pypi.org/project/agtcld/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Live demo](https://img.shields.io/badge/live-3D%20demo-ff9900.svg)](https://agentcloudai.github.io/)
+[![Live demo](https://img.shields.io/badge/live-demo-ff9900.svg)](https://agentcloudai.github.io/)
 
 [**▶ Try the live 3D demo**](https://agentcloudai.github.io/) · [Install](#install) · [What makes it different](#what-makes-it-different) · [Cloud support](#cloud-support)
 

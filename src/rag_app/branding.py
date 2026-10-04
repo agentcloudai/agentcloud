@@ -12,8 +12,8 @@ LOGO = rf"""{_C}
        .-~    __    ~-.
      .~      |  |       ~.        {_B}{_O}A G E N T   C L O U D   ·   A I{_R}{_C}
     (     .--|  |--.      )
-    (    ( o )  ( o )     )       {_R}{_G}your private AWS solutions agent{_C}
-     \    (  `--'  )     /        {_R}{_G}ask · design · visualize — grounded in AWS docs{_C}
+    (    ( o )  ( o )     )       {_R}{_G}your private cloud architect{_C}
+     \    (  `--'  )     /        {_R}{_G}ask · design · export — AWS, Azure & Google Cloud{_C}
       `~-._  `--'   _.-~
            `~------~'
 {_R}"""

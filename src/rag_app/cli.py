@@ -159,7 +159,17 @@ def cmd_index(args) -> None:
         if p.exists():
             shutil.rmtree(p)
             print(f"Rebuild: cleared {p}")
-    n = run_indexing(s, urls=args.url)
+    try:
+        n = run_indexing(s, urls=args.url)
+    except FileNotFoundError:
+        # Empty data dir is a normal first-run state, not a crash.
+        print(f"Nothing to index: no files in {Path(s.data_dir).resolve()}")
+        print()
+        print("Put your PDFs/TXT/MD there, or pull a ready-made knowledge base:")
+        print("  rag-app fetch-index --url <bundle-url>   # prebuilt AWS + Azure + GCP index")
+        print("  rag-app ingest-gcp                       # crawl Google Cloud docs")
+        print("  rag-app download --csv aws_service_guides.csv && rag-app index   # AWS docs")
+        return
     print(f"Indexed {n} chunks.")
 
 

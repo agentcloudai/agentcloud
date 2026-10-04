@@ -33,8 +33,17 @@ def _ensure_api_key() -> None:
 
     from rag_app.config import get_settings
 
+    # A key saved from the web UI lives next to the index; reuse it so the two
+    # modes don't each ask for one.
+    try:
+        from rag_app.web.server import load_saved_key
+        load_saved_key()
+        get_settings.cache_clear()
+    except Exception:  # noqa: BLE001 - never block the CLI on this
+        pass
+
     s = get_settings()
-    if s.openai_api_key or s.llm_provider == "vllm":
+    if s.openai_api_key or os.environ.get("OPENAI_API_KEY") or s.llm_provider == "vllm":
         return
     print(agent_say(f"I need an LLM to answer. Paste your {_B}OpenAI API key{_R} "
                     f"(starts with sk-…), or press Enter to skip (e.g. if you run a local vLLM server)."))
@@ -87,7 +96,7 @@ def _open_web() -> None:
 
 def _print_answer(p: dict) -> None:
     if p.get("insufficient_context"):
-        print(agent_say(f"{_G}I couldn't find enough in the indexed AWS docs to answer that.{_R}\n"))
+        print(agent_say(f"{_G}I couldn't find enough in the indexed cloud docs to answer that.{_R}\n"))
         return
     print("\n" + agent_say(f"{_B}{p['answer']}{_R}"))
     for i, s in enumerate(p.get("steps", []), 1):
