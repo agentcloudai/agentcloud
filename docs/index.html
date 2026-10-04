@@ -186,7 +186,14 @@ function nodeColor(s){s=(s||"").toLowerCase();const m=[[/functions/,0x0062ad],[/
 function iconUrl(s){s=(s||"").toLowerCase();const L=[[/s3/,"aws-s3"],[/lambda/,"aws-lambda"],[/dynamodb/,"aws-dynamodb"],
   [/cloudfront/,"aws-cloudfront"],[/api gateway/,"aws-api-gateway"],[/cloudwatch/,"aws-cloudwatch"]];
   for(const[r,n]of L)if(r.test(s))return "https://api.iconify.design/logos/"+n+".svg?height=224";
-  if(s.includes("azure"))return "https://api.iconify.design/logos/microsoft-azure.svg?height=224";
+  // Azure has no per-service brand icons on Iconify — use distinct category glyphs (MDI), tinted light.
+  if(s.includes("azure")){const AZ=[[/function/,"mdi:flash"],[/front door/,"mdi:transit-connection-variant"],
+    [/static web/,"mdi:web"],[/api management/,"mdi:api"],[/storage|blob/,"mdi:database"],
+    [/service bus|event|queue/,"mdi:swap-horizontal"],[/container apps/,"mdi:docker"],[/app service/,"mdi:application-cog"],
+    [/virtual network|load balancer|application gateway/,"mdi:lan"],[/data factory|synapse|stream analytics/,"mdi:chart-sankey-variant"],
+    [/backup|site recovery/,"mdi:backup-restore"],[/iot/,"mdi:access-point"],[/logic apps/,"mdi:sitemap"]];
+    for(const[r,n]of AZ)if(r.test(s))return "https://api.iconify.design/"+n.replace(":","/")+".svg?height=224&color=%23dfe7f0";
+    return "https://api.iconify.design/logos/microsoft-azure.svg?height=224";}
   const C=s.includes("user")?"mdi:account-outline":"mdi:cube-outline";return "https://api.iconify.design/"+C.replace(":","/")+".svg?height=224&color=%23dfe7f0";}
 
 let demoDispose=null;

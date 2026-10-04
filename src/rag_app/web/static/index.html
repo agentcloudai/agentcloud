@@ -148,8 +148,10 @@ function sendFeedback(iid,extra){return fetch("/api/feedback",{method:"POST",hea
 function nodeColor(s){s=(s||"").toLowerCase();const m=[[/(s3|bucket|efs|fsx|storage|lake|glacier)/,0x3b82f6],
   [/(ec2|lambda|fargate|ecs|eks|compute|container|beanstalk)/,0xff9900],[/(dynamodb|rds|aurora|redshift|database|keyspace|documentdb)/,0x10b981],
   [/(glue|athena|emr|quicksight|kinesis|analytic|lake formation)/,0xa855f7],[/(cloudfront|route|vpc|elb|load balancer|api gateway|network)/,0x06b6d4],
-  [/(iam|kms|secret|cognito|security|guardduty|waf)/,0xef4444],[/(sqs|sns|eventbridge|step functions|queue|messaging)/,0xf59e0b],
-  [/(user|client|source|external)/,0x94a3b8]];for(const[r,c]of m)if(r.test(s))return c;return 0x7c8699;}
+  [/(iam|kms|secret|cognito|security|guardduty|waf)/,0xef4444],[/(sqs|sns|eventbridge|step functions|queue|messaging|service bus|event hub|event grid)/,0xf59e0b],
+  [/(user|client|source|external)/,0x94a3b8],
+  [/(functions|front door|api management|application gateway|app service|static web|logic apps|data factory|iot|backup|site recovery|azure)/,0x0078d4]];
+  for(const[r,c]of m)if(r.test(s))return c;return 0x7c8699;}
 /* Map an AWS service to an Iconify icon: real AWS logo when we have one, else a
    category tech icon (guaranteed to exist), else a generic cube. */
 const AWS_LOGOS=[
@@ -178,10 +180,20 @@ const CAT_ICONS=[
   [/sagemaker|machine learning|\bml\b|\bai\b|bedrock|model|inference/,"mdi:brain"],
   [/user|client|external|source/,"mdi:account-outline"],
 ];
+/* Azure has no per-service brand icons on Iconify, so map each service to a
+   distinct category glyph (MDI) instead of repeating the generic Azure logo. */
+const AZURE_ICONS=[
+  [/function/,"mdi:flash"],[/front door/,"mdi:transit-connection-variant"],[/static web/,"mdi:web"],
+  [/api management/,"mdi:api"],[/storage|blob/,"mdi:database"],[/service bus|event hub|event grid|queue|messaging/,"mdi:swap-horizontal"],
+  [/container apps/,"mdi:docker"],[/app service/,"mdi:application-cog"],
+  [/virtual network|load balancer|application gateway|front/,"mdi:lan"],[/data factory|synapse|stream analytics/,"mdi:chart-sankey-variant"],
+  [/backup|site recovery/,"mdi:backup-restore"],[/iot/,"mdi:access-point"],[/logic apps/,"mdi:sitemap"],
+];
 function iconUrls(service){const s=(service||"").toLowerCase();let logo=null,cat="mdi:cube-outline";
+  const u=id=>{const[p,nm]=id.split(":");return `https://api.iconify.design/${p}/${nm}.svg?height=224`+(p!=="logos"?"&color=%23dfe7f0":"");};
+  if(s.includes("azure")){let g="mdi:microsoft-azure";for(const[r,n]of AZURE_ICONS)if(r.test(s)){g=n;break;}return {primary:u(g),fallback:u(g)};}
   for(const[r,n]of AWS_LOGOS)if(r.test(s)){logo="logos:"+n;break;}
   for(const[r,n]of CAT_ICONS)if(r.test(s)){cat=n;break;}
-  const u=id=>{const[p,nm]=id.split(":");return `https://api.iconify.design/${p}/${nm}.svg?height=224`+(p!=="logos"?"&color=%23dfe7f0":"");};
   return {primary:logo?u(logo):u(cat),fallback:u(cat)};}
 /* A 3D icon-tile: the real AWS logo drawn crisply on a thick tile with glowing,
    category-colored 3D edges. Shows the actual symbol AND has real depth. */
