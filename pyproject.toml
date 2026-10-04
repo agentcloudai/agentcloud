@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agtcld"
+version = "0.1.0"
+description = "AgentCloud AI — your private AWS solutions agent (ask, design & visualize, grounded in AWS docs)"
+requires-python = ">=3.10"
+dependencies = [
+  "llama-index-core>=0.12",
+  "llama-index-readers-file",              # PDF/DOCX/etc. support for SimpleDirectoryReader
+  "pymupdf",                               # fast PDF text extraction (~20x faster than pypdf)
+  "llama-index-vector-stores-chroma",      # embedded Chroma store (default, no server)
+  "chromadb",
+  "llama-index-embeddings-huggingface",    # local embedding models (BGE, E5, ...)
+  "llama-index-embeddings-openai",         # OpenAI embedding API
+  "llama-index-llms-openai",               # OpenAI chat models
+  "llama-index-llms-openai-like",          # any OpenAI-compatible server (vLLM)
+  "sentence-transformers",                 # cross-encoder reranker
+  "httpx",                                 # downloader
+  "pydantic-settings>=2",
+]
+
+[project.optional-dependencies]
+postgres = ["llama-index-vector-stores-postgres"]   # RAG_VECTOR_BACKEND=pgvector
+web = ["llama-index-readers-web"]
+browser = ["playwright"]
+ui = ["fastapi", "uvicorn", "python-multipart"]     # rag-app serve (local web UI)
+image = ["diffusers", "accelerate"]                 # optional AI-art render in the UI
+dev = ["pytest"]
+
+[project.scripts]
+agtcld = "rag_app.agent_cli:main"
+agentcloud = "rag_app.agent_cli:main"
+rag-app = "rag_app.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+rag_app = ["web/static/*"]

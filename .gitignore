@@ -1,0 +1,31 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+build/
+dist/
+
+# data & index (large / local only)
+data/raw/*
+!data/raw/.gitkeep
+data/chroma/
+data/**/_sources.csv
+
+# run artifacts
+*.log
+*.log.err
+*.pid
+crawl_debug.png
+arch_download.*
+index_run.*
+eval/results/
+
+# os
+.DS_Store
+Thumbs.db

@@ -1,0 +1,53 @@
+# The app runs on its own with the default embedded Chroma store — no database:
+#
+#   docker compose up -d --build          # one command: build + start the app
+#   docker compose exec app rag-app download --csv aws_service_guides.csv
+#   docker compose exec app rag-app index
+#   docker compose exec app rag-app ask "How do I enable S3 versioning?"
+#
+# Postgres/pgvector is OPTIONAL (for large / multi-tenant / SaaS deployments). Turn
+# it on with the "pgvector" profile and point the app at it:
+#
+#   RAG_VECTOR_BACKEND=pgvector docker compose --profile pgvector up -d --build
+#
+services:
+  app:
+    build: .
+    environment:
+      RAG_VECTOR_BACKEND: ${RAG_VECTOR_BACKEND:-chroma}
+      RAG_DATA_DIR: /app/data
+      RAG_CHROMA_PATH: /app/data/chroma
+      # Used only when RAG_VECTOR_BACKEND=pgvector:
+      RAG_PG_HOST: db
+      RAG_PG_PORT: "5432"
+      RAG_PG_USER: rag
+      RAG_PG_PASSWORD: rag
+      RAG_PG_DATABASE: rag
+      # Only needed for `rag-app ask`; set it in .env or your shell.
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./data:/app/data           # PDFs, manifest and the Chroma index persist on the host
+      - modelcache:/root/.cache    # cache embedding/reranker models across runs
+    command: ["sleep", "infinity"] # stay alive so `docker compose exec` works
+
+  # Optional: only started with `--profile pgvector`.
+  db:
+    image: pgvector/pgvector:pg16
+    profiles: ["pgvector"]
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: rag
+      POSTGRES_DB: rag
+    ports:
+      - "5544:5432"                # avoids clashing with a local Postgres on 5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rag -d rag"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  pgdata:
+  modelcache:

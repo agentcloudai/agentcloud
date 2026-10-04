@@ -1,0 +1,374 @@
+service,num_guides,guides,pdf_urls
+AMB Access Bitcoin,1,Developer Guide,https://docs.aws.amazon.com/pdfs/managed-blockchain/latest/ambbtc-dg/amb-btc-dg.pdf
+AMB Access Polygon,1,Developer Guide,https://docs.aws.amazon.com/pdfs/managed-blockchain/latest/ambp-dg/amb-polygon-dg.pdf
+AWS Amplify Hosting,1,User Guide,https://docs.aws.amazon.com/pdfs/amplify/latest/userguide/amplify-console-ug.pdf
+AWS App Mesh,1,User Guide,https://docs.aws.amazon.com/pdfs/app-mesh/latest/userguide/app-mesh-ug.pdf
+AWS App Runner,1,Developer Guide,https://docs.aws.amazon.com/pdfs/apprunner/latest/dg/apprunner-guide.pdf
+AWS App Studio,1,User Guide,https://docs.aws.amazon.com/pdfs/appstudio/latest/userguide/appstudio-ug.pdf
+AWS App2Container,1,User Guide,https://docs.aws.amazon.com/pdfs/app2container/latest/UserGuide/a2c-ug.pdf
+AWS AppConfig,1,User Guide,https://docs.aws.amazon.com/pdfs/appconfig/latest/userguide/appconfig-ug.pdf
+AWS AppFabric,1,Administration Guide,https://docs.aws.amazon.com/pdfs/appfabric/latest/adminguide/AppFabricDocs.pdf
+AWS AppSync Events,1,Developer Guide,https://docs.aws.amazon.com/pdfs/appsync/latest/eventapi/appsync-eventapi-dg.pdf
+AWS AppSync GraphQL,1,Developer Guide,https://docs.aws.amazon.com/pdfs/appsync/latest/devguide/appsync-dg.pdf
+AWS Application Discovery Service,1,User Guide,https://docs.aws.amazon.com/pdfs/application-discovery/latest/userguide/appdiscovery-ug.pdf
+AWS Artifact,1,User Guide,https://docs.aws.amazon.com/pdfs/artifact/latest/ug/artifact-ug.pdf
+AWS Audit Manager,1,User Guide,https://docs.aws.amazon.com/pdfs/audit-manager/latest/userguide/audit-manager-ug.pdf
+AWS Auto Scaling,1,Scaling Plans User Guide,https://docs.aws.amazon.com/pdfs/autoscaling/plans/userguide/as-plans-ug.pdf
+AWS B2B Data Interchange,1,User Guide,https://docs.aws.amazon.com/pdfs/b2bi/latest/userguide/b2bi-ug.pdf
+AWS Backup,1,Developer Guide,https://docs.aws.amazon.com/pdfs/aws-backup/latest/devguide/AWSBackup-dg.pdf
+AWS Batch,1,User Guide,https://docs.aws.amazon.com/pdfs/batch/latest/userguide/batch_user.pdf
+AWS Billing,1,User Guide,https://docs.aws.amazon.com/pdfs/awsaccountbilling/latest/aboutv2/awsaccountbilling-aboutv2.pdf
+AWS Billing Conductor,1,User Guide,https://docs.aws.amazon.com/pdfs/billingconductor/latest/userguide/billingconductor-user-guide.pdf
+AWS Blockchain Templates,1,Developer Guide,https://docs.aws.amazon.com/pdfs/blockchain-templates/latest/developerguide/blockchain-templates-dg.pdf
+AWS Blocks,1,Developer Guide,https://docs.aws.amazon.com/pdfs/blocks/latest/devguide/blocks-dg.pdf
+AWS Certificate Manager,1,User Guide,https://docs.aws.amazon.com/pdfs/acm/latest/userguide/acm-ug.pdf
+AWS Clean Rooms,1,User Guide,https://docs.aws.amazon.com/pdfs/clean-rooms/latest/userguide/user-guide.pdf
+AWS Client VPN,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/vpn/latest/clientvpn-admin/client-vpn-admin-guide.pdf | https://docs.aws.amazon.com/pdfs/vpn/latest/clientvpn-user/client-vpn-user-guide.pdf
+AWS Cloud Development Kit (AWS CDK) v2,1,Developer Guide,https://docs.aws.amazon.com/pdfs/cdk/v2/guide/awscdk.pdf
+AWS Cloud Digital Interface Software Development Kit,1,User Guide,https://docs.aws.amazon.com/pdfs/CDI-SDK/latest/ug/cdi-sdk.pdf
+AWS Cloud Map,1,Developer Guide,https://docs.aws.amazon.com/pdfs/cloud-map/latest/dg/cloud-map-dg.pdf
+AWS Cloud9,1,User Guide,https://docs.aws.amazon.com/pdfs/cloud9/latest/user-guide/aws-cloud9-ug.pdf
+AWS CloudFormation,1,User Guide,https://docs.aws.amazon.com/pdfs/AWSCloudFormation/latest/UserGuide/cfn-ug.pdf
+AWS CloudFormation Guard,1,User Guide,https://docs.aws.amazon.com/pdfs/cfn-guard/latest/ug/cfn-guard.pdf
+AWS CloudHSM,1,User Guide,https://docs.aws.amazon.com/pdfs/cloudhsm/latest/userguide/cloudhsm-user-guide.pdf
+AWS CloudShell,1,User Guide,https://docs.aws.amazon.com/pdfs/cloudshell/latest/userguide/awscloudshell.pdf
+AWS CloudTrail,1,User Guide,https://docs.aws.amazon.com/pdfs/awscloudtrail/latest/userguide/awscloudtrail-ug.pdf
+AWS CodeBuild,1,User Guide,https://docs.aws.amazon.com/pdfs/codebuild/latest/userguide/codebuild-user.pdf
+AWS CodeCommit,1,User Guide,https://docs.aws.amazon.com/pdfs/codecommit/latest/userguide/codecommit-user.pdf
+AWS CodeDeploy,1,User Guide,https://docs.aws.amazon.com/pdfs/codedeploy/latest/userguide/codedeploy-user.pdf
+AWS CodePipeline,1,User Guide,https://docs.aws.amazon.com/pdfs/codepipeline/latest/userguide/codepipeline-user.pdf
+AWS Compute Optimizer,1,User Guide,https://docs.aws.amazon.com/pdfs/compute-optimizer/latest/ug/compute-optimizer.pdf
+AWS Config,1,Developer Guide,https://docs.aws.amazon.com/pdfs/config/latest/developerguide/config-dg.pdf
+AWS Console Mobile Application,1,User Guide,https://docs.aws.amazon.com/pdfs/consolemobileapp/latest/userguide/console-mobile-app-guide.pdf
+AWS Control Tower,1,User Guide,https://docs.aws.amazon.com/pdfs/controltower/latest/userguide/controltower-ug.pdf
+AWS Cost Management,1,User Guide,https://docs.aws.amazon.com/pdfs/cost-management/latest/userguide/cost-management-guide.pdf
+AWS Data Exports,1,User Guide,https://docs.aws.amazon.com/pdfs/cur/latest/userguide/cur-user-guide.pdf
+AWS Data Pipeline,1,Developer Guide,https://docs.aws.amazon.com/pdfs/datapipeline/latest/DeveloperGuide/datapipeline-dg.pdf
+AWS Data Transfer Terminal,1,User Guide,https://docs.aws.amazon.com/pdfs/datatransferterminal/latest/userguide/dtt-ug.pdf
+AWS DataSync,1,User Guide,https://docs.aws.amazon.com/pdfs/datasync/latest/userguide/datasync-userguide.pdf
+AWS Database Encryption SDK,1,Developer Guide,https://docs.aws.amazon.com/pdfs/database-encryption-sdk/latest/devguide/database-encryption-sdk.pdf
+AWS Database Migration Service,1,User Guide,https://docs.aws.amazon.com/pdfs/dms/latest/userguide/dms-ug.pdf
+AWS Deadline Cloud,1,User Guide,https://docs.aws.amazon.com/pdfs/deadline-cloud/latest/userguide/user-guide.pdf.pdf
+AWS Deep Learning AMIs,1,Developer Guide,https://docs.aws.amazon.com/pdfs/dlami/latest/devguide/dlami-dg.pdf
+AWS Deep Learning Containers,1,Developer Guide,https://docs.aws.amazon.com/pdfs/deep-learning-containers/latest/devguide/dlc-guide.pdf.pdf
+AWS DevOps Agent,1,User Guide,https://docs.aws.amazon.com/pdfs/devopsagent/latest/userguide/devops-agent-ug.pdf
+AWS Device Farm,1,Developer Guide,https://docs.aws.amazon.com/pdfs/devicefarm/latest/developerguide/devicefarm-dg.pdf
+AWS Diagnostic Tools,1,User Guide,https://docs.aws.amazon.com/pdfs/diagnostic-tools/latest/userguide/diagnostic-tools.pdf
+AWS Direct Connect,1,User Guide,https://docs.aws.amazon.com/pdfs/directconnect/latest/UserGuide/dc-ug.pdf
+AWS Directory Service,1,Administration Guide,https://docs.aws.amazon.com/pdfs/directoryservice/latest/admin-guide/directoryservice-admin-guide.pdf
+AWS Elastic Beanstalk,1,Developer Guide,https://docs.aws.amazon.com/pdfs/elasticbeanstalk/latest/dg/awseb-dg.pdf
+AWS Elastic Disaster Recovery,1,User Guide,https://docs.aws.amazon.com/pdfs/drs/latest/userguide/drs-service-guide.pdf
+AWS Elemental Appliances and Software Quote Confirmation,1,User Guide,https://docs.aws.amazon.com/pdfs/elemental-appliances-software/latest/ug/elemental-appliances-software-ug.pdf
+AWS Elemental Conductor File,2,Cluster Configuration Guide | Migration Guide,https://docs.aws.amazon.com/pdfs/elemental-cf2/latest/configguide/elemental-cf2-config.pdf | https://docs.aws.amazon.com/pdfs/elemental-cf2/latest/migrationguide/cf-server-migration.pdf
+AWS Elemental Conductor Live,2,Configuration Guide | Migration Guide,https://docs.aws.amazon.com/pdfs/elemental-cl3/latest/configguide/elemental-cl3-config.pdf | https://docs.aws.amazon.com/pdfs/elemental-cl3/latest/migrationguide/cl3-live-migration.pdf
+AWS Elemental Live,3,Configuration Guide | Migration Guide | User Guide,https://docs.aws.amazon.com/pdfs/elemental-live/latest/configguide/elemental-live-config.pdf | https://docs.aws.amazon.com/pdfs/elemental-live/latest/migrationguide/elemental-live-migration.pdf | https://docs.aws.amazon.com/pdfs/elemental-live/latest/ug/elemental-live-ug.pdf
+AWS Elemental MediaConnect,1,User Guide,https://docs.aws.amazon.com/pdfs/mediaconnect/latest/ug/mediaconnect-ug.pdf
+AWS Elemental MediaPackage,1,User Guide,https://docs.aws.amazon.com/pdfs/mediapackage/latest/ug/mediapackage-guide.pdf
+AWS Elemental MediaPackage v2,1,User Guide,https://docs.aws.amazon.com/pdfs/mediapackage/latest/userguide/mediapackage-guide.pdf
+AWS Elemental MediaTailor,1,User Guide,https://docs.aws.amazon.com/pdfs/mediatailor/latest/ug/mediatailor-guide.pdf
+AWS Elemental Server,3,Configuration Guide | Migration Guide | User Guide,https://docs.aws.amazon.com/pdfs/elemental-server/latest/configguide/elemental-server-config.pdf | https://docs.aws.amazon.com/pdfs/elemental-server/latest/migrationguide/elemental-server-migration.pdf | https://docs.aws.amazon.com/pdfs/elemental-server/latest/ug/elemental-server-ug.pdf
+AWS Elemental Statmux,1,Configuration Guide,https://docs.aws.amazon.com/pdfs/elemental-statmux/latest/configguide/elemental-statmux-config.pdf
+AWS Encryption SDK,1,Developer Guide,https://docs.aws.amazon.com/pdfs/encryption-sdk/latest/developer-guide/encryption-sdk-developer-guide.pdf
+AWS End User Messaging,1,User Guide,https://docs.aws.amazon.com/pdfs/end-user-messaging/latest/userguide/eum-ug.pdf
+AWS End User Messaging Push,1,User Guide,https://docs.aws.amazon.com/pdfs/push-notifications/latest/userguide/push-ug.pdf
+AWS End User Messaging SMS,1,User Guide,https://docs.aws.amazon.com/pdfs/sms-voice/latest/userguide/sms-ug.pdf
+AWS End User Messaging Social,1,User Guide,https://docs.aws.amazon.com/pdfs/social-messaging/latest/userguide/social-ug.pdf
+AWS Entity Resolution,1,User Guide,https://docs.aws.amazon.com/pdfs/entityresolution/latest/userguide/user-guide.pdf
+AWS Events API,1,AWS Events API Developer Guide,https://docs.aws.amazon.com/pdfs/events/latest/devguide/events-dg.pdf
+AWS Fault Injection Service,1,User Guide,https://docs.aws.amazon.com/pdfs/fis/latest/userguide/fis-guide.pdf
+AWS FinOps Agent (preview),1,User Guide,https://docs.aws.amazon.com/pdfs/finops-agent/latest/userguide/finops-agent-ug.pdf
+AWS Flat-Rate Plans,1,User Guide,https://docs.aws.amazon.com/pdfs/PricingPlanManager/latest/UserGuide/pricingplanmanager-ug.pdf
+AWS Flow Framework for Java,1,Developer Guide,https://docs.aws.amazon.com/pdfs/amazonswf/latest/awsflowguide/swf-aflow.pdf
+AWS Global Accelerator,1,Developer Guide,https://docs.aws.amazon.com/pdfs/global-accelerator/latest/dg/global-accelerator-guide.pdf
+AWS Glue,1,User Guide,https://docs.aws.amazon.com/pdfs/glue/latest/dg/glue-dg.pdf
+AWS GovCloud (US),1,User Guide,https://docs.aws.amazon.com/pdfs/govcloud-us/latest/UserGuide/govcloud-us.pdf
+AWS Ground Station,2,AWS Ground Station Agent User Guide | User Guide,https://docs.aws.amazon.com/pdfs/ground-station/latest/gs-agent-ug/groundstation-agent-ug.pdf | https://docs.aws.amazon.com/pdfs/ground-station/latest/ug/groundstation-ug.pdf
+AWS Health,1,User Guide,https://docs.aws.amazon.com/pdfs/health/latest/ug/awshealth-ug.pdf
+AWS HealthImaging,1,Developer Guide,https://docs.aws.amazon.com/pdfs/healthimaging/latest/devguide/aws-healthimaging-developer-guide.pdf
+AWS HealthLake,1,Developer Guide,https://docs.aws.amazon.com/pdfs/healthlake/latest/devguide/aws-healthlake-developer-guide.pdf
+AWS HealthOmics,1,User Guide,https://docs.aws.amazon.com/pdfs/omics/latest/dev/healthomics-dev.pdf
+AWS IAM Identity Center,1,User Guide,https://docs.aws.amazon.com/pdfs/singlesignon/latest/userguide/sso-ug.pdf
+AWS Identity and Access Management,1,User Guide,https://docs.aws.amazon.com/pdfs/IAM/latest/UserGuide/iam-ug.pdf
+AWS Infrastructure Composer,1,Developer Guide,https://docs.aws.amazon.com/pdfs/infrastructure-composer/latest/dg/infrastructure-composer.pdf
+AWS Interconnect,1,AWS Interconnect User Guide,https://docs.aws.amazon.com/pdfs/interconnect/latest/userguide/interconnect-ug.pdf
+AWS IoT Core,1,Developer Guide,https://docs.aws.amazon.com/pdfs/iot/latest/developerguide/iot-dg.pdf
+AWS IoT Device Defender,1,AWS IoT Device Defender Developer Guide,https://docs.aws.amazon.com/pdfs/iot-device-defender/latest/devguide/iot-device-defender-guide.pdf
+AWS IoT ExpressLink,4,Programmer's Guide | Programmer's Guide | Programmer's Guide | Programmer's Guide,https://docs.aws.amazon.com/pdfs/iot-expresslink/latest/programmersguide/expresslink-pg.pdf | https://docs.aws.amazon.com/pdfs/iot-expresslink/archive/v1.1.1/programmersguide/expresslink-pg.pdf | https://docs.aws.amazon.com/pdfs/iot-expresslink/archive/v1.2/programmersguide/expresslink-pg.pdf | https://docs.aws.amazon.com/pdfs/iot-expresslink/archive/v1.1.2/programmersguide/expresslink-pg.pdf
+AWS IoT FleetWise,1,Developer Guide,https://docs.aws.amazon.com/pdfs/iot-fleetwise/latest/developerguide/iot-fleetwise-guide.pdf
+AWS IoT Greengrass,2,"Developer Guide, Version 1 | Developer Guide, Version 2",https://docs.aws.amazon.com/pdfs/greengrass/v1/developerguide/gg-dg.pdf | https://docs.aws.amazon.com/pdfs/greengrass/v2/developerguide/greengrass-v2-developer-guide.pdf
+AWS IoT SiteWise,1,User Guide,https://docs.aws.amazon.com/pdfs/iot-sitewise/latest/userguide/iot-sitewise-guide.pdf
+AWS IoT TwinMaker,1,User Guide,https://docs.aws.amazon.com/pdfs/iot-twinmaker/latest/guide/twinmaker-guide.pdf
+AWS IoT Wireless,1,Developer Guide,https://docs.aws.amazon.com/pdfs/iot-wireless/latest/developerguide/iotwireless-dg.pdf
+AWS Key Management Service,1,Developer Guide,https://docs.aws.amazon.com/pdfs/kms/latest/developerguide/kms-dg.pdf
+AWS Lake Formation,1,Developer Guide,https://docs.aws.amazon.com/pdfs/lake-formation/latest/dg/lake-formation-dg.pdf
+AWS Lambda,1,Developer Guide,https://docs.aws.amazon.com/pdfs/lambda/latest/dg/lambda-dg.pdf
+AWS Launch Wizard,1,User Guide,https://docs.aws.amazon.com/pdfs/launchwizard/latest/userguide/launch-wizard-user-guide.pdf
+AWS License Manager,1,User Guide,https://docs.aws.amazon.com/pdfs/license-manager/latest/userguide/license-manager.pdf
+AWS Local Zones,1,User Guide,https://docs.aws.amazon.com/pdfs/local-zones/latest/ug/local-zones.pdf
+AWS Mainframe Modernization,1,User Guide,https://docs.aws.amazon.com/pdfs/m2/latest/userguide/m2userguide.pdf
+AWS Management Console,1,Getting Started Guide,https://docs.aws.amazon.com/pdfs/awsconsolehelpdocs/latest/gsg/console-help-gsg.pdf
+AWS Marketplace,2,Developer Guide | Storefront User Guide,https://docs.aws.amazon.com/pdfs/marketplace/latest/developerguide/aws-marketplace-dg.pdf | https://docs.aws.amazon.com/pdfs/marketplace/latest/storefrontguide/aws-marketplace-storefront-ug.pdf
+AWS Microservice Extractor for .NET,1,User Guide,https://docs.aws.amazon.com/pdfs/microservice-extractor/latest/userguide/user-guide.pdf
+AWS Migration Acceleration Program 2.0 Tagging Guide,1,User Guide,https://docs.aws.amazon.com/pdfs/MAP/latest/userguide/map-ug.pdf
+AWS Migration Hub,1,User Guide,https://docs.aws.amazon.com/pdfs/migrationhub/latest/ug/hub-api.pdf
+AWS Migration Hub Journeys,1,Migration Hub Journeys User Guide,https://docs.aws.amazon.com/pdfs/mhj/latest/userguide/migration-hub-journeys-user-guide.*.pdf
+AWS Migration Hub Orchestrator,1,User Guide,https://docs.aws.amazon.com/pdfs/migrationhub-orchestrator/latest/userguide/mhub-orchestrator-ug.pdf
+AWS Migration Hub Refactor Spaces,1,User Guide,https://docs.aws.amazon.com/pdfs/migrationhub-refactor-spaces/latest/userguide/migrationhub-refactor-spaces-ug.pdf
+AWS Mobile SDK,1,Xamarin Developer Guide,https://docs.aws.amazon.com/pdfs/mobile/sdkforxamarin/developerguide/aws-xamarin-dg.pdf
+AWS Mobile SDK for Unity,1,Developer Guide,https://docs.aws.amazon.com/pdfs/mobile/sdkforunity/developerguide/aws-unity-sdk.pdf
+AWS Network Firewall,1,Developer Guide,https://docs.aws.amazon.com/pdfs/network-firewall/latest/developerguide/network-firewall-developer-guide.pdf
+AWS Network Manager,3,AWS Cloud WAN User Guide | AWS Global Networks for Transit Gateways User Guide | Infrastructure Performance User Guide,https://docs.aws.amazon.com/pdfs/network-manager/latest/cloudwan/cloudwan.pdf | https://docs.aws.amazon.com/pdfs/network-manager/latest/tgwnm/tgwnm.pdf | https://docs.aws.amazon.com/pdfs/network-manager/latest/infrastructure-performance/infrastructure-performance.pdf
+AWS Network Security Manager,1,Developer Guide,https://docs.aws.amazon.com/pdfs/network-security-manager/latest/devguide/network-security-manager-dg.pdf
+AWS Nitro Enclaves,1,User Guide,https://docs.aws.amazon.com/pdfs/enclaves/latest/user/enclaves-user.pdf
+AWS Organizations,1,User Guide,https://docs.aws.amazon.com/pdfs/organizations/latest/userguide/organizations-userguide.pdf
+AWS Outposts,3,User guide for first-generation Outposts racks | User Guide for Outposts servers | User guide for second-generation Outposts racks,https://docs.aws.amazon.com/pdfs/outposts/latest/userguide/outposts-rack.pdf | https://docs.aws.amazon.com/pdfs/outposts/latest/server-userguide/outposts.pdf | https://docs.aws.amazon.com/pdfs/outposts/latest/network-userguide/outposts-rack-network.pdf
+AWS PCS,1,User Guide,https://docs.aws.amazon.com/pdfs/pcs/latest/userguide/pcs-ug.pdf
+AWS Panorama,1,Developer Guide,https://docs.aws.amazon.com/pdfs/panorama/latest/dev/panorama-dev.pdf
+AWS ParallelCluster,2,AWS ParallelCluster User Guide (v2) | AWS ParallelCluster User Guide (v3),https://docs.aws.amazon.com/pdfs/parallelcluster/v2/ug/aws-parallelcluster-ug.pdf | https://docs.aws.amazon.com/pdfs/parallelcluster/latest/ug/aws-parallelcluster-ug.pdf
+AWS Partner Central,2,Developer Guide | Getting Started Guide,https://docs.aws.amazon.com/pdfs/partner-central/latest/developer-guide/apc-dg.pdf | https://docs.aws.amazon.com/pdfs/partner-central/latest/getting-started/apc-gs.pdf
+AWS Payment Cryptography,1,User Guide,https://docs.aws.amazon.com/pdfs/payment-cryptography/latest/userguide/payment-cryptography-userguide.pdf
+AWS Pricing Calculator,1,User Guide,https://docs.aws.amazon.com/pdfs/pricing-calculator/latest/userguide/aws-pc.pdf
+AWS Private Certificate Authority,1,User Guide,https://docs.aws.amazon.com/pdfs/privateca/latest/userguide/privateca-ug.pdf
+AWS Proton,1,User Guide,https://docs.aws.amazon.com/pdfs/proton/latest/userguide/proton-user-guide.pdf
+AWS RTB Fabric,1,User Guide,https://docs.aws.amazon.com/pdfs/rtb-fabric/latest/userguide/user-guide.pdf
+AWS Regions and Availability Zones,1,User Guide,https://docs.aws.amazon.com/pdfs/global-infrastructure/latest/regions/regions-zones.pdf
+AWS Resilience Hub,1,User Guide,https://docs.aws.amazon.com/pdfs/resilience-hub/latest/userguide/resilience-hub-guide.pdf
+AWS Resource Access Manager,1,User Guide,https://docs.aws.amazon.com/pdfs/ram/latest/userguide/ram-ug.pdf
+AWS Resource Explorer,1,User Guide,https://docs.aws.amazon.com/pdfs/resource-explorer/latest/userguide/resource_explorer_ug.pdf
+AWS Resource Groups,1,User Guide,https://docs.aws.amazon.com/pdfs/ARG/latest/userguide/resgrps-ug.pdf
+AWS SDK for .NET (V3),1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-net/v3/developer-guide/aws-sdk-net-v3-dg.pdf
+AWS SDK for .NET (V4),1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-net/v4/developer-guide/aws-sdk-net-v4-dg.pdf
+AWS SDK for C++,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-cpp/v1/developer-guide/aws-sdk-cpp-dg.pdf
+AWS SDK for Go (version 1),1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-go/v1/developer-guide/aws-sdk-go-dg.pdf
+AWS SDK for Go v2,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-go/v2/developer-guide/aws-sdk-go-v2-dg.pdf
+AWS SDK for Java 1.x,1,Developer Guide for version 1.x,https://docs.aws.amazon.com/pdfs/sdk-for-java/v1/developer-guide/aws-sdk-java-dg-v1.pdf
+AWS SDK for Java 2.x,1,Developer Guide for version 2.x,https://docs.aws.amazon.com/pdfs/sdk-for-java/latest/developer-guide/aws-sdk-java-dg-v2.pdf
+AWS SDK for JavaScript,2,Developer Guide for SDK v2 | Developer Guide for SDK Version 3,https://docs.aws.amazon.com/pdfs/sdk-for-javascript/v2/developer-guide/js-sdk-dv-v2.pdf | https://docs.aws.amazon.com/pdfs/sdk-for-javascript/v3/developer-guide/js-sdk-dg.pdf
+AWS SDK for Kotlin,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-kotlin/latest/developer-guide/aws-sdk-kotlin-dg-preview.pdf
+AWS SDK for PHP,1,Developer Guide for version 3,https://docs.aws.amazon.com/pdfs/sdk-for-php/v3/developer-guide/aws-sdk-php-dg.pdf
+AWS SDK for Python,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-python/v1/guide/aws-sdk-guide-python.pdf
+AWS SDK for Ruby,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-ruby/v3/developer-guide/aws-sdk-ruby-dg.pdf
+AWS SDK for Rust,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-rust/latest/dg/aws-sdk-rust-developer-guide.pdf
+AWS SDK for SAP ABAP,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-sapabap/latest/developer-guide/AWS SDK for SAP ABAP.pdf
+AWS SDK for Swift,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sdk-for-swift/latest/developer-guide/aws-sdk-swift-dg-v1.pdf
+AWS Schema Conversion Tool,1,User Guide,https://docs.aws.amazon.com/pdfs/SchemaConversionTool/latest/userguide/Schema-Conversion-Tool.pdf
+AWS Secrets Manager,1,User Guide,https://docs.aws.amazon.com/pdfs/secretsmanager/latest/userguide/secretsmanager-userguide.pdf
+AWS Security Agent (now part of AWS Continuum),1,User Guide,https://docs.aws.amazon.com/pdfs/securityagent/latest/userguide/securityagent.pdf
+AWS Serverless Application Model,1,Developer Guide,https://docs.aws.amazon.com/pdfs/serverless-application-model/latest/developerguide/serverless-application-model.pdf
+AWS Serverless Application Repository,1,Developer Guide,https://docs.aws.amazon.com/pdfs/serverlessrepo/latest/devguide/serverlessrepo-dg.pdf
+AWS Service Catalog,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/servicecatalog/latest/adminguide/service-catalog-ag.pdf | https://docs.aws.amazon.com/pdfs/servicecatalog/latest/userguide/service-catalog-ug.pdf
+AWS Service Catalog AppRegistry,1,Administrator Guide,https://docs.aws.amazon.com/pdfs/servicecatalog/latest/arguide/service-catalog-ar.pdf
+AWS Service Management Connector,2,Administrator Guide | Administrator Guide,https://docs.aws.amazon.com/pdfs/smc/latest/ag/Service Management Connector.pdf | https://docs.aws.amazon.com/pdfs/servicecatalog/latest/smcguide/service-catalog-smc.pdf
+AWS Sign-In,1,User Guide,https://docs.aws.amazon.com/pdfs/signin/latest/userguide/signin-ug.pdf
+AWS Signer,1,Developer Guide,https://docs.aws.amazon.com/pdfs/signer/latest/developerguide/signer-dg.pdf
+AWS Site-to-Site VPN,1,User Guide,https://docs.aws.amazon.com/pdfs/vpn/latest/s2svpn/s2s-vpn-user-guide.pdf
+AWS Startup Advisor,1,User Guide,https://docs.aws.amazon.com/pdfs/startupadvisor/latest/userguide/startupadvisor-ug.pdf
+AWS Step Functions,1,Developer Guide,https://docs.aws.amazon.com/pdfs/step-functions/latest/dg/step-functions-dg.pdf
+AWS Storage Gateway,4,Amazon FSx File Gateway User Guide | Amazon S3 File Gateway User Guide | Tape Gateway User Guide | Volume Gateway User Guide,https://docs.aws.amazon.com/pdfs/filegateway/latest/filefsxw/storagegateway-fsxfile-ug.pdf | https://docs.aws.amazon.com/pdfs/filegateway/latest/files3/storagegateway-s3file-ug.pdf | https://docs.aws.amazon.com/pdfs/storagegateway/latest/tgw/storagegateway-tgw-ug.pdf | https://docs.aws.amazon.com/pdfs/storagegateway/latest/vgw/storagegateway-vgw-ug.pdf
+AWS Supply Chain,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/connect-decisions/legacy/adminguide/supplychain-ag.pdf | https://docs.aws.amazon.com/pdfs/connect-decisions/legacy/userguide/supplychain-ug.pdf
+AWS Support,1,User Guide,https://docs.aws.amazon.com/pdfs/awssupport/latest/user/support-ug.pdf
+AWS Sustainability,1,AWS Sustainability User Guide,https://docs.aws.amazon.com/pdfs/sustainability/latest/userguide/sustainability-ug.pdf
+AWS Systems Manager,1,User Guide,https://docs.aws.amazon.com/pdfs/systems-manager/latest/userguide/systems-manager-ug.pdf
+AWS Systems Manager Automation Runbook Reference,1,User Guide,https://docs.aws.amazon.com/pdfs/systems-manager-automation-runbooks/latest/userguide/systems-manager-automation-runbook-guide.pdf
+AWS Systems Manager for SAP,1,User Guide,https://docs.aws.amazon.com/pdfs/ssm-sap/latest/userguide/ssm-sap.pdf
+AWS Telco Network Builder,1,User Guide,https://docs.aws.amazon.com/pdfs/tnb/latest/ug/tnb-guide.pdf
+AWS Toolkit for .NET Refactoring,1,User Guide,https://docs.aws.amazon.com/pdfs/tk-dotnet-refactoring/latest/userguide/aws-tk-dotnet-refactoring-ug.pdf.pdf
+AWS Toolkit for JetBrains,1,User Guide,https://docs.aws.amazon.com/pdfs/toolkit-for-jetbrains/latest/userguide/aws-tkj-ug.pdf
+AWS Toolkit for Microsoft Azure DevOps,1,User Guide,https://docs.aws.amazon.com/pdfs/vsts/latest/userguide/vsts-ug.pdf
+AWS Toolkit for VS Code,1,User Guide,https://docs.aws.amazon.com/pdfs/toolkit-for-vscode/latest/userguide/aws-tookit-vscode-ug.pdf
+AWS Toolkit with Amazon Q,1,User Guide,https://docs.aws.amazon.com/pdfs/toolkit-for-visual-studio/latest/user-guide/aws-tkv-ug.pdf
+AWS Tools for PowerShell (version 4),1,User Guide,https://docs.aws.amazon.com/pdfs/powershell/v4/userguide/aws-pst-v4-ug.pdf
+AWS Tools for PowerShell (version 5),1,User Guide,https://docs.aws.amazon.com/pdfs/powershell/v5/userguide/aws-pst-v5-ug.pdf
+AWS Transfer Family,1,User Guide,https://docs.aws.amazon.com/pdfs/transfer/latest/userguide/transferfamily-ug.pdf
+AWS Transform,1,User Guide,https://docs.aws.amazon.com/pdfs/transform/latest/userguide/AWSTransformUserGuide.pdf
+AWS Transform MGN,1,User Guide,https://docs.aws.amazon.com/pdfs/mgn/latest/ug/user-guide.pdf
+AWS User Notifications,1,User Guide,https://docs.aws.amazon.com/pdfs/notifications/latest/userguide/notifications-guide.pdf.pdf
+AWS Verified Access,1,User Guide,https://docs.aws.amazon.com/pdfs/verified-access/latest/ug/verified-access-ug.pdf
+"AWS WAF, AWS Firewall Manager, AWS Shield Advanced, and AWS Shield network security director",1,Developer Guide,https://docs.aws.amazon.com/pdfs/waf/latest/developerguide/waf-dg.pdf
+AWS Wavelength,1,Developer Guide,https://docs.aws.amazon.com/pdfs/wavelength/latest/developerguide/aws-wavelength-developer-guide.pdf
+AWS Wickr,3,Administration Guide | Classic Administration Guide | User Guide,https://docs.aws.amazon.com/pdfs/wickr/latest/adminguide/wickr-ag.pdf | https://docs.aws.amazon.com/pdfs/wickr/latest/adminguide-classic/wickr-ag-classic.pdf | https://docs.aws.amazon.com/pdfs/wickr/latest/userguide/wickr-ug.pdf
+AWS X-Ray,1,Developer Guide,https://docs.aws.amazon.com/pdfs/xray/latest/devguide/xray-guide.pdf
+AWS for SAP MCP Server,1,User Guide,https://docs.aws.amazon.com/pdfs/mcp-sap/latest/awsforsapmcp/awsforsapmcp.pdf
+AWS re:Post Private,3,Console Administration Guide | re:Post Private Administration Guide | User Guide,https://docs.aws.amazon.com/pdfs/repostprivate/latest/caguide/space-cag.pdf | https://docs.aws.amazon.com/pdfs/repostprivate/latest/adminguide/space-ag.pdf | https://docs.aws.amazon.com/pdfs/repostprivate/latest/userguide/space-ug.pdf
+Agent Toolkit for AWS,1,User Guide,https://docs.aws.amazon.com/pdfs/agent-toolkit/latest/userguide/mcp-ug.pdf
+Agent Workspace,1,Developer Guide,https://docs.aws.amazon.com/pdfs/agentworkspace/latest/devguide/developer-guide.pdf
+Amazon API Gateway,1,Developer Guide,https://docs.aws.amazon.com/pdfs/apigateway/latest/developerguide/apigateway-dg.pdf
+Amazon AppFlow,1,User Guide,https://docs.aws.amazon.com/pdfs/appflow/latest/userguide/appflow.pdf
+Amazon Application Recovery Controller (ARC),1,Developer Guide,https://docs.aws.amazon.com/pdfs/r53recovery/latest/dg/r53-recovery-guide.pdf.pdf
+Amazon Athena,1,User Guide,https://docs.aws.amazon.com/pdfs/athena/latest/ug/athena-ug.pdf
+Amazon Aurora,1,User Guide for Aurora,https://docs.aws.amazon.com/pdfs/AmazonRDS/latest/AuroraUserGuide/aurora-ug.pdf
+Amazon Aurora DSQL,1,User Guide,https://docs.aws.amazon.com/pdfs/aurora-dsql/latest/userguide/aurora-dsql-ug.pdf
+Amazon Bedrock,1,User Guide,https://docs.aws.amazon.com/pdfs/bedrock/latest/userguide/bedrock-ug.pdf
+Amazon Bedrock AgentCore,1,Developer Guide,https://docs.aws.amazon.com/pdfs/bedrock-agentcore/latest/devguide/bedrock-agentcore-dg.pdf
+Amazon Braket,1,Developer Guide,https://docs.aws.amazon.com/pdfs/braket/latest/developerguide/braket-developer-guide.pdf
+Amazon Chime,2,Administration Guide | User Guide,https://docs.aws.amazon.com/pdfs/chime/latest/ag/chime-ag.pdf | https://docs.aws.amazon.com/pdfs/chime/latest/ug/chime-ug.pdf
+Amazon Chime SDK,2,Administration Guide | Developer Guide,https://docs.aws.amazon.com/pdfs/chime-sdk/latest/ag/chime-sdk-ag.pdf | https://docs.aws.amazon.com/pdfs/chime-sdk/latest/dg/chime-sdk-dg.pdf
+Amazon Cloud Directory,1,Developer Guide,https://docs.aws.amazon.com/pdfs/clouddirectory/latest/developerguide/clouddirectory-dev-guide.pdf
+Amazon CloudFront,1,Developer Guide,https://docs.aws.amazon.com/pdfs/AmazonCloudFront/latest/DeveloperGuide/AmazonCloudFront_DevGuide.pdf
+Amazon CloudSearch,1,Developer Guide,https://docs.aws.amazon.com/pdfs/cloudsearch/latest/developerguide/cloudsearch-dg.pdf
+Amazon CloudWatch,1,User Guide,https://docs.aws.amazon.com/pdfs/AmazonCloudWatch/latest/monitoring/acw-ug.pdf
+Amazon CloudWatch Logs,1,User Guide,https://docs.aws.amazon.com/pdfs/AmazonCloudWatch/latest/logs/cwl-ug.pdf
+Amazon CodeCatalyst,3,Administrator Guide | Developer Guide | User Guide,https://docs.aws.amazon.com/pdfs/codecatalyst/latest/adminguide/codecatalyst-ag.pdf | https://docs.aws.amazon.com/pdfs/codecatalyst/latest/adk/codecatalyst-action-dg.pdf | https://docs.aws.amazon.com/pdfs/codecatalyst/latest/userguide/codecatalyst-ug.pdf
+Amazon CodeGuru Profiler,1,User Guide,https://docs.aws.amazon.com/pdfs/codeguru/latest/profiler-ug/profiler-ug.pdf
+Amazon CodeGuru Reviewer,1,User Guide,https://docs.aws.amazon.com/pdfs/codeguru/latest/reviewer-ug/reviewer-ug.pdf
+Amazon Cognito,1,Developer Guide,https://docs.aws.amazon.com/pdfs/cognito/latest/developerguide/cognito-dg.pdf
+Amazon Comprehend,1,Developer Guide,https://docs.aws.amazon.com/pdfs/comprehend/latest/dg/comprehend-dg.pdf
+Amazon Comprehend Medical,1,Developer Guide,https://docs.aws.amazon.com/pdfs/comprehend-medical/latest/dev/compmed-dev.pdf
+Amazon Connect,1,Developer Guide,https://docs.aws.amazon.com/pdfs/connect/latest/devguide/connect-dg.pdf
+Amazon Connect Customer,1,Administrator Guide,https://docs.aws.amazon.com/pdfs/connect/latest/adminguide/connect-ag.pdf
+Amazon Connect Decisions,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/connect-decisions/latest/adminguide/connect-decisions-ag.pdf | https://docs.aws.amazon.com/pdfs/connect-decisions/latest/userguide/connect-decisions-ug.pdf
+Amazon Connect Health,1,User Guide,https://docs.aws.amazon.com/pdfs/connecthealth/latest/userguide/connecthealth-ug.pdf
+Amazon Connect Talent,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/talent/latest/adminguide/Talent-ag.pdf | https://docs.aws.amazon.com/pdfs/talent/latest/userguide/Talent-ug.pdf
+Amazon Corretto 11,1,Corretto 11 User Guide,https://docs.aws.amazon.com/pdfs/corretto/latest/corretto-11-ug/Corretto-11.pdf
+Amazon Corretto 17,1,Corretto 17 User Guide,https://docs.aws.amazon.com/pdfs/corretto/latest/corretto-17-ug/Corretto-17.pdf
+Amazon Corretto 21,1,Corretto 21 User Guide,https://docs.aws.amazon.com/pdfs/corretto/latest/corretto-21-ug/Corretto-21.pdf
+Amazon Corretto 25,1,Corretto 25 User Guide,https://docs.aws.amazon.com/pdfs/corretto/latest/corretto-25-ug/Corretto-25.pdf
+Amazon Corretto 26,1,Corretto 26 User Guide,https://docs.aws.amazon.com/pdfs/corretto/latest/corretto-26-ug/Corretto-26.pdf
+Amazon Corretto 27,1,Corretto 27 User Guide,https://docs.aws.amazon.com/pdfs/corretto/latest/corretto-27-ug/Corretto-27.pdf
+Amazon Corretto 8,1,Corretto 8 User Guide,https://docs.aws.amazon.com/pdfs/corretto/latest/corretto-8-ug/Corretto-8.pdf
+Amazon DCV,4,Administrator Guide | Extension SDK Developer Guide | User Guide | Web Client SDK Developer Guide,https://docs.aws.amazon.com/pdfs/dcv/latest/adminguide/dcv-ag.pdf | https://docs.aws.amazon.com/pdfs/dcv/latest/extsdkguide/extsdkguide.pdf | https://docs.aws.amazon.com/pdfs/dcv/latest/userguide/dcv-ug.pdf | https://docs.aws.amazon.com/pdfs/dcv/latest/websdkguide/websdkguide.pdf
+Amazon DCV Connection Gateway,1,Administrator Guide,https://docs.aws.amazon.com/pdfs/dcv/latest/gw-admin/gw-admin.pdf
+Amazon DCV Session Manager,2,Administrator Guide | Developer Guide,https://docs.aws.amazon.com/pdfs/dcv/latest/sm-admin/sm-admin.pdf | https://docs.aws.amazon.com/pdfs/dcv/latest/sm-dev/sm-dev.pdf
+Amazon Data Firehose,1,Developer Guide,https://docs.aws.amazon.com/pdfs/firehose/latest/dev/firehose-dg.pdf
+Amazon DataZone,1,User Guide,https://docs.aws.amazon.com/pdfs/datazone/latest/userguide/datazone-ug.pdf
+Amazon Detective,1,User Guide,https://docs.aws.amazon.com/pdfs/detective/latest/userguide/detective-ug.pdf
+Amazon DevOps Guru,1,User Guide,https://docs.aws.amazon.com/pdfs/devops-guru/latest/userguide/userguide.pdf
+Amazon DocumentDB,1,Developer Guide,https://docs.aws.amazon.com/pdfs/documentdb/latest/devguide/devguide.pdf
+Amazon DynamoDB,1,Developer Guide,https://docs.aws.amazon.com/pdfs/amazondynamodb/latest/developerguide/dynamodb-dg.pdf
+Amazon EBS,1,User Guide,https://docs.aws.amazon.com/pdfs/ebs/latest/userguide/ebs-ug.pdf
+Amazon EC2 Auto Scaling,1,User Guide,https://docs.aws.amazon.com/pdfs/autoscaling/ec2/userguide/as-dg.pdf
+Amazon ECR,1,User Guide,https://docs.aws.amazon.com/pdfs/AmazonECR/latest/userguide/ecr-ug.pdf
+Amazon ECR Public,1,User Guide,https://docs.aws.amazon.com/pdfs/AmazonECR/latest/public/ecr-public-ug.pdf
+Amazon EKS,1,User Guide,https://docs.aws.amazon.com/pdfs/eks/latest/userguide/eks-ug.pdf
+Amazon EMR,1,Amazon EMR Serverless User Guide,https://docs.aws.amazon.com/pdfs/emr/latest/EMR-Serverless-UserGuide/emr-serverless-user-guide.pdf
+Amazon ElastiCache,1,User Guide,https://docs.aws.amazon.com/pdfs/AmazonElastiCache/latest/dg/redis-ug.pdf
+Amazon Elastic Compute Cloud,2,Developer Guide | User Guide,https://docs.aws.amazon.com/pdfs/ec2/latest/devguide/ec2-dg.pdf | https://docs.aws.amazon.com/pdfs/AWSEC2/latest/UserGuide/ec2-ug.pdf
+Amazon Elastic Container Service,1,Developer Guide,https://docs.aws.amazon.com/pdfs/AmazonECS/latest/developerguide/ecs-dg.pdf
+Amazon Elastic File System,1,User Guide,https://docs.aws.amazon.com/pdfs/efs/latest/ug/efs-ug.pdf
+Amazon Elastic VMware Service,1,User Guide,https://docs.aws.amazon.com/pdfs/evs/latest/userguide/evs-ug.pdf
+Amazon EventBridge,1,User Guide,https://docs.aws.amazon.com/pdfs/eventbridge/latest/userguide/user-guide.pdf
+Amazon FSx for Windows File Server,1,Windows User Guide,https://docs.aws.amazon.com/pdfs/fsx/latest/WindowsGuide/WindowsGuide.pdf
+Amazon File Cache,1,File Cache User Guide,https://docs.aws.amazon.com/pdfs/fsx/latest/FileCacheGuide/FileCacheGuide.pdf
+Amazon FinSpace,1,User Guide,https://docs.aws.amazon.com/pdfs/finspace/latest/userguide/finspace-ug.pdf
+Amazon Forecast,1,Developer Guide,https://docs.aws.amazon.com/pdfs/forecast/latest/dg/forecast.dg.pdf
+Amazon Fraud Detector,1,User Guide,https://docs.aws.amazon.com/pdfs/frauddetector/latest/ug/frauddetector.pdf
+Amazon GameLift Servers,3,FleetIQ Developer Guide | FlexMatch Developer Guide | Realtime Servers Developer Guide,https://docs.aws.amazon.com/pdfs/gameliftservers/latest/fleetiqguide/gameliftservers-fleetiq.pdf | https://docs.aws.amazon.com/pdfs/gameliftservers/latest/flexmatchguide/gameliftservers-flexmatch.pdf | https://docs.aws.amazon.com/pdfs/gameliftservers/latest/realtimeguide/gameliftservers-realtime.pdf
+Amazon GameLift Streams,1,Developer Guide,https://docs.aws.amazon.com/pdfs/gameliftstreams/latest/developerguide/AmazonGameLiftStreams_DeveloperGuide.pdf
+Amazon Glacier,1,Developer Guide,https://docs.aws.amazon.com/pdfs/amazonglacier/latest/dev/glacier-dg.pdf
+Amazon GuardDuty,1,Amazon GuardDuty User Guide,https://docs.aws.amazon.com/pdfs/guardduty/latest/ug/guardduty-ug.pdf
+Amazon IVS,3,Chat User Guide | Low-Latency Streaming User Guide | Real-Time Streaming User Guide,https://docs.aws.amazon.com/pdfs/ivs/latest/ChatUserGuide/ivs-chat-ug.pdf | https://docs.aws.amazon.com/pdfs/ivs/latest/LowLatencyUserGuide/ivs-low-latency-ug.pdf | https://docs.aws.amazon.com/pdfs/ivs/latest/RealTimeUserGuide/ivs-real-time-ug.pdf
+Amazon Inspector,1,User Guide,https://docs.aws.amazon.com/pdfs/inspector/latest/user/inspector-guide.pdf
+Amazon Kendra,1,Developer Guide,https://docs.aws.amazon.com/pdfs/kendra/latest/dg/kendra-dg.pdf
+Amazon Keyspaces (for Apache Cassandra),1,Developer Guide,https://docs.aws.amazon.com/pdfs/keyspaces/latest/devguide/AmazonKeyspaces.pdf
+Amazon Kinesis Agent for Microsoft Windows,1,User Guide,https://docs.aws.amazon.com/pdfs/kinesis-agent-windows/latest/userguide/kaw-user-guide.pdf.pdf
+Amazon Kinesis Data Analytics for SQL Applications Developer Guide,1,SQL Developer Guide,https://docs.aws.amazon.com/pdfs/kinesisanalytics/latest/dev/analytics-api.pdf
+Amazon Kinesis Data Streams,1,Developer Guide,https://docs.aws.amazon.com/pdfs/streams/latest/dev/kinesis-dg.pdf
+Amazon Kinesis Video Streams,1,Developer Guide,https://docs.aws.amazon.com/pdfs/kinesisvideostreams/latest/dg/kinesisvideo-dg.pdf
+Amazon Lex,1,V2 Developer Guide,https://docs.aws.amazon.com/pdfs/lexv2/latest/dg/lex2.0.pdf
+Amazon Lightsail,1,User Guide,https://docs.aws.amazon.com/pdfs/lightsail/latest/userguide/lightsail-ug.pdf
+Amazon Lightsail for Research,1,User Guide,https://docs.aws.amazon.com/pdfs/lightsail-for-research/latest/ug/lightsail-for-research.pdf
+Amazon Linux 1,1,User Guide,https://docs.aws.amazon.com/pdfs/linux/al1/ug/al1-ug.pdf
+Amazon Linux 2,1,User Guide,https://docs.aws.amazon.com/pdfs/linux/al2/ug/al2-ug.pdf
+Amazon Linux 2023,1,User Guide,https://docs.aws.amazon.com/pdfs/linux/al2023/ug/al2023-ug.pdf
+Amazon Linux 2027,1,User Guide,https://docs.aws.amazon.com/pdfs/linux/al2027/ug/al2027-ug.pdf
+Amazon Location Service,2,Developer Guide | Developer Guide,https://docs.aws.amazon.com/pdfs/location/previous/developerguide/amazon-location-developer-guide.pdf | https://docs.aws.amazon.com/pdfs/location/latest/developerguide/amazon-location-developer-guide.pdf
+Amazon Lookout for Equipment,2,User Guide | User Guide,https://docs.aws.amazon.com/pdfs/lookout-for-equipment/latest/userguide/amazon-lookout-for-equipment-userguide.pdf | https://docs.aws.amazon.com/pdfs/lookout-for-equipment/latest/ug/amazon-lookout-for-equipment-ug.pdf
+Amazon MQ,2,Amazon MQ Migration Guide | Developer Guide,https://docs.aws.amazon.com/pdfs/amazon-mq/latest/migration-guide/amazon-mq-mg.pdf | https://docs.aws.amazon.com/pdfs/amazon-mq/latest/developer-guide/amazon-mq-dg.pdf
+Amazon Machine Learning,1,Developer Guide,https://docs.aws.amazon.com/pdfs/machine-learning/latest/dg/machinelearning-dg.pdf
+Amazon Macie,1,User Guide,https://docs.aws.amazon.com/pdfs/macie/latest/user/macie-user-guide.pdf
+Amazon Managed Blockchain (AMB),2,Ethereum Developer Guide | Hyperledger Fabric Developer Guide,https://docs.aws.amazon.com/pdfs/managed-blockchain/latest/ethereum-dev/amazon-managed-blockchain-ethereum-dev.pdf | https://docs.aws.amazon.com/pdfs/managed-blockchain/latest/hyperledger-fabric-dev/amazon-managed-blockchain-hyperledger-fabric-dev.pdf
+Amazon Managed Blockchain Query,1,Developer Guide,https://docs.aws.amazon.com/pdfs/managed-blockchain/latest/ambq-dg/ambq-dg.pdf
+Amazon Managed Grafana,1,User Guide,https://docs.aws.amazon.com/pdfs/grafana/latest/userguide/service-guide.pdf.pdf
+Amazon Managed Service for Prometheus,1,User Guide,https://docs.aws.amazon.com/pdfs/prometheus/latest/userguide/amazon-managed-prometheus-user-guide.pdf
+Amazon Managed Streaming for Apache Kafka,1,Developer Guide,https://docs.aws.amazon.com/pdfs/msk/latest/developerguide/MSKDevGuide.pdf
+Amazon Managed Workflows for Apache Airflow,2,Migration Guide | User Guide,https://docs.aws.amazon.com/pdfs/mwaa/latest/migrationguide/amazon-mwaa-mg.pdf | https://docs.aws.amazon.com/pdfs/mwaa/latest/userguide/amazon-mwaa-user-guide.pdf
+Amazon Managed Workflows for Apache Airflow Serverless,1,Amazon MWAA Serverless User Guide,https://docs.aws.amazon.com/pdfs/mwaa/latest/mwaa-serverless-userguide/mwaa-serverless-userguide.pdf
+Amazon MemoryDB,1,Developer Guide,https://docs.aws.amazon.com/pdfs/memorydb/latest/devguide/memorydb-guide.pdf.pdf
+Amazon Mobile Analytics,1,User Guide,https://docs.aws.amazon.com/pdfs/mobileanalytics/latest/ug/mobile-analytics-ug.pdf
+Amazon Monitron,2,Getting Started Guide | User Guide,https://docs.aws.amazon.com/pdfs/Monitron/latest/getting-started-guide/amazon-monitron-gsg.pdf | https://docs.aws.amazon.com/pdfs/Monitron/latest/user-guide/AmazonMonitronUG.pdf
+Amazon Neptune,1,User Guide,https://docs.aws.amazon.com/pdfs/neptune/latest/userguide/neptune-ug.pdf
+Amazon Nova,2,Developer Guide for Amazon Nova 2 | User Guide for Amazon Nova,https://docs.aws.amazon.com/pdfs/nova/latest/nova2-userguide/nova2-ug.pdf | https://docs.aws.amazon.com/pdfs/nova/latest/userguide/nova-ug.pdf
+Amazon Nova Act,1,User Guide,https://docs.aws.amazon.com/pdfs/nova-act/latest/userguide/nova-act-ug.pdf
+Amazon OpenSearch Service,1,Developer Guide,https://docs.aws.amazon.com/pdfs/opensearch-service/latest/developerguide/opensearch-service-dg.pdf
+Amazon Personalize,1,Developer Guide,https://docs.aws.amazon.com/pdfs/personalize/latest/dg/personalize-dg.pdf
+Amazon Pinpoint,2,Developer Guide | User Guide,https://docs.aws.amazon.com/pdfs/pinpoint/latest/developerguide/pinpoint-dg.pdf | https://docs.aws.amazon.com/pdfs/pinpoint/latest/userguide/pinpoint-ug.pdf
+Amazon Polly,1,Developer Guide,https://docs.aws.amazon.com/pdfs/polly/latest/dg/polly-dg.pdf
+Amazon Q Business,1,User Guide,https://docs.aws.amazon.com/pdfs/amazonq/latest/qbusiness-ug/qbusiness-ug.pdf
+Amazon Q Developer,1,User Guide,https://docs.aws.amazon.com/pdfs/amazonq/latest/qdeveloper-ug/amazonq-developer-ug.pdf
+Amazon Q Developer in chat applications,1,Administrator Guide,https://docs.aws.amazon.com/pdfs/chatbot/latest/adminguide/qdev-in-chat-applications-ag.pdf
+Amazon Quick,1,User Guide,https://docs.aws.amazon.com/pdfs/quick/latest/userguide/amazon-quicksuite-user.pdf
+Amazon Quick Sight,1,Developer Guide,https://docs.aws.amazon.com/pdfs/quicksight/latest/developerguide/amazon-quicksight-dg.pdf
+Amazon Redshift,2,Database Developer Guide | Getting Started Guide,https://docs.aws.amazon.com/pdfs/redshift/latest/dg/redshift-dg.pdf | https://docs.aws.amazon.com/pdfs/redshift/latest/gsg/redshift-gsg.pdf
+Amazon Rekognition,1,Developer Guide,https://docs.aws.amazon.com/pdfs/rekognition/latest/dg/rekognition-dg.pdf
+Amazon Relational Database Service,2,Getting Started Guide | User Guide,https://docs.aws.amazon.com/pdfs/AmazonRDS/latest/gettingstartedguide/rds-gsg.pdf | https://docs.aws.amazon.com/pdfs/AmazonRDS/latest/UserGuide/rds-ug.pdf
+Amazon Route 53,1,Developer Guide,https://docs.aws.amazon.com/pdfs/Route53/latest/DeveloperGuide/route53-dg.pdf
+Amazon S3 Encryption Client,1,Developer Guide,https://docs.aws.amazon.com/pdfs/amazon-s3-encryption-client/latest/developerguide/amazon-s3-encryption-client.pdf
+Amazon S3 on Outposts,1,User Guide,https://docs.aws.amazon.com/pdfs/AmazonS3/latest/s3-outposts/s3-outposts.pdf
+Amazon SageMaker,1,User Guide,https://docs.aws.amazon.com/pdfs/next-generation-sagemaker/latest/userguide/next-generation-sagemaker-ug.pdf
+Amazon SageMaker AI,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sagemaker/latest/dg/sagemaker-dg.pdf
+Amazon SageMaker Unified Studio,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/sagemaker-unified-studio/latest/adminguide/sagemaker-unified-studio-admin.pdf | https://docs.aws.amazon.com/pdfs/sagemaker-unified-studio/latest/userguide/sagemaker-unified-studio-user-guide.pdf
+Amazon Security Lake,1,User Guide,https://docs.aws.amazon.com/pdfs/security-lake/latest/userguide/security-lake-userguide.pdf
+Amazon Silk,1,User Guide,https://docs.aws.amazon.com/pdfs/silk/latest/developerguide/silk-dg.pdf
+Amazon Simple Email Service,1,Developer Guide,https://docs.aws.amazon.com/pdfs/ses/latest/dg/ses-dg.pdf
+Amazon Simple Notification Service,1,Developer Guide,https://docs.aws.amazon.com/pdfs/sns/latest/dg/sns-dg.pdf
+Amazon Simple Queue Service,1,Developer Guide,https://docs.aws.amazon.com/pdfs/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-dg.pdf
+Amazon Simple Storage Service,2,Developer Guide | User Guide,https://docs.aws.amazon.com/pdfs/AmazonS3/latest/developerguide/s3-devguide.pdf | https://docs.aws.amazon.com/pdfs/AmazonS3/latest/userguide/s3-userguide.pdf
+Amazon Simple Workflow Service,1,Developer Guide,https://docs.aws.amazon.com/pdfs/amazonswf/latest/developerguide/swf-dg.pdf
+Amazon SimpleDB,1,Developer Guide,https://docs.aws.amazon.com/pdfs/AmazonSimpleDB/latest/DeveloperGuide/sdb-dg.pdf
+Amazon Textract,1,Developer Guide,https://docs.aws.amazon.com/pdfs/textract/latest/dg/textract-dg.pdf
+Amazon Timestream,1,Developer Guide,https://docs.aws.amazon.com/pdfs/timestream/latest/developerguide/timestream.pdf
+Amazon Transcribe,1,Developer Guide,https://docs.aws.amazon.com/pdfs/transcribe/latest/dg/transcribe-dg.pdf
+Amazon Translate,1,Developer Guide,https://docs.aws.amazon.com/pdfs/translate/latest/dg/translate-dg.pdf
+Amazon VPC Lattice,1,User Guide,https://docs.aws.amazon.com/pdfs/vpc-lattice/latest/ug/vpc-lattice.pdf
+Amazon Verified Permissions,1,User Guide,https://docs.aws.amazon.com/pdfs/verifiedpermissions/latest/userguide/amazon-verified-permissions-user-guide.pdf
+Amazon Virtual Private Cloud,1,User Guide,https://docs.aws.amazon.com/pdfs/vpc/latest/userguide/vpc-ug.pdf
+Amazon WorkMail,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/workmail/latest/adminguide/workmail-ag.pdf | https://docs.aws.amazon.com/pdfs/workmail/latest/userguide/workmail-ug.pdf
+Amazon WorkSpaces,2,Administration Guide | User Guide,https://docs.aws.amazon.com/pdfs/workspaces/latest/adminguide/workspaces-ag.pdf | https://docs.aws.amazon.com/pdfs/workspaces/latest/userguide/workspaces-ug.pdf
+Amazon WorkSpaces Applications,1,Administration Guide,https://docs.aws.amazon.com/pdfs/appstream2/latest/developerguide/appstream2-dg.pdf
+Amazon WorkSpaces Core,1,Administration Guide,https://docs.aws.amazon.com/pdfs/workspaces-core/latest/ag/workspacescore-ag.pdf
+Amazon WorkSpaces Secure Browser,1,Administration Guide,https://docs.aws.amazon.com/pdfs/workspaces-web/latest/adminguide/administration-guide.pdf
+Amazon WorkSpaces Thin Client,2,Administrator Guide | User Guide,https://docs.aws.amazon.com/pdfs/workspaces-thin-client/latest/ag/workspaces-thin-client-admin-guide.pdf | https://docs.aws.amazon.com/pdfs/workspaces-thin-client/latest/ug/workspaces-thin-client-user-guide.pdf
+Apache MXNet on AWS,1,Developer Guide,https://docs.aws.amazon.com/pdfs/mxnet/latest/dg/mxnet-dg.pdf
+Application Auto Scaling,1,User Guide,https://docs.aws.amazon.com/pdfs/autoscaling/application/userguide/app-as-ug.pdf
+Claude Platform on AWS,1,User Guide,https://docs.aws.amazon.com/pdfs/claude-platform/latest/userguide/cpa-ug.pdf
+Cloud Control API,1,User Guide,https://docs.aws.amazon.com/pdfs/cloudcontrolapi/latest/userguide/cloudapi-service.pdf
+CloudFormation,1,Hooks User Guide,https://docs.aws.amazon.com/pdfs/cloudformation-cli/latest/hooks-userguide/cloudformation-hooks.pdf
+CodeArtifact,1,CodeArtifact User Guide,https://docs.aws.amazon.com/pdfs/codeartifact/latest/ug/codeartifact-user.pdf
+CodeWhisperer,1,User Guide,https://docs.aws.amazon.com/pdfs/codewhisperer/latest/userguide/user-guide.pdf
+Conductor Live and Elemental Statmux,1,User Guide,https://docs.aws.amazon.com/pdfs/elemental-cl3/latest/ug/elemental-cl3-ug.pdf
+Deadline Cloud,1,Developer Guide,https://docs.aws.amazon.com/pdfs/deadline-cloud/latest/developerguide/developer-guide.pdf.pdf
+Developer Tools console,1,User Guide,https://docs.aws.amazon.com/pdfs/dtconsole/latest/userguide/dtconsole-user.pdf
+EC2 Image Builder,1,User Guide,https://docs.aws.amazon.com/pdfs/imagebuilder/latest/userguide/imagebuilder-ug.pdf
+Elastic Load Balancing,1,User Guide,https://docs.aws.amazon.com/pdfs/elasticloadbalancing/latest/userguide/elb-ug.pdf
+Elemental Inference,1,User Guide,https://docs.aws.amazon.com/pdfs/elemental-inference/latest/userguide/elemental-inference-ug.pdf
+Elemental On-Premises,1,User Guide,https://docs.aws.amazon.com/pdfs/elemental-onprem/latest/ug/elemental-onprem.pdf
+EventBridge Scheduler,1,User Guide,https://docs.aws.amazon.com/pdfs/scheduler/latest/UserGuide/scheduler-user-guide.pdf.pdf
+ExpressLink,3,Getting Started Guide | Programmer's Guide | Programmer's Guide,https://docs.aws.amazon.com/pdfs/iot-expresslink/latest/gettingstartedguide/expresslink-gsg.pdf | https://docs.aws.amazon.com/pdfs/iot-expresslink/archive/v0.5/programmersguide/expresslink-pg.pdf | https://docs.aws.amazon.com/pdfs/iot-expresslink/archive/v1.0/programmersguide/expresslink-pg.pdf
+Extension development for CloudFormation,1,CloudFormation Command Line Interface (CLI) User Guide,https://docs.aws.amazon.com/pdfs/cloudformation-cli/latest/userguide/cloudformation-cli.pdf
+FSx for Lustre,1,Lustre User Guide,https://docs.aws.amazon.com/pdfs/fsx/latest/LustreGuide/LustreGuide.pdf
+FSx for ONTAP,1,ONTAP User Guide,https://docs.aws.amazon.com/pdfs/fsx/latest/ONTAPGuide/ONTAPGuide.pdf
+FSx for OpenZFS,1,OpenZFS User Guide,https://docs.aws.amazon.com/pdfs/fsx/latest/OpenZFSGuide/OpenZFSGuide.pdf
+FreeRTOS,1,User Guide,https://docs.aws.amazon.com/pdfs/freertos/latest/userguide/freertos-ug.pdf
+IAM Identity Center SCIM Implementation,1,Developer Guide,https://docs.aws.amazon.com/pdfs/singlesignon/latest/developerguide/sso-scim.pdf
+IAM Roles Anywhere,1,User Guide,https://docs.aws.amazon.com/pdfs/rolesanywhere/latest/userguide/rolesanywhere-guide.pdf
+Incident Manager,1,User Guide,https://docs.aws.amazon.com/pdfs/incident-manager/latest/userguide/incident-manager-ug.pdf
+Kinesis Video Streams,1,Amazon Kinesis Video Streams WebRTC Developer Guide,https://docs.aws.amazon.com/pdfs/kinesisvideostreams-webrtc-dg/latest/devguide/kinesisvideo-dg.pdf
+Managed Integrations for AWS IoT Device Management,1,Developer Guide,https://docs.aws.amazon.com/pdfs/iot-mi/latest/devguide/iot-mi-dg.pdf
+Managed Service for Apache Flink,1,Managed Service for Apache Flink Developer Guide,https://docs.aws.amazon.com/pdfs/managed-flink/latest/java/analytics-java-api.pdf
+MediaConvert,1,User Guide,https://docs.aws.amazon.com/pdfs/mediaconvert/latest/ug/mediaconvert-guide.pdf
+MediaLive,1,User Guide,https://docs.aws.amazon.com/pdfs/medialive/latest/ug/medialive-ug.pdf
+Microsoft SQL Server on Amazon EC2,1,User Guide,https://docs.aws.amazon.com/pdfs/sql-server-ec2/latest/userguide/sql-server-ec2.pdf
+Migration Hub Strategy Recommendations,1,User Guide,https://docs.aws.amazon.com/pdfs/migrationhub-strategy/latest/userguide/mhub-strategy-ug.pdf
+Multi-party approval,1,User Guide,https://docs.aws.amazon.com/pdfs/mpa/latest/userguide/mpa-ug.pdf
+Neptune Analytics,1,Neptune Analytics User Guide,https://docs.aws.amazon.com/pdfs/neptune-analytics/latest/userguide/graph-guide.pdf
+Oracle Database@AWS,1,Oracle Database@AWS User Guide,https://docs.aws.amazon.com/pdfs/odb/latest/UserGuide/odb-ug.pdf
+Porting Assistant for .NET,1,User Guide,https://docs.aws.amazon.com/pdfs/portingassistant/latest/userguide/portingassistant-ug.pdf
+Red Hat OpenShift Service on AWS,1,User Guide,https://docs.aws.amazon.com/pdfs/rosa/latest/userguide/ROSA-guide.pdf
+Render Farm Deployment Kit on AWS,1,Developer Guide,https://docs.aws.amazon.com/pdfs/rfdk/latest/guide/rfdk-guide.pdf
+Research and Engineering Studio,5,User Guide | User Guide | User Guide | User Guide | User Guide,https://docs.aws.amazon.com/pdfs/res/archive/release-minus-1/ug/res-ug-minus-1.pdf | https://docs.aws.amazon.com/pdfs/res/archive/release-minus-3/ug/res-ug-minus-3.pdf | https://docs.aws.amazon.com/pdfs/res/archive/release-minus-2/ug/res-ug-minus-2.pdf | https://docs.aws.amazon.com/pdfs/res/archive/release-minus-4/ug/res-ug-minus-4.pdf | https://docs.aws.amazon.com/pdfs/res/latest/ug/res-ug.pdf
+Savings Plans,1,User Guide,https://docs.aws.amazon.com/pdfs/savingsplans/latest/userguide/savingsplans.pdf
+Service Quotas,1,User Guide,https://docs.aws.amazon.com/pdfs/servicequotas/latest/userguide/ServiceQuotasUserGuide.pdf
+Tagging AWS Resources and Tag Editor,1,User Guide,https://docs.aws.amazon.com/pdfs/tag-editor/latest/userguide/tag-editor-userguide.pdf
+The lakehouse architecture of Amazon SageMaker,1,User Guide,https://docs.aws.amazon.com/pdfs/sagemaker-lakehouse-architecture/latest/userguide/sagemaker-lakehouse-architecture.pdf
+VM Import/Export,1,User Guide,https://docs.aws.amazon.com/pdfs/vm-import/latest/userguide/vm-import-ug.pdf
+Wickr Enterprise,1,Administration Guide,https://docs.aws.amazon.com/pdfs/wickr/latest/enterpriseadminguide/enterprise-ag.pdf

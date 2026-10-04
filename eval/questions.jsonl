@@ -1,0 +1,2 @@
+{"question": "Replace with a real question about your data", "expected_files": ["example.pdf"]}
+{"question": "Another question whose answer is in a known file", "expected_files": ["notes.txt"]}

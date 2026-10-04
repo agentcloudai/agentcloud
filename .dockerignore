@@ -1,0 +1,16 @@
+# Keep the build context small and fast.
+.venv/
+**/__pycache__/
+*.pyc
+.git/
+.gitignore
+
+# Downloaded data and run artifacts should never go into the image.
+data/raw/*
+!data/raw/.gitkeep
+eval/results/
+crawl_debug.png
+*.pdf
+
+# Local config / secrets
+.env

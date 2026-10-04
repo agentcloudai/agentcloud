@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AgentCloud AI — your private cloud solutions agent</title>
+<meta name="description" content="AgentCloud AI: ask how-tos with cited steps and design cloud architectures in live 3D, grounded in official docs. AWS available now; Azure & GCP coming soon." />
+<style>
+  :root{--bg:#0e1117;--panel:#171b22;--panel2:#1f242d;--border:#2b313b;--text:#e6edf3;--muted:#9aa4b2;--accent:#ff9900;--accent2:#4a9eff}
+  *{box-sizing:border-box} html{scroll-behavior:smooth}
+  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       background:radial-gradient(1200px 700px at 70% -10%,#1b2230,transparent),var(--bg);color:var(--text);overflow-x:hidden}
+  #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+  nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);background:#0e1117c0;border-bottom:1px solid var(--border)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+  .brand img{height:30px;filter:drop-shadow(0 0 8px rgba(74,158,255,.5))} .brand .a{color:var(--accent)}
+  nav a.ghb{color:var(--text);text-decoration:none;border:1px solid var(--border);padding:8px 14px;border-radius:10px;font-size:14px}
+  nav a.ghb:hover{border-color:var(--accent2)}
+  /* hero */
+  .hero{text-align:center;padding:54px 0 10px}
+  .hero img.logo{width:min(300px,74vw);filter:drop-shadow(0 0 30px rgba(74,158,255,.35));animation:floaty 5s ease-in-out infinite}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .hero h1{font-size:clamp(30px,5vw,52px);margin:14px 0 6px;letter-spacing:.5px;text-shadow:0 0 34px rgba(255,153,0,.3)}
+  .hero h1 .a{color:var(--accent)}
+  .hero p.sub{color:var(--muted);font-size:clamp(15px,2.2vw,19px);max-width:720px;margin:0 auto 22px;line-height:1.5}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+  .install{display:inline-flex;align-items:center;gap:12px;background:#0b0e13;border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px}
+  .install .pfx{color:var(--muted)} .install code{color:var(--text)}
+  .install button{background:var(--accent2);border:0;color:#021;font-weight:700;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px}
+  .btn{background:linear-gradient(180deg,#ffae33,#ff9900);color:#1a1200;font-weight:700;border:0;border-radius:12px;padding:13px 22px;text-decoration:none;font-size:15px;display:inline-block}
+  /* cloud tabs */
+  .tabs{display:flex;gap:10px;justify-content:center;margin:26px 0 14px;flex-wrap:wrap}
+  .tab{display:flex;align-items:center;gap:9px;border:1px solid var(--border);background:var(--panel);border-radius:14px;padding:11px 18px;cursor:pointer;font-weight:600;position:relative;color:var(--muted)}
+  .tab.active{border-color:var(--accent);color:var(--text);box-shadow:0 0 22px rgba(255,153,0,.15)}
+  .tab.locked{opacity:.55;cursor:not-allowed}
+  .tab img{height:22px}
+  .tab .st{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:20px;background:#20304a;color:var(--accent2)}
+  .tab.active .st{background:#1f3a1f;color:#5fd37a}
+  .tab.locked .st{background:#2a2410;color:var(--accent)}
+  /* 3d demo */
+  .demo{height:460px;background:radial-gradient(700px 320px at 50% 0%,#141b26,#0b0e13);border:1px solid var(--border);border-radius:18px;position:relative;overflow:hidden;margin-top:6px}
+  .demo .hint{position:absolute;left:12px;bottom:10px;font-size:11.5px;color:var(--muted);background:#0b0e1399;padding:3px 9px;border-radius:10px;pointer-events:none}
+  .tip3d{position:absolute;pointer-events:none;background:#0b0e13f0;border:1px solid #3a4557;border-radius:8px;padding:8px 11px;font-size:12.5px;max-width:280px;display:none;z-index:6}
+  .tip3d b{color:var(--accent)} .tip3d span{color:var(--muted)}
+  .lockmsg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;text-align:center;background:#0b0e13cc;z-index:7}
+  .lockmsg .big{font-size:22px;font-weight:800} .lockmsg .sm{color:var(--muted);max-width:420px}
+  /* sections */
+  section{padding:46px 0}
+  h2.sec{text-align:center;font-size:clamp(24px,3.4vw,34px);margin:0 0 8px}
+  p.lead{text-align:center;color:var(--muted);max-width:720px;margin:0 auto 30px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px}
+  .card h3{margin:0 0 8px;font-size:18px} .card .ic{font-size:26px;margin-bottom:8px}
+  .card p{color:var(--muted);margin:0;line-height:1.55;font-size:14.5px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;counter-reset:s}
+  .step{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:22px;position:relative}
+  .step::before{counter-increment:s;content:counter(s);position:absolute;top:-14px;left:20px;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#1a1200;font-weight:800;display:grid;place-items:center}
+  .step h3{margin:10px 0 6px;font-size:16px} .step p{color:var(--muted);font-size:14px;margin:0;line-height:1.5}
+  pre.code{background:#0b0e13;border:1px solid var(--border);border-radius:14px;padding:18px 20px;overflow:auto;font-size:14px;line-height:1.7}
+  pre.code .c{color:var(--muted)} pre.code .k{color:var(--accent)}
+  footer{border-top:1px solid var(--border);padding:28px 0;text-align:center;color:var(--muted);font-size:13px}
+  footer a{color:var(--accent2);text-decoration:none}
+  .note{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<nav><div class="wrap">
+  <div class="brand"><img src="logo_symbol.png" alt=""/>Agent<span class="a">Cloud</span></div>
+  <a class="ghb" href="#get-started">Get started</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <img class="logo" src="logo.png" alt="AgentCloud AI" />
+  <h1>One agent for <span class="a">every cloud</span></h1>
+  <p class="sub">Ask how-to questions and get answers where every step cites its source — then say “design …” and watch your architecture build itself in live 3D. Grounded in official cloud docs, runs on your machine.</p>
+  <div class="cta">
+    <span class="install"><span class="pfx">$</span><code id="cmd">pip install agtcld</code><button onclick="copyCmd()">copy</button></span>
+    <a class="btn" href="#get-started">Get started →</a>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-cloud="aws"><img src="https://api.iconify.design/logos/aws.svg?height=22" alt=""/>AWS <span class="st">Available</span></div>
+    <div class="tab locked" data-cloud="azure"><img src="https://api.iconify.design/logos/microsoft-azure.svg?height=22" alt=""/>Azure <span class="st">Coming soon</span></div>
+    <div class="tab locked" data-cloud="gcp"><img src="https://api.iconify.design/logos/google-cloud.svg?height=22" alt=""/>Google Cloud <span class="st">Coming soon</span></div>
+  </div>
+
+  <div class="demo" id="demo">
+    <div class="hint">live demo · drag to orbit · scroll to zoom · hover a service</div>
+    <div class="lockmsg" id="lockmsg"><div class="big">🔒 Coming soon</div><div class="sm">AgentCloud launches on AWS first. Azure and Google Cloud are on the way — same agent, same 3D designs, grounded in each provider’s docs.</div></div>
+  </div>
+  <div class="note">↑ a real AgentCloud 3D architecture (serverless web app on AWS). This exact view is generated for any question in the app.</div>
+</div></header>
+
+<section><div class="wrap">
+  <h2 class="sec">What AgentCloud does</h2>
+  <p class="lead">Not a chatbot that guesses — a grounded agent that cites its sources and visualizes the build.</p>
+  <div class="grid">
+    <div class="card"><div class="ic">📑</div><h3>Ask → cited steps</h3><p>Every answer is built from your cloud’s official docs & whitepapers, and every step links to the exact source page. No hallucinated APIs.</p></div>
+    <div class="card"><div class="ic">🧊</div><h3>Design → live 3D</h3><p>Say “design a data lake” and get components, data flow, trade-offs, clarifying questions — plus an interactive 3D architecture you can orbit.</p></div>
+    <div class="card"><div class="ic">🔒</div><h3>Private & local</h3><p>Runs on your machine with an embedded vector store. No Docker, no database to set up. Your questions stay yours.</p></div>
+    <div class="card"><div class="ic">💬</div><h3>Terminal or web</h3><p>Work in your shell with <code>agtcld</code>, or open the immersive web app. Answer the agent’s follow-ups to refine a design in place.</p></div>
+    <div class="card"><div class="ic">🧩</div><h3>Real topology</h3><p>Diagrams reflect the actual architecture — fan-out, tiers, monitoring and scaling links — with real service icons, not a straight line.</p></div>
+    <div class="card"><div class="ic">☁️</div><h3>Multi-cloud vision</h3><p>One workflow across AWS, Azure and Google Cloud. AWS is live today; Azure and GCP are coming next.</p></div>
+  </div>
+</div></section>
+
+<section><div class="wrap">
+  <h2 class="sec">How it works</h2>
+  <div class="steps">
+    <div class="step"><h3>Index</h3><p>Point it at the cloud’s docs (or your own). It chunks + embeds them locally into an embedded vector store — GPU-accelerated.</p></div>
+    <div class="step"><h3>Ask or design</h3><p>Ask a how-to, or “design …”. It retrieves the right sources across services and composes a grounded, cited answer.</p></div>
+    <div class="step"><h3>Visualize</h3><p>Designs render as a live 3D architecture — real service icons, animated data flow, labeled connections you can orbit & zoom.</p></div>
+  </div>
+</div></section>
+
+<section id="get-started"><div class="wrap">
+  <h2 class="sec">Get started</h2>
+  <p class="lead">Only Python is required — no Docker, no database. AWS is available today.</p>
+  <pre class="code"><span class="c"># install</span>
+pip install agtcld
+
+<span class="c"># launch the agent — it asks: terminal or the web app?</span>
+agtcld
+
+<span class="c"># or one-off commands</span>
+rag-app index                 <span class="c"># build the local knowledge base</span>
+rag-app ask <span class="k">"How do I enable S3 versioning?"</span>
+rag-app serve                 <span class="c"># http://127.0.0.1:8000 (immersive web UI)</span>
+</pre>
+  <p class="note">On first run AgentCloud asks for your LLM key and explains storage. Azure &amp; GCP support is on the roadmap.</p>
+</div></section>
+
+<footer><div class="wrap">
+  AgentCloud AI · your private cloud solutions agent · <a href="#">GitHub</a><br>
+  Available on AWS today — Azure &amp; Google Cloud coming soon.
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+function copyCmd(){navigator.clipboard&&navigator.clipboard.writeText("pip install agtcld");}
+/* ---- particle background ---- */
+(function(){const cv=document.getElementById("bg"),x=cv.getContext("2d");let w,h,pts;
+  function size(){w=cv.width=innerWidth;h=cv.height=innerHeight;}size();addEventListener("resize",size);
+  pts=Array.from({length:Math.max(30,Math.min(80,Math.floor(innerWidth/22)))},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28}));
+  (function loop(){x.clearRect(0,0,w,h);for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;}
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<130){x.strokeStyle="rgba(74,158,255,"+(0.12*(1-d/130))+")";x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}}
+    for(const p of pts){x.fillStyle="rgba(130,185,255,.5)";x.beginPath();x.arc(p.x,p.y,1.6,0,6.283);x.fill();}requestAnimationFrame(loop);})();})();
+
+/* ---- baked sample AWS architecture (serverless web app) ---- */
+const DEMO_GRAPH={nodes:[
+  {id:"u",label:"User",service:"user"},
+  {id:"cf",label:"CloudFront",service:"Amazon CloudFront",detail:"CDN — caches & serves globally over HTTPS"},
+  {id:"s3",label:"S3",service:"Amazon S3",detail:"Static website assets"},
+  {id:"api",label:"API Gateway",service:"Amazon API Gateway",detail:"Managed REST API endpoint"},
+  {id:"lam",label:"Lambda",service:"AWS Lambda",detail:"Serverless business logic"},
+  {id:"ddb",label:"DynamoDB",service:"Amazon DynamoDB",detail:"Low-latency NoSQL data store"},
+  {id:"cw",label:"CloudWatch",service:"Amazon CloudWatch",detail:"Metrics, logs & alarms"}],
+ edges:[{source:"u",target:"cf",label:"HTTPS"},{source:"cf",target:"s3",label:"static"},
+  {source:"cf",target:"api",label:"/api"},{source:"api",target:"lam",label:"invokes"},
+  {source:"lam",target:"ddb",label:"reads/writes"},{source:"lam",target:"cw",label:"logs"}]};
+
+function nodeColor(s){s=(s||"").toLowerCase();const m=[[/s3|bucket|storage/,0x3b82f6],[/lambda|compute/,0xff9900],
+  [/dynamodb|database/,0x10b981],[/cloudfront|api gateway|network/,0x06b6d4],[/cloudwatch|monitor/,0xa855f7],[/user/,0x94a3b8]];
+  for(const[r,c]of m)if(r.test(s))return c;return 0x7c8699;}
+function iconUrl(s){s=(s||"").toLowerCase();const L=[[/s3/,"aws-s3"],[/lambda/,"aws-lambda"],[/dynamodb/,"aws-dynamodb"],
+  [/cloudfront/,"aws-cloudfront"],[/api gateway/,"aws-api-gateway"],[/cloudwatch/,"aws-cloudwatch"]];
+  for(const[r,n]of L)if(r.test(s))return "https://api.iconify.design/logos/"+n+".svg?height=224";
+  const C=s.includes("user")?"mdi:account-outline":"mdi:cube-outline";return "https://api.iconify.design/"+C.replace(":","/")+".svg?height=224&color=%23dfe7f0";}
+
+let demoDispose=null;
+function roundRect(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function iconTile(service){const col=nodeColor(service),tex=new THREE.Texture();tex.anisotropy=8;
+  const im=new Image();im.crossOrigin="anonymous";im.onload=()=>{const S=256,c=document.createElement("canvas");c.width=c.height=S;const g=c.getContext("2d");
+    roundRect(g,8,8,S-16,S-16,34);g.fillStyle="#0f1824";g.fill();const sc=Math.min(S/im.width,S/im.height)*0.66,w=im.width*sc,h=im.height*sc;g.drawImage(im,(S-w)/2,(S-h)/2,w,h);tex.image=c;tex.needsUpdate=true;};
+  im.src=iconUrl(service);
+  const face=new THREE.MeshStandardMaterial({map:tex,metalness:0.2,roughness:0.6,emissiveMap:tex,emissive:0xffffff,emissiveIntensity:0.25});
+  const edge=new THREE.MeshStandardMaterial({color:col,metalness:0.6,roughness:0.3,emissive:col,emissiveIntensity:0.45});
+  const t=new THREE.Mesh(new THREE.BoxGeometry(2.3,2.3,0.4),[edge,edge,edge,edge,face,face]);const grp=new THREE.Group();grp.add(t);return grp;}
+function label(a,b){const c=document.createElement("canvas");c.width=512;c.height=150;const x=c.getContext("2d");
+  x.font="bold 46px system-ui";x.fillStyle="#fff";x.textAlign="center";x.fillText(a,256,64);x.font="30px system-ui";x.fillStyle="#aab4c2";x.fillText(b||"",256,112);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));s.scale.set(4.6,1.35,1);return s;}
+function edgeLabel(t){const c=document.createElement("canvas");c.width=256;c.height=64;const x=c.getContext("2d");x.font="22px system-ui";x.fillStyle="#9fb3c8";x.textAlign="center";x.fillText(t,128,40);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthTest:false}));s.scale.set(3,.75,1);return s;}
+
+function buildDemo(graph){const el=document.getElementById("demo");const W=el.clientWidth||900,H=el.clientHeight||460;
+  const scene=new THREE.Scene();const cam=new THREE.PerspectiveCamera(52,W/H,0.1,2000);
+  const rnd=new THREE.WebGLRenderer({antialias:true,alpha:true});rnd.setPixelRatio(Math.min(devicePixelRatio,2));rnd.setSize(W,H);el.appendChild(rnd.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff,0.65));const dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(6,12,9);scene.add(dl);
+  const pl=new THREE.PointLight(0x4a9eff,0.7,120);pl.position.set(-10,5,8);scene.add(pl);
+  const nodes=graph.nodes,edges=graph.edges,pos={},icons=[],sprites=[];
+  const idset=new Set(nodes.map(n=>n.id)),adj={},indeg={};nodes.forEach(n=>{adj[n.id]=[];indeg[n.id]=0;});
+  edges.forEach(e=>{if(idset.has(e.source)&&idset.has(e.target)){adj[e.source].push(e.target);indeg[e.target]++;}});
+  let roots=nodes.filter(n=>indeg[n.id]===0).map(n=>n.id);if(!roots.length)roots=[nodes[0].id];
+  const layer={};roots.forEach(id=>layer[id]=0);const q=[...roots],seen=new Set(roots);
+  while(q.length){const id=q.shift();adj[id].forEach(t=>{const nl=layer[id]+1;if(layer[t]===undefined||nl>layer[t])layer[t]=nl;if(!seen.has(t)){seen.add(t);q.push(t);}});}
+  nodes.forEach(n=>{if(layer[n.id]===undefined)layer[n.id]=0;});
+  const byL={};nodes.forEach(n=>{(byL[layer[n.id]]=byL[layer[n.id]]||[]).push(n);});
+  const ks=Object.keys(byL).map(Number),maxL=Math.max(...ks),colS=6.5,rowS=4.6;
+  ks.forEach(L=>byL[L].forEach((n,j)=>{n._x=(L-maxL/2)*colS;n._y=(j-(byL[L].length-1)/2)*rowS;n._z=(j%2?1:-1)*0.7;}));
+  nodes.forEach(n=>{pos[n.id]=new THREE.Vector3(n._x,n._y,n._z);const ic=iconTile(n.service||n.label);ic.position.set(n._x,n._y,n._z);
+    ic.userData={label:n.label,service:n.service,detail:n.detail||"",base:n._y,hot:false};scene.add(ic);icons.push(ic);
+    const sp=label(n.label,n.service);sp.position.set(n._x,n._y+1.9,n._z);sp.userData={sync:ic,dy:1.9};scene.add(sp);sprites.push(sp);});
+  const flows=[];edges.forEach(e=>{const a=pos[e.source],b=pos[e.target];if(!a||!b)return;
+    scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:0x4a9eff,transparent:true,opacity:0.4})));
+    if(e.label){const m=a.clone().lerp(b,.5);m.y+=.35;const el2=edgeLabel(e.label);el2.position.copy(m);scene.add(el2);}
+    for(let k=0;k<3;k++){const d=new THREE.Mesh(new THREE.SphereGeometry(.15,12,12),new THREE.MeshBasicMaterial({color:0xffc24a}));scene.add(d);flows.push({a,b,d,t:k/3});}});
+  const spanX=(maxL+1)*colS,maxRows=Math.max(...ks.map(L=>byL[L].length));cam.position.set(0,1.2,Math.max(14,Math.max(spanX,maxRows*rowS)*1.15));
+  const ctr=new THREE.OrbitControls(cam,rnd.domElement);ctr.enableDamping=true;ctr.dampingFactor=.08;ctr.autoRotate=true;ctr.autoRotateSpeed=.9;ctr.addEventListener("start",()=>ctr.autoRotate=false);
+  const ray=new THREE.Raycaster(),mouse=new THREE.Vector2(),tip=document.createElement("div");tip.className="tip3d";el.appendChild(tip);
+  function move(ev){const r=el.getBoundingClientRect();mouse.x=((ev.clientX-r.left)/r.width)*2-1;mouse.y=-((ev.clientY-r.top)/r.height)*2+1;ray.setFromCamera(mouse,cam);
+    icons.forEach(g=>g.userData.hot=false);const hit=ray.intersectObjects(icons,true)[0];let root=null;if(hit){let o=hit.object;while(o&&!o.userData.label)o=o.parent;root=o;}
+    if(root){root.userData.hot=true;const u=root.userData;tip.innerHTML="<b>"+u.label+"</b>"+(u.service?" — "+u.service:"")+(u.detail?"<br><span>"+u.detail+"</span>":"");tip.style.display="block";tip.style.left=Math.min(r.width-300,ev.clientX-r.left+14)+"px";tip.style.top=(ev.clientY-r.top+14)+"px";}else tip.style.display="none";}
+  el.addEventListener("pointermove",move);
+  let raf;function tick(){raf=requestAnimationFrame(tick);const now=performance.now();
+    flows.forEach(f=>{f.t=(f.t+.016*.35)%1;f.d.position.lerpVectors(f.a,f.b,f.t);});
+    icons.forEach((ic,i)=>{ic.position.y=ic.userData.base+Math.sin(now*.0012+i)*.09;ic.rotation.y+=.012;const tg=ic.userData.hot?1.2:1;ic.scale.x+=(tg-ic.scale.x)*.2;ic.scale.y+=(tg-ic.scale.y)*.2;ic.scale.z+=(tg-ic.scale.z)*.2;});
+    sprites.forEach(s=>{if(s.userData.sync)s.position.y=s.userData.sync.position.y+s.userData.dy;});ctr.update();rnd.render(scene,cam);}
+  tick();
+  const ro=new ResizeObserver(()=>{const w=el.clientWidth||900,h=el.clientHeight||460;cam.aspect=w/h;cam.updateProjectionMatrix();rnd.setSize(w,h);});ro.observe(el);
+  return ()=>{cancelAnimationFrame(raf);ro.disconnect();el.removeEventListener("pointermove",move);rnd.dispose();if(rnd.domElement.parentNode)rnd.domElement.remove();tip.remove();};
+}
+
+/* ---- cloud tabs ---- */
+const lockmsg=document.getElementById("lockmsg");
+function selectCloud(c){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.cloud===c&&c==="aws"));
+  if(c==="aws"){lockmsg.style.display="none";if(!demoDispose)demoDispose=buildDemo(DEMO_GRAPH);}
+  else{lockmsg.style.display="flex";}  // keep AWS tab visually active; show coming-soon overlay
+}
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{
+  if(t.dataset.cloud==="aws"){document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));lockmsg.style.display="none";}
+  else{lockmsg.style.display="flex";}
+}));
+demoDispose=buildDemo(DEMO_GRAPH);
+</script>
+</body>
+</html>

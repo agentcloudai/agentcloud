@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AgentCloud — AWS answers &amp; architecture</title>
+<style>
+  :root{--bg:#0e1117;--panel:#171b22;--panel2:#1f242d;--border:#2b313b;--text:#e6edf3;--muted:#9aa4b2;--accent:#ff9900;--accent2:#4a9eff;--radius:14px}
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;display:flex;flex-direction:column;height:100vh;overflow:hidden;
+       font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       background:radial-gradient(1200px 600px at 70% -10%,#1b2230,transparent),var(--bg);color:var(--text)}
+  #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+  header,.chat,.inputbar{position:relative;z-index:1}
+  header{padding:13px 20px;text-align:center;border-bottom:1px solid var(--border);flex:0 0 auto;
+         background:linear-gradient(180deg,#0e1117cc,#0e111799);backdrop-filter:blur(6px)}
+  header h1{margin:0;font-size:21px;display:flex;align-items:center;justify-content:center;gap:10px;
+            text-shadow:0 0 22px rgba(255,153,0,.35)} header h1 .a{color:var(--accent)}
+  .logo{height:36px;width:auto;filter:drop-shadow(0 0 9px rgba(74,158,255,.5))}
+  @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .msg{animation:fadein .35s ease}
+  .hero{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .herologo{width:min(320px,72vw);height:auto;filter:drop-shadow(0 0 26px rgba(74,158,255,.35));animation:floaty 4.5s ease-in-out infinite}
+  .herosub{color:var(--muted);font-size:15px;letter-spacing:.3px}
+  header p{margin:3px 0 0;color:var(--muted);font-size:12.5px}
+  .chat{flex:1 1 auto;overflow-y:auto;padding:20px 16px}
+  .chat.empty{display:flex;flex-direction:column}
+  .chat.empty .thread{margin-top:auto;margin-bottom:auto}   /* center hero vertically before first message */
+  .thread{max-width:960px;margin:0 auto;width:100%}
+  .welcome{font-size:16px}
+  .msg{margin-bottom:18px;display:flex} .msg.user{justify-content:flex-end}
+  .bubble.user{background:#20304a;border:1px solid #2d4a6a;padding:10px 14px;border-radius:14px 14px 4px 14px;max-width:80%;font-size:15px}
+  .bubble.bot{width:100%}
+  .inputbar{flex:0 0 auto;border-top:1px solid var(--border);background:var(--panel);padding:12px 16px}
+  .inputrow{max-width:960px;margin:0 auto;display:flex;gap:10px;flex-wrap:nowrap;align-items:stretch}
+  .inputrow input[type=text]{flex:1 1 auto;min-width:0;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:13px;padding:17px 18px;font-size:16.5px;outline:none}
+  .inputrow input[type=text]:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(74,158,255,.15)}
+  select{flex:0 0 150px;width:150px;min-width:0;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:13px;padding:0 12px;font-size:13.5px}
+  button.primary{flex:0 0 auto}
+  @media(max-width:640px){.inputrow{flex-wrap:wrap} select{flex:1 1 auto}}
+  button.primary{background:linear-gradient(180deg,#ffae33,#ff9900);color:#1a1200;border:0;border-radius:12px;padding:12px 22px;font-weight:700;font-size:15px;cursor:pointer}
+  button.primary:disabled{opacity:.6;cursor:default}
+  .ctxpill{max-width:960px;margin:0 auto 8px;font-size:12.5px;color:var(--muted)} .ctxpill b{color:var(--accent)} .ctxpill a{color:var(--accent2);cursor:pointer;margin-left:8px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-top:14px} .card:first-child{margin-top:0}
+  .answer{font-size:16px;line-height:1.55}
+  h3.sec{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}
+  .badge{display:inline-block;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;padding:3px 9px;border-radius:20px;background:#20304a;color:var(--accent2);border:1px solid #2d4a6a;margin-left:8px}
+  ol.steps{margin:0;padding-left:0;list-style:none;counter-reset:s}
+  ol.steps li{counter-increment:s;position:relative;padding:11px 12px 11px 44px;border:1px solid var(--border);border-radius:10px;margin-bottom:9px;background:var(--panel2)}
+  ol.steps li::before{content:counter(s);position:absolute;left:11px;top:11px;width:23px;height:23px;border-radius:50%;background:var(--accent);color:#1a1200;font-weight:700;font-size:12.5px;display:grid;place-items:center}
+  .chip{display:inline-block;background:#20304a;color:var(--accent2);border:1px solid #2d4a6a;border-radius:20px;padding:1px 9px;font-size:11px;margin-left:4px}
+  .comp{border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:9px;background:var(--panel2)}
+  .comp .h{font-weight:700;font-size:14.5px} .comp .svc{color:var(--accent);font-size:12.5px;margin-left:6px}
+  .comp .p{opacity:.9;margin-top:4px;font-size:13.5px;line-height:1.5}
+  ul.flow{list-style:none;margin:0;padding:0} ul.flow li{padding:9px 0;border-top:1px solid var(--border)}
+  ul.flow li .why{color:var(--muted);font-size:12.5px;margin-top:3px}
+  ul.plain{margin:0;padding-left:18px} ul.plain li{margin:6px 0;line-height:1.5;font-size:14px}
+  .ask{background:#2a2410;border:1px solid #5a4a1e;border-radius:10px;padding:13px 15px}
+  .ask h3{margin:0 0 8px;color:var(--accent);font-size:13.5px}
+  .ask .qs{display:flex;flex-direction:column;gap:6px}
+  .ask .qs button{text-align:left;background:#1f242d;border:1px solid #5a4a1e;color:var(--text);border-radius:8px;padding:7px 11px;font-size:13px;cursor:pointer}
+  .ask .qs button:hover{border-color:var(--accent)} .ask .tip{color:var(--muted);font-size:12px;margin-top:8px}
+  .src{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-top:1px solid var(--border);font-size:13px}
+  .src .id{color:var(--accent2);font-weight:700;min-width:26px} .src a{color:var(--muted);text-decoration:none} .src a:hover{color:var(--text)}
+  .diag3d{position:relative;height:460px;background:radial-gradient(600px 300px at 50% 0%,#141b26,#0b0e13);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:grab}
+  .diag3d:active{cursor:grabbing}
+  .diag3d canvas{display:block}
+  .tip3d{position:absolute;pointer-events:none;background:#0b0e13f0;border:1px solid #3a4557;border-radius:8px;padding:8px 11px;font-size:12.5px;max-width:300px;display:none;z-index:6;line-height:1.45}
+  .tip3d b{color:var(--accent)} .tip3d span{color:var(--muted)}
+  .d3dhint{position:absolute;left:10px;bottom:8px;font-size:11px;color:var(--muted);background:#0b0e1399;padding:2px 8px;border-radius:10px;pointer-events:none}
+  .mermaid{text-align:center}
+  .muted{color:var(--muted)}
+  .spinner{width:17px;height:17px;border:3px solid #333;border-top-color:var(--accent);border-radius:50%;display:inline-block;animation:spin .8s linear infinite;vertical-align:-3px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .examples{max-width:960px;margin:0 auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .examples span{font-size:12.5px;color:var(--accent2);border:1px dashed #2d3f5a;border-radius:16px;padding:5px 11px;cursor:pointer}
+  .welcome{text-align:center;color:var(--muted);margin:30px auto 18px;max-width:580px;font-size:14px;line-height:1.6}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<header>
+  <h1>
+    <img class="logo" src="/static/logo_symbol.png" alt="" />
+    <span class="wm">Agent<span class="a">Cloud</span></span></h1>
+  <p>How-to → cited steps · “design …” → a 3D architecture you can orbit. Grounded in your AWS docs &amp; whitepapers.</p>
+</header>
+
+<div class="chat empty" id="chat"><div class="thread" id="thread">
+  <div class="welcome" id="welcome">
+    <div class="hero">
+      <img class="herologo" src="/static/logo.png" alt="AgentCloud AI" />
+      <div class="herosub">your private AWS solutions agent</div>
+    </div>
+    Ask a how-to, or ask me to <b>design</b> something — I’ll cite sources, build a <b>live 3D architecture</b> you can spin &amp; zoom, and ask what I need to tailor it.</div>
+  <div class="examples" id="examples"></div>
+</div></div>
+
+<div class="inputbar">
+  <div class="ctxpill" id="ctxpill" style="display:none"></div>
+  <div class="inputrow">
+    <input id="q" type="text" placeholder="Ask a question, or “design a …”.  Answer my follow-ups here to refine." autocomplete="off" />
+    <select id="service"><option value="">All services</option></select>
+    <button id="askBtn" class="primary">Send</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/SVGLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+mermaid.initialize({startup:false,theme:"dark",securityLevel:"loose"});
+const chat=document.getElementById("chat"),thread=document.getElementById("thread"),qEl=document.getElementById("q"),
+      svcEl=document.getElementById("service"),askBtn=document.getElementById("askBtn"),ctxpill=document.getElementById("ctxpill");
+let designCtx=null,seq=0,liveDiag=null;
+
+const EXAMPLES=["Design a data warehouse for financial analytics on AWS","Design a highly available, auto-scaling web application",
+  "How do I build a serverless image thumbnail pipeline?","How do I enable versioning on an S3 bucket?"];
+const exWrap=document.getElementById("examples");
+EXAMPLES.forEach(t=>{const s=document.createElement("span");s.textContent=t;s.onclick=()=>{qEl.value=t;send();};exWrap.appendChild(s);});
+fetch("/api/services").then(r=>r.json()).then(d=>{(d.services||[]).forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;svcEl.appendChild(o);});}).catch(()=>{});
+qEl.addEventListener("keydown",e=>{if(e.key==="Enter")send();});askBtn.onclick=send;
+
+const esc=s=>(s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function addUser(t){const w=document.getElementById("welcome");if(w)w.remove();chat.classList.remove("empty");thread.insertAdjacentHTML("beforeend",`<div class="msg user"><div class="bubble user">${esc(t)}</div></div>`);down();}
+function addBot(h){thread.insertAdjacentHTML("beforeend",`<div class="msg"><div class="bubble bot">${h}</div></div>`);down();}
+const down=()=>{chat.scrollTop=chat.scrollHeight;};
+function setCtx(){if(designCtx){ctxpill.style.display="";ctxpill.innerHTML=`Refining: <b>${esc(designCtx.base)}</b> <a id="cc">✕ new topic</a>`;document.getElementById("cc").onclick=()=>{designCtx=null;setCtx();};}else ctxpill.style.display="none";}
+function srcHtml(x){return (x||[]).map(s=>{const p=s.page?`, p.${esc(String(s.page))}`:"";const l=s.url?`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.service||s.file)}</a>`:esc(s.service||s.file);return `<div class="src"><span class="id">${esc(s.id)}</span><span>${l} — ${esc(s.guide||"")}${p}</span></div>`;}).join("");}
+
+/* ---------- 3D architecture scene ---------- */
+function nodeColor(s){s=(s||"").toLowerCase();const m=[[/(s3|bucket|efs|fsx|storage|lake|glacier)/,0x3b82f6],
+  [/(ec2|lambda|fargate|ecs|eks|compute|container|beanstalk)/,0xff9900],[/(dynamodb|rds|aurora|redshift|database|keyspace|documentdb)/,0x10b981],
+  [/(glue|athena|emr|quicksight|kinesis|analytic|lake formation)/,0xa855f7],[/(cloudfront|route|vpc|elb|load balancer|api gateway|network)/,0x06b6d4],
+  [/(iam|kms|secret|cognito|security|guardduty|waf)/,0xef4444],[/(sqs|sns|eventbridge|step functions|queue|messaging)/,0xf59e0b],
+  [/(user|client|source|external)/,0x94a3b8]];for(const[r,c]of m)if(r.test(s))return c;return 0x7c8699;}
+/* Map an AWS service to an Iconify icon: real AWS logo when we have one, else a
+   category tech icon (guaranteed to exist), else a generic cube. */
+const AWS_LOGOS=[
+  [/simple storage|s3|bucket/,"aws-s3"],[/ec2|elastic compute/,"aws-ec2"],[/lambda/,"aws-lambda"],
+  [/dynamodb/,"aws-dynamodb"],[/aurora/,"aws-aurora"],[/relational database|rds/,"aws-rds"],
+  [/redshift/,"aws-redshift"],[/\bglue\b/,"aws-glue"],[/athena/,"aws-athena"],[/quicksight|quick sight/,"aws-quicksight"],
+  [/kinesis/,"aws-kinesis"],[/\bemr\b|elastic mapreduce/,"aws-emr"],[/lake formation/,"aws-lake-formation"],
+  [/cloudfront/,"aws-cloudfront"],[/api gateway/,"aws-api-gateway"],[/route ?53/,"aws-route53"],
+  [/\bvpc\b|virtual private cloud/,"aws-vpc"],[/load balanc|elb|\balb\b/,"aws-elastic-load-balancing"],
+  [/elastic container|ecs/,"aws-elastic-container-service"],[/fargate/,"aws-fargate"],[/eks|kubernetes/,"aws-elastic-kubernetes-service"],
+  [/elastic beanstalk/,"aws-elastic-beanstalk"],[/cloudwatch/,"aws-cloudwatch"],[/cloudformation/,"aws-cloudformation"],
+  [/\biam\b|identity and access/,"aws-iam"],[/\bkms\b|key management/,"aws-kms"],[/secrets manager/,"aws-secrets-manager"],
+  [/cognito/,"aws-cognito"],[/\bsqs\b/,"aws-sqs"],[/\bsns\b/,"aws-sns"],[/step functions/,"aws-step-functions"],
+  [/eventbridge/,"aws-eventbridge"],[/elasticache/,"aws-elasticache"],
+];
+const CAT_ICONS=[
+  [/db|database|dynamodb|rds|aurora|redshift|sql|nosql|keyspace/,"mdi:database"],
+  [/storage|s3|bucket|efs|fsx|lake|glacier/,"mdi:bucket"],
+  [/lambda|function|serverless/,"mdi:function-variant"],
+  [/compute|ec2|server|instance/,"mdi:server"],
+  [/container|ecs|eks|fargate|kubernetes|docker/,"mdi:cube-outline"],
+  [/analytic|glue|athena|emr|quicksight|kinesis|etl|warehouse/,"mdi:chart-box-outline"],
+  [/network|vpc|cloudfront|route|load balanc|api gateway|cdn|dns/,"mdi:lan"],
+  [/security|iam|kms|secret|cognito|waf|guard/,"mdi:shield-lock-outline"],
+  [/queue|sqs|sns|eventbridge|message|notification|stream/,"mdi:message-processing-outline"],
+  [/sagemaker|machine learning|\bml\b|\bai\b|bedrock|model|inference/,"mdi:brain"],
+  [/user|client|external|source/,"mdi:account-outline"],
+];
+function iconUrls(service){const s=(service||"").toLowerCase();let logo=null,cat="mdi:cube-outline";
+  for(const[r,n]of AWS_LOGOS)if(r.test(s)){logo="logos:"+n;break;}
+  for(const[r,n]of CAT_ICONS)if(r.test(s)){cat=n;break;}
+  const u=id=>{const[p,nm]=id.split(":");return `https://api.iconify.design/${p}/${nm}.svg?height=224`+(p!=="logos"?"&color=%23dfe7f0":"");};
+  return {primary:logo?u(logo):u(cat),fallback:u(cat)};}
+/* A 3D icon-tile: the real AWS logo drawn crisply on a thick tile with glowing,
+   category-colored 3D edges. Shows the actual symbol AND has real depth. */
+function roundRect(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function icon3D(service){
+  const {primary,fallback}=iconUrls(service);
+  const col=nodeColor(service);
+  const tex=new THREE.Texture();tex.anisotropy=8;
+  const draw=img=>{const S=256,c=document.createElement("canvas");c.width=c.height=S;const g=c.getContext("2d");
+    g.clearRect(0,0,S,S);roundRect(g,8,8,S-16,S-16,34);g.fillStyle="#0f1824";g.fill();                 // tile panel
+    const sc=Math.min(S/img.width,S/img.height)*0.66,w=img.width*sc,h=img.height*sc;
+    g.drawImage(img,(S-w)/2,(S-h)/2,w,h);
+    tex.image=c;tex.needsUpdate=true;};
+  const im=new Image();im.crossOrigin="anonymous";im.onload=()=>draw(im);
+  im.onerror=()=>{const f=new Image();f.crossOrigin="anonymous";f.onload=()=>draw(f);f.src=fallback;};im.src=primary;
+  const face=new THREE.MeshStandardMaterial({map:tex,metalness:0.2,roughness:0.6,emissiveMap:tex,emissive:0xffffff,emissiveIntensity:0.25});
+  const edge=new THREE.MeshStandardMaterial({color:col,metalness:0.6,roughness:0.3,emissive:col,emissiveIntensity:0.45});
+  const tile=new THREE.Mesh(new THREE.BoxGeometry(2.3,2.3,0.4),[edge,edge,edge,edge,face,face]);
+  const group=new THREE.Group();group.add(tile);return group;
+}
+function makeLabel(a,b){const c=document.createElement("canvas");c.width=512;c.height=150;const x=c.getContext("2d");
+  x.font="bold 46px system-ui,sans-serif";x.fillStyle="#fff";x.textAlign="center";x.fillText((a||"").slice(0,24),256,64);
+  x.font="30px system-ui,sans-serif";x.fillStyle="#aab4c2";x.fillText((b||"").slice(0,34),256,112);
+  const t=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));
+  s.scale.set(4.6,1.35,1);return s;}
+function makeEdgeLabel(txt){const c=document.createElement("canvas");c.width=256;c.height=64;const x=c.getContext("2d");
+  x.font="22px system-ui,sans-serif";x.fillStyle="#9fb3c8";x.textAlign="center";x.fillText((txt||"").slice(0,22),128,40);
+  const t=new THREE.CanvasTexture(c);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthTest:false}));
+  s.scale.set(3,0.75,1);return s;}
+function buildThree(el,graph){
+  const W=el.clientWidth||880,H=el.clientHeight||460;
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(52,W/H,0.1,2000);
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(W,H);
+  el.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff,0.65));
+  const dl=new THREE.DirectionalLight(0xffffff,0.85);dl.position.set(6,12,9);scene.add(dl);
+  const pl=new THREE.PointLight(0x4a9eff,0.7,120);pl.position.set(-10,5,8);scene.add(pl);
+  const nodes=graph.nodes||[],edges=graph.edges||[],pos={},icons=[],sprites=[];
+  // ---- tiered graph layout: columns by dependency depth, branches spread vertically ----
+  const idset=new Set(nodes.map(n=>n.id)),adj={},indeg={};
+  nodes.forEach(n=>{adj[n.id]=[];indeg[n.id]=0;});
+  edges.forEach(e=>{if(idset.has(e.source)&&idset.has(e.target)){adj[e.source].push(e.target);indeg[e.target]++;}});
+  let roots=nodes.filter(n=>indeg[n.id]===0).map(n=>n.id);if(!roots.length)roots=[nodes[0].id];
+  const layer={};roots.forEach(id=>layer[id]=0);const q=[...roots],seen=new Set(roots);
+  while(q.length){const id=q.shift();(adj[id]||[]).forEach(t=>{const nl=(layer[id]||0)+1;if(layer[t]===undefined||nl>layer[t])layer[t]=nl;if(!seen.has(t)){seen.add(t);q.push(t);}});}
+  nodes.forEach(n=>{if(layer[n.id]===undefined)layer[n.id]=0;});
+  const byLayer={};nodes.forEach(n=>{(byLayer[layer[n.id]]=byLayer[layer[n.id]]||[]).push(n);});
+  const layerKeys=Object.keys(byLayer).map(Number),maxL=Math.max(...layerKeys),colS=6.5,rowS=4.6;
+  layerKeys.forEach(L=>byLayer[L].forEach((n,j)=>{n._x=(L-maxL/2)*colS;n._y=(j-(byLayer[L].length-1)/2)*rowS;n._z=(j%2?1:-1)*0.7;}));
+  nodes.forEach(n=>{const x=n._x,y=n._y,z=n._z;pos[n.id]=new THREE.Vector3(x,y,z);
+    const ic=icon3D(n.service||n.label);ic.position.set(x,y,z);
+    ic.userData={label:n.label,service:n.service,detail:n.detail||"",base:y,hot:false};scene.add(ic);icons.push(ic);
+    const spr=makeLabel(n.label,n.service);spr.position.set(x,y+1.9,z);spr.userData={sync:ic,dy:1.9};scene.add(spr);sprites.push(spr);});
+  const flows=[];
+  edges.forEach(e=>{const a=pos[e.source],b=pos[e.target];if(!a||!b)return;
+    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),new THREE.LineBasicMaterial({color:0x4a9eff,transparent:true,opacity:0.4}));scene.add(line);
+    if(e.label){const m=a.clone().lerp(b,0.5);m.y+=0.35;const el=makeEdgeLabel(e.label);el.position.copy(m);scene.add(el);}
+    for(let k=0;k<3;k++){const dot=new THREE.Mesh(new THREE.SphereGeometry(0.15,12,12),new THREE.MeshBasicMaterial({color:0xffc24a}));scene.add(dot);flows.push({a,b,dot,t:k/3});}});
+  const spanX=(maxL+1)*colS,maxRows=Math.max(...layerKeys.map(L=>byLayer[L].length)),spanY=maxRows*rowS;
+  camera.position.set(0,1.2,Math.max(14,Math.max(spanX,spanY)*1.15));
+  const controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true;controls.dampingFactor=0.08;controls.autoRotate=true;controls.autoRotateSpeed=0.9;
+  controls.addEventListener("start",()=>controls.autoRotate=false);
+  const ray=new THREE.Raycaster(),mouse=new THREE.Vector2();
+  let tip=document.createElement("div");tip.className="tip3d";el.appendChild(tip);
+  function move(ev){const r=el.getBoundingClientRect();mouse.x=((ev.clientX-r.left)/r.width)*2-1;mouse.y=-((ev.clientY-r.top)/r.height)*2+1;
+    ray.setFromCamera(mouse,camera);icons.forEach(g=>g.userData.hot=false);
+    const hit=ray.intersectObjects(icons,true)[0];
+    let root=null;if(hit){let o=hit.object;while(o&&!o.userData.label)o=o.parent;root=o;}
+    if(root){root.userData.hot=true;const u=root.userData;tip.innerHTML=`<b>${esc(u.label)}</b>${u.service?` — ${esc(u.service)}`:""}${u.detail?`<br><span>${esc(u.detail)}</span>`:""}`;
+      tip.style.display="block";tip.style.left=Math.min(r.width-310,ev.clientX-r.left+14)+"px";tip.style.top=(ev.clientY-r.top+14)+"px";}
+    else tip.style.display="none";}
+  el.addEventListener("pointermove",move);
+  let raf;
+  function tick(){raf=requestAnimationFrame(tick);const now=performance.now(),dt=0.016;
+    flows.forEach(f=>{f.t=(f.t+dt*0.35)%1;f.dot.position.lerpVectors(f.a,f.b,f.t);});
+    icons.forEach((ic,i)=>{ic.position.y=ic.userData.base+Math.sin(now*0.0012+i)*0.09;ic.rotation.y+=0.012;
+      const tg=ic.userData.hot?1.2:1;ic.scale.x+=(tg-ic.scale.x)*0.2;ic.scale.y+=(tg-ic.scale.y)*0.2;ic.scale.z+=(tg-ic.scale.z)*0.2;
+      ic.traverse(o=>{const ms=o.material?(Array.isArray(o.material)?o.material:[o.material]):[];
+        ms.forEach(m=>{if(m&&m.emissive){const base=m.map?0.25:0.45;m.emissiveIntensity=ic.userData.hot?base+0.4:base;}});});});
+    sprites.forEach(s=>{if(s.userData&&s.userData.sync)s.position.y=s.userData.sync.position.y+s.userData.dy;});
+    controls.update();renderer.render(scene,camera);}
+  tick();
+  const ro=new ResizeObserver(()=>{const w=el.clientWidth||880,h=el.clientHeight||460;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);});ro.observe(el);
+  el.insertAdjacentHTML("beforeend",`<div class="d3dhint">drag to orbit · scroll to zoom · hover a block</div>`);
+  return ()=>{cancelAnimationFrame(raf);ro.disconnect();el.removeEventListener("pointermove",move);renderer.dispose();if(renderer.domElement.parentNode)renderer.domElement.remove();};
+}
+function render2D(el){el.classList.remove("diag3d");el.style.height="auto";el.innerHTML=`<pre class="mermaid">${esc(el.dataset.mermaid||"")}</pre>`;
+  const p=el.querySelector(".mermaid");if(p&&p.textContent.trim()){try{mermaid.run({nodes:[p]});}catch(e){}}}
+function diagramCard(graph,mermaidCode){const id="dg"+(++seq);
+  return `<div class="card"><h3 class="sec">Architecture — interactive 3D</h3>
+    <div class="diag3d" id="${id}" data-graph='${esc(JSON.stringify(graph||{nodes:[],edges:[]}))}' data-mermaid="${esc(mermaidCode||"")}"></div></div>`;}
+function activateDiagrams(){
+  thread.querySelectorAll(".diag3d:not([data-done])").forEach(el=>{el.setAttribute("data-done","1");
+    let graph={};try{graph=JSON.parse(el.dataset.graph||"{}");}catch(e){}
+    if(!graph.nodes||!graph.nodes.length){render2D(el);return;}
+    if(liveDiag){try{liveDiag.dispose();}catch(e){}render2D(liveDiag.el);liveDiag=null;}  // keep one live WebGL scene
+    try{liveDiag={el,dispose:buildThree(el,graph)};}catch(e){render2D(el);}});
+}
+
+async function send(){
+  const raw=qEl.value.trim();if(!raw)return;addUser(raw);qEl.value="";askBtn.disabled=true;
+  let query=raw;if(designCtx){designCtx.addl.push(raw);query=designCtx.base+"\n\nAdditional requirements from the user: "+designCtx.addl.join("; ");}
+  const ld=document.createElement("div");ld.className="msg";ld.innerHTML=`<div class="bubble bot"><div class="card"><span class="spinner"></span> &nbsp;Searching AWS docs &amp; whitepapers…</div></div>`;thread.appendChild(ld);down();
+  try{const res=await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:query,service:svcEl.value||null})});
+    const d=await res.json();ld.remove();
+    if(d.mode==="design"){if(!designCtx)designCtx={base:raw,addl:[]};setCtx();addBot(renderDesign(d));}else addBot(renderAnswer(d));
+    activateDiagrams();
+  }catch(err){ld.remove();addBot(`<div class="card">Error: ${esc(String(err))}</div>`);}
+  askBtn.disabled=false;qEl.focus();
+}
+function renderAnswer(d){if(d.error)return `<div class="card">Error: ${esc(d.error)}</div>`;
+  if(d.insufficient_context)return `<div class="card muted">The indexed documents don’t contain enough to answer that confidently.</div>`;
+  const steps=(d.steps||[]).map(s=>`<li>${esc(s.text)}<span>${(s.sources||[]).map(id=>`<span class="chip">${esc(id)}</span>`).join("")}</span></li>`).join("");
+  return `<div class="card"><div class="answer">${esc(d.answer)}</div></div>
+    ${steps?`<div class="card"><h3 class="sec">Steps</h3><ol class="steps">${steps}</ol></div>`:""}
+    ${(d.graph&&d.graph.nodes&&d.graph.nodes.length)?diagramCard(d.graph,d.architecture_mermaid):""}
+    ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}`;}
+function renderDesign(d){if(d.error)return `<div class="card">Error: ${esc(d.error)}</div>`;
+  if(d.insufficient_context)return `<div class="card muted">Not enough in the indexed docs to design this. Try naming the workload or services.</div>`;
+  const asks=(d.clarifying_questions||[]).map(c=>`<button data-q="${esc(c)}">${esc(c)}</button>`).join("");
+  const comps=(d.components||[]).map(c=>`<div class="comp"><span class="h">${esc(c.name)}</span>${c.service?`<span class="svc">${esc(c.service)}</span>`:""}${(c.source_ids||[]).map(id=>`<span class="chip">${esc(id)}</span>`).join("")}<div class="p">${esc(c.purpose)}</div></div>`).join("");
+  const flow=(d.data_flow||[]).map(f=>`<li>${esc(f.step)} ${(f.source_ids||[]).map(id=>`<span class="chip">${esc(id)}</span>`).join("")}${f.why?`<div class="why">↳ ${esc(f.why)}</div>`:""}</li>`).join("");
+  const cons=(d.considerations||[]).map(c=>`<li>${esc(c)}</li>`).join(""),asm=(d.assumptions||[]).map(a=>`<li>${esc(a)}</li>`).join("");
+  return `<div class="card"><h3 class="sec">Architecture design <span class="badge">design</span></h3><div class="answer">${esc(d.overview)}</div></div>
+    ${asks?`<div class="card ask"><h3>To tailor this — click one or type below:</h3><div class="qs">${asks}</div><div class="tip">Your answers refine the design &amp; its 3D model in place.</div></div>`:""}
+    ${(d.graph&&d.graph.nodes&&d.graph.nodes.length)?diagramCard(d.graph,d.architecture_mermaid):""}
+    ${comps?`<div class="card"><h3 class="sec">Components &amp; why</h3>${comps}</div>`:""}
+    ${flow?`<div class="card"><h3 class="sec">Data flow</h3><ul class="flow">${flow}</ul></div>`:""}
+    ${cons?`<div class="card"><h3 class="sec">Key considerations (cost · scale · security · reliability)</h3><ul class="plain">${cons}</ul></div>`:""}
+    ${asm?`<div class="card"><h3 class="sec">Assumptions</h3><ul class="plain">${asm}</ul></div>`:""}
+    ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}`;}
+thread.addEventListener("click",e=>{const b=e.target.closest(".ask .qs button");if(b){qEl.value=qEl.value?qEl.value+"; "+b.dataset.q:b.dataset.q;qEl.focus();}});
+
+/* immersive particle-network background */
+(function(){const cv=document.getElementById("bg");if(!cv)return;const x=cv.getContext("2d");let w,h,pts;
+  function size(){w=cv.width=innerWidth;h=cv.height=innerHeight;}
+  size();addEventListener("resize",size);
+  const N=Math.max(28,Math.min(80,Math.floor(innerWidth/22)));
+  pts=Array.from({length:N},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28}));
+  function loop(){x.clearRect(0,0,w,h);
+    for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;}
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.hypot(dx,dy);
+      if(d<130){x.strokeStyle="rgba(74,158,255,"+(0.13*(1-d/130))+")";x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}}
+    for(const p of pts){x.fillStyle="rgba(130,185,255,.55)";x.beginPath();x.arc(p.x,p.y,1.6,0,6.283);x.fill();}
+    requestAnimationFrame(loop);}
+  loop();})();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{"level": "1-definition", "question": "What is Amazon S3?"}
+{"level": "1-definition", "question": "What is an Amazon VPC?"}
+{"level": "1-definition", "question": "What is AWS Lambda used for?"}
+{"level": "2-basic-howto", "question": "How do I create an S3 bucket?"}
+{"level": "2-basic-howto", "question": "How do I launch an EC2 instance?"}
+{"level": "2-basic-howto", "question": "How do I create an IAM user?"}
+{"level": "3-intermediate", "question": "How do I enable encryption at rest for an S3 bucket?"}
+{"level": "3-intermediate", "question": "How do I give a Lambda function permission to write to an S3 bucket?"}
+{"level": "3-intermediate", "question": "How do I set up automatic scaling for EC2 instances?"}
+{"level": "4-cross-service", "question": "How do I build a serverless pipeline that creates image thumbnails when a file is uploaded to S3?"}
+{"level": "4-cross-service", "question": "How do I schedule a recurring task that runs every hour on AWS?"}
+{"level": "4-cross-service", "question": "How do I set up a CI/CD pipeline to deploy a containerized application?"}
+{"level": "5-comparison", "question": "When should I use ECS versus AWS Lambda?"}
+{"level": "5-comparison", "question": "Should I use DynamoDB or Amazon RDS for my application?"}
+{"level": "6-troubleshoot", "question": "Why would uploading a file to S3 return an Access Denied error?"}
+{"level": "6-troubleshoot", "question": "Why is my Lambda function timing out?"}
+{"level": "7-architecture", "question": "How do I design a highly available, auto-scaling web application on AWS?"}
+{"level": "7-architecture", "question": "How do I design a multi-region disaster recovery setup?"}
+{"level": "7-architecture", "question": "How do I build a data lake on AWS for analytics?"}
