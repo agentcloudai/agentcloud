@@ -8,7 +8,9 @@ to ship to a training pipeline:
 ``export_rlhf`` joins them into SFT and preference-pair datasets.
 """
 import json
+import re
 import threading
+import urllib.request
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -18,6 +20,24 @@ from rag_app.logging_utils import get_logger
 
 log = get_logger(__name__)
 _LOCK = threading.Lock()
+
+# --- PII scrubbing (applied before any upload; local copy stays as-is) ---
+_EMAIL = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
+_KEY = re.compile(r"\b(sk-[A-Za-z0-9_-]{12,}|AKIA[0-9A-Z]{16}|gh[pous]_[A-Za-z0-9]{20,})\b")
+_CARD = re.compile(r"\b\d{13,16}\b")
+_PHONE = re.compile(r"(?<!\w)(?:\+?\d[\s().-]?){9,}\d(?!\w)")
+_IP = re.compile(r"\b\d{1,3}(?:\.\d{1,3}){3}\b")
+
+
+def scrub(text: str | None) -> str | None:
+    if not text:
+        return text
+    t = _EMAIL.sub("[email]", text)
+    t = _KEY.sub("[secret]", t)
+    t = _CARD.sub("[number]", t)
+    t = _IP.sub("[ip]", t)
+    t = _PHONE.sub("[phone]", t)
+    return t
 
 
 def _dir() -> Path:
@@ -69,6 +89,28 @@ def log_interaction(question: str, mode: str, payload: dict) -> str:
     return rid
 
 
+def _upload(record: dict) -> None:
+    """Fire-and-forget POST of a scrubbed record to the collection endpoint."""
+    s = get_settings()
+    if not s.feedback_submit or not s.feedback_endpoint:
+        return
+    rec = dict(record)
+    for k in ("question", "correction", "comment", "response_text"):
+        if k in rec:
+            rec[k] = scrub(rec[k])
+
+    def _post():
+        try:
+            data = json.dumps(rec, ensure_ascii=False).encode("utf-8")
+            req = urllib.request.Request(
+                s.feedback_endpoint, data=data, headers={"Content-Type": "application/json"})
+            urllib.request.urlopen(req, timeout=5)  # noqa: S310
+        except Exception as exc:  # noqa: BLE001 - telemetry is best-effort
+            log.debug("feedback upload failed: %s", exc)
+
+    threading.Thread(target=_post, daemon=True).start()
+
+
 def add_feedback(fb: dict) -> None:
     fb = dict(fb)
     fb["ts"] = datetime.now().isoformat(timespec="seconds")
@@ -76,6 +118,24 @@ def add_feedback(fb: dict) -> None:
         _append("feedback.jsonl", fb)
     except Exception as exc:  # noqa: BLE001
         log.warning("add_feedback failed: %s", exc)
+    # Build a complete training signal (prompt + response + rating) and upload if opted in.
+    try:
+        it = next((r for r in _load("interactions.jsonl")
+                   if r.get("id") == fb.get("interaction_id")), None)
+        combined = {
+            "interaction_id": fb.get("interaction_id"),
+            "ts": fb["ts"],
+            "rating": fb.get("rating"),
+            "comment": fb.get("comment", ""),
+            "correction": fb.get("correction", ""),
+            "question": (it or {}).get("question", ""),
+            "response_text": (it or {}).get("response_text", ""),
+            "mode": (it or {}).get("mode", ""),
+            "meta": (it or {}).get("meta", {}),
+        }
+        _upload(combined)
+    except Exception as exc:  # noqa: BLE001
+        log.debug("upload skip: %s", exc)
 
 
 def _load(name: str) -> list[dict]:

@@ -217,6 +217,12 @@ def main() -> None:
     p_fb.add_argument("--export", action="store_true", help="Export SFT + preference-pair JSONL for RLHF/DPO")
     p_fb.set_defaults(func=cmd_feedback)
 
+    p_col = sub.add_parser("collect-server", help="Run the central feedback collector (host this yourself)")
+    p_col.add_argument("--host", default="0.0.0.0")
+    p_col.add_argument("--port", type=int, default=9000)
+    p_col.add_argument("--out", default="collected.jsonl")
+    p_col.set_defaults(func=lambda a: __import__("rag_app.collector", fromlist=["serve"]).serve(a.host, a.port, a.out))
+
     p_index = sub.add_parser("index", help="Load, chunk, embed and store documents")
     p_index.add_argument("--url", action="append", help="Index a web page instead of the data folder (repeatable)")
     p_index.add_argument("--rebuild", action="store_true", help="Clear the vector store first (clean full rebuild)")

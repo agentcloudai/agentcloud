@@ -70,6 +70,10 @@ class Settings(BaseSettings):
     llm_api_base: str = "http://localhost:8000/v1"  # used only for vllm
     llm_temperature: float = 0.0
 
+    # --- Feedback telemetry (opt-in, for central RLHF) ---
+    feedback_submit: bool = False          # when true, auto-upload scrubbed feedback
+    feedback_endpoint: str = ""            # collector URL, e.g. https://collect.example.com/collect
+
     # --- Evaluation ---
     eval_file: str = "eval/questions.jsonl"
     eval_results_dir: str = "eval/results"

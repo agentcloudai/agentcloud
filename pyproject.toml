@@ -6,7 +6,18 @@ build-backend = "setuptools.build_meta"
 name = "agtcld"
 version = "0.1.0"
 description = "AgentCloud AI — your private AWS solutions agent (ask, design & visualize, grounded in AWS docs)"
+readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Ruturaj Dixit" }]
+keywords = ["aws", "rag", "llm", "agent", "architecture", "cloud", "bedrock", "chatbot"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
 dependencies = [
   "llama-index-core>=0.12",
   "llama-index-readers-file",              # PDF/DOCX/etc. support for SimpleDirectoryReader
@@ -40,3 +51,8 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 rag_app = ["web/static/*"]
+
+[project.urls]
+Homepage = "https://ruturajdixit99.github.io/agentcloud/"
+Repository = "https://github.com/ruturajdixit99/agentcloud"
+Issues = "https://github.com/ruturajdixit99/agentcloud/issues"
