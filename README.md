@@ -23,30 +23,34 @@ AgentCloud answers questions about building on the cloud **from the official doc
 
 ## Install — Docker (recommended)
 
-Run the whole app with one command — no Python, no pip, no database to set up:
+Two commands — no Python, no pip, no database, and nothing to index:
 
 ```bash
-# 1. grab the compose file
 curl -LfO https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docker-compose.yml
-
-# 2. add your LLM key (only needed for ask/design, not for indexing)
-echo "OPENAI_API_KEY=sk-..." > .env
-
-# 3. pull the image + start the web UI
 docker compose up -d
 ```
 
-Open **http://localhost:8000**. The image ships with the embedding + reranker models baked in, so it works offline on first run. The vector index and any downloaded docs persist in a Docker volume across restarts and upgrades.
+Then open **http://localhost:8000** and paste your OpenAI key when it asks. That's the whole setup.
 
-**Build a knowledge base** (first run — pick any or all; it persists):
+On first boot the container downloads the **prebuilt index — 440k chunks covering AWS, Azure and Google Cloud** (~3.6 GB, once) into its volume, so the agent already knows all three clouds. The embedding and reranker models are baked into the image, so nothing else is fetched at query time.
+
+| | |
+|---|---|
+| **Your key** | Entered once in the UI and kept in the container's volume (`0600`), never in the image. Prefer a file? Put `OPENAI_API_KEY=sk-...` in `.env` and it skips the prompt. |
+| **Persistence** | Index, key and feedback live in a Docker volume — they survive restarts and upgrades. |
+| **Upgrading** | `docker compose pull && docker compose up -d` |
+| **Start empty instead** | Set `RAG_INDEX_URL=` (blank) to skip the download and build your own with the ingest commands below. |
+
+<details>
+<summary><b>Build your own index instead of using the prebuilt one</b></summary>
 
 ```bash
 docker compose run --rm app rag-app ingest-gcp                         # Google Cloud
 docker compose run --rm app rag-app download --csv aws_service_guides.csv \
   && docker compose run --rm app rag-app index                         # AWS
 ```
-
-Upgrade any time with `docker compose pull && docker compose up -d`.
+Then `rag-app export-index --out my-index.tar.gz`, host it, and point `RAG_INDEX_URL` at it to share with your team.
+</details>
 
 <details>
 <summary><b>Prefer pip? (Python 3.10+)</b></summary>

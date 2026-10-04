@@ -27,10 +27,11 @@ services:
       RAG_DATA_DIR: /app/data
       RAG_CHROMA_PATH: /app/data/chroma
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      # Prebuilt multi-cloud index (AWS + Azure + GCP). On first boot the container
-      # downloads it into the volume so the app already "knows everything". Unset it
-      # to start empty and build your own with the ingest commands.
-      RAG_INDEX_URL: ${RAG_INDEX_URL:-}
+      # Prebuilt multi-cloud index (AWS + Azure + GCP, 440k chunks). On first boot
+      # the container downloads it into the volume, so the app already knows all
+      # three clouds with no indexing step. Override with your own bundle, or set
+      # it empty to start blank and build one with the ingest commands.
+      RAG_INDEX_URL: ${RAG_INDEX_URL:-https://huggingface.co/datasets/rdprojects/agentcloud/resolve/main/agentcloud-index.tar.gz}
       # Used only when RAG_VECTOR_BACKEND=pgvector:
       RAG_PG_HOST: db
       RAG_PG_PORT: "5432"
