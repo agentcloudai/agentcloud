@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>AgentCloud — AWS answers &amp; architecture</title>
+<title>AgentCloud — multi-cloud solutions architect</title>
 <style>
   :root{--bg:#0e1117;--panel:#171b22;--panel2:#1f242d;--border:#2b313b;--text:#e6edf3;--muted:#9aa4b2;--accent:#ff9900;--accent2:#4a9eff;--radius:14px}
   *{box-sizing:border-box} html,body{height:100%}
@@ -14,9 +14,11 @@
   header,.chat,.inputbar{position:relative;z-index:1}
   header{padding:13px 20px;text-align:center;border-bottom:1px solid var(--border);flex:0 0 auto;
          background:linear-gradient(180deg,#0e1117cc,#0e111799);backdrop-filter:blur(6px)}
-  header h1{margin:0;font-size:21px;display:flex;align-items:center;justify-content:center;gap:10px;
-            text-shadow:0 0 22px rgba(255,153,0,.35)} header h1 .a{color:var(--accent)}
-  .logo{height:36px;width:auto;filter:drop-shadow(0 0 9px rgba(74,158,255,.5))}
+  /* Wordmark is monochrome and sits tight against the symbol — no gap, no yellow. */
+  header h1{margin:0;font-size:21px;display:flex;align-items:center;justify-content:center;gap:0}
+  header h1 .wm{letter-spacing:-.2px;font-weight:700;color:#fff}
+  header h1 .a{color:#fff;font-weight:400}
+  .logo{height:36px;width:auto;margin:0;display:block}
   @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
   .msg{animation:fadein .35s ease}
   .hero{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:16px}
@@ -73,6 +75,25 @@
   .diag3d canvas{display:block}
   .tip3d{position:absolute;pointer-events:none;background:#0b0e13f0;border:1px solid #3a4557;border-radius:8px;padding:8px 11px;font-size:12.5px;max-width:300px;display:none;z-index:6;line-height:1.45}
   .tip3d b{color:var(--accent)} .tip3d span{color:var(--muted)}
+  /* Architecture card: blueprint (default) / 3D / code, plus export */
+  .dghead{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+  .dghead h3.sec{margin:0;flex:0 0 auto}
+  .dgtabs{display:flex;gap:4px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:3px}
+  .dgtabs button{background:none;border:0;color:var(--muted);border-radius:7px;padding:5px 12px;font-size:12.5px;font-weight:600;cursor:pointer}
+  .dgtabs button.on{background:#2a3444;color:var(--text)}
+  .dgexp{position:relative;margin-left:auto}
+  .expbtn{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:6px 13px;font-size:12.5px;font-weight:600;cursor:pointer}
+  .expmenu{display:none;position:absolute;right:0;top:calc(100% + 5px);background:var(--panel2);border:1px solid var(--border);
+           border-radius:11px;padding:6px;z-index:20;min-width:196px;box-shadow:0 12px 30px #0009}
+  .expmenu.open{display:block}
+  .expmenu button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--text);padding:8px 11px;border-radius:7px;font-size:13px;cursor:pointer}
+  .expmenu button:hover{background:#2a3444}
+  .expmenu .gl{font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:7px 11px 3px}
+  .diagwrap{position:relative;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:#0b0e13}
+  .diagwrap.bp{overflow:auto;max-height:620px}
+  .diagwrap.d3{height:460px;background:radial-gradient(600px 300px at 50% 0%,#141b26,#0b0e13);cursor:grab}
+  .diagwrap.code{padding:10px;background:var(--panel)}
+  .bpsvg{display:block;width:100%;height:auto}
   .d3dhint{position:absolute;left:10px;bottom:8px;font-size:11px;color:var(--muted);background:#0b0e1399;padding:2px 8px;border-radius:10px;pointer-events:none}
   .mermaid{text-align:center}
   .muted{color:var(--muted)}
@@ -96,14 +117,14 @@
   <h1>
     <img class="logo" src="/static/logo_symbol.png" alt="" />
     <span class="wm">Agent<span class="a">Cloud</span></span></h1>
-  <p>How-to → cited steps · “design …” → a 3D architecture you can orbit. Grounded in your AWS docs &amp; whitepapers.</p>
+  <p>How-to → cited steps · “design …” → a full architecture blueprint you can export. Grounded in official AWS, Azure &amp; Google Cloud docs.</p>
 </header>
 
 <div class="chat empty" id="chat"><div class="thread" id="thread">
   <div class="welcome" id="welcome">
     <div class="hero">
       <img class="herologo" src="/static/logo.png" alt="AgentCloud AI" />
-      <div class="herosub">your private AWS solutions agent</div>
+      <div class="herosub">your private multi-cloud solutions architect</div>
     </div>
     Ask a how-to, or ask me to <b>design</b> something — I’ll cite sources, build a <b>live 3D architecture</b> you can spin &amp; zoom, and ask what I need to tailor it.</div>
   <div class="examples" id="examples"></div>
@@ -129,6 +150,7 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/SVGLoader.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
 <script>
 mermaid.initialize({startup:false,theme:"dark",securityLevel:"loose"});
 const chat=document.getElementById("chat"),thread=document.getElementById("thread"),qEl=document.getElementById("q"),
@@ -337,26 +359,234 @@ function buildThree(el,graph){
   el.insertAdjacentHTML("beforeend",`<div class="d3dhint">left-drag orbit · right-drag pan · scroll zoom · hover a block</div>`);
   return ()=>{cancelAnimationFrame(raf);ro.disconnect();el.removeEventListener("pointermove",move);renderer.dispose();if(renderer.domElement.parentNode)renderer.domElement.remove();};
 }
-function render2D(el){el.classList.remove("diag3d");el.style.height="auto";el.innerHTML=`<pre class="mermaid">${esc(decodeURIComponent(el.dataset.mermaid||""))}</pre>`;
+/* ---------- 2D architecture blueprint (primary view) ----------
+   A real architecture diagram: one band per tier, service cards with inlined
+   brand icons, and labelled routed connectors. Icons are inlined as data URIs so
+   the SVG/PNG exports are self-contained. */
+const PAYLOADS={},ICON_CACHE={};
+const TIER_ORDER=["client","edge","application","integration","data","analytics","security","observability"];
+const TIER_LABEL={client:"Client",edge:"Edge / entry",application:"Application",integration:"Integration",
+                  data:"Data",analytics:"Analytics / ML",security:"Security",observability:"Observability"};
+async function iconDataUri(service){
+  const url=iconUrls(service).primary;
+  if(url in ICON_CACHE)return ICON_CACHE[url];
+  try{const r=await fetch(url);ICON_CACHE[url]="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(await r.text())));}
+  catch(e){ICON_CACHE[url]="";}
+  return ICON_CACHE[url];
+}
+const EDGE_KINDS=[[/monitor|log|trace|metric|observ|alert/,"#a855f7","5 4","telemetry"],
+  [/auth|secret|encrypt|permission|iam|token|credential|key/,"#f0883e","5 4","identity / secrets"],
+  [/read|write|store|persist|query|cache|load|ingest/,"#3fb950","","data"]];
+function edgeKind(label){const l=(label||"").toLowerCase();
+  for(const[r,c,d,n]of EDGE_KINDS)if(r.test(l))return{c,d,n};
+  return{c:"#4a9eff",d:"",n:"request / control"};}
+const clip=(s,n)=>{s=String(s||"");return s.length>n?s.slice(0,n-1)+"…":s;};
+function edgePath(a,b){
+  const acx=a.x+a.w/2,bcx=b.x+b.w/2,acy=a.y+a.h/2,bcy=b.y+b.h/2;
+  const dx=bcx-acx,dy=bcy-acy;
+  // Route along whichever axis dominates, so main-flow links read vertically and
+  // links out to the cross-cutting column read horizontally.
+  if(Math.abs(dx)>Math.abs(dy)*1.2){
+    const right=dx>=0,sx=right?a.x+a.w:a.x,ex=right?b.x:b.x+b.w,mx=(sx+ex)/2;
+    return{d:`M${sx},${acy} C${mx},${acy} ${mx},${bcy} ${ex},${bcy}`,lx:mx,ly:(acy+bcy)/2-9};
+  }
+  const down=dy>=0,sy=down?a.y+a.h:a.y,ey=down?b.y:b.y+b.h,my=(sy+ey)/2;
+  return{d:`M${acx},${sy} C${acx},${my} ${bcx},${my} ${bcx},${ey}`,lx:(acx+bcx)/2,ly:my};
+}
+/* Main flow stacks top-to-bottom; security/observability are cross-cutting and go
+   in a right-hand column instead of their own full-width bands. */
+const MAIN_TIERS=["client","edge","application","integration","data","analytics"];
+const SIDE_TIERS=["security","observability"];
+async function buildBlueprint(el,graph,title){
+  const nodes=graph.nodes||[],edges=graph.edges||[];
+  const tierOf=n=>TIER_ORDER.includes(n.tier)?n.tier:"application";
+  const byTier={};nodes.forEach(n=>{const t=tierOf(n);(byTier[t]=byTier[t]||[]).push(n);});
+  const tiers=MAIN_TIERS.filter(t=>byTier[t]);
+  const sideNodes=SIDE_TIERS.flatMap(t=>byTier[t]||[]);
+  const W=1180,LEFT=118,CW=196,CH=86,GX=24,GY=16,BPAD=14,BGAP=44;
+  const SIDE_W=sideNodes.length?CW+40:0;
+  const MAINR=W-SIDE_W-LEFT-10;                    // usable width for the flow bands
+  const perRow=Math.max(1,Math.floor((MAINR-BPAD*2+GX)/(CW+GX)));
+  const pos={},bands=[];let y=78;
+  tiers.forEach(t=>{const list=byTier[t],rows=Math.ceil(list.length/perRow),bh=rows*CH+(rows-1)*GY+BPAD*2;
+    bands.push({t,y,h:bh,w:MAINR});
+    list.forEach((n,i)=>{const r=Math.floor(i/perRow),c=i%perRow;
+      const inRow=Math.min(perRow,list.length-r*perRow),rowW=inRow*CW+(inRow-1)*GX;
+      pos[n.id]={x:LEFT+(MAINR-rowW)/2+c*(CW+GX),y:y+BPAD+r*(CH+GY),w:CW,h:CH,n};});
+    y+=bh+BGAP;});
+  let sideBand=null;
+  if(sideNodes.length){
+    const sx=W-SIDE_W+8,sh=sideNodes.length*CH+(sideNodes.length-1)*GY+BPAD*2+22;
+    sideBand={x:sx-8,y:78,w:SIDE_W-8,h:sh};
+    sideNodes.forEach((n,i)=>{pos[n.id]={x:sx,y:78+BPAD+22+i*(CH+GY),w:CW,h:CH,n};});
+  }
+  const bottom=Math.max(y-BGAP,sideBand?sideBand.y+sideBand.h:0);
+  const H=bottom+40;
+  const icons={};await Promise.all([...new Set(nodes.map(n=>n.service||n.label))].map(async s=>{icons[s]=await iconDataUri(s);}));
+  const used=new Set(),P=[];
+  P.push(`<svg class="bpsvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="system-ui,Segoe UI,sans-serif">`);
+  P.push(`<rect width="${W}" height="${H}" fill="#0b0e13"/><defs>`);
+  ["#4a9eff","#a855f7","#f0883e","#3fb950"].forEach((c,i)=>P.push(
+    `<marker id="ah${i}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${c}"/></marker>`));
+  P.push(`</defs>`);
+  P.push(`<text x="24" y="34" fill="#e6edf3" font-size="17" font-weight="700">${esc(clip(title||"Architecture",96))}</text>`);
+  P.push(`<text x="24" y="55" fill="#9aa4b2" font-size="11.5">AgentCloud AI — grounded in official cloud documentation</text>`);
+  bands.forEach(b=>{
+    P.push(`<rect x="${LEFT-10}" y="${b.y}" width="${b.w}" height="${b.h}" rx="12" fill="#ffffff07" stroke="#2b313b" stroke-dasharray="3 4"/>`);
+    P.push(`<text x="18" y="${b.y+b.h/2+4}" fill="#8b95a5" font-size="10.5" font-weight="700" letter-spacing="1.2">${esc((TIER_LABEL[b.t]||b.t).toUpperCase())}</text>`);
+  });
+  if(sideBand){
+    P.push(`<rect x="${sideBand.x}" y="${sideBand.y}" width="${sideBand.w}" height="${sideBand.h}" rx="12" fill="#ffffff07" stroke="#2b313b" stroke-dasharray="3 4"/>`);
+    P.push(`<text x="${sideBand.x+14}" y="${sideBand.y+22}" fill="#8b95a5" font-size="10.5" font-weight="700" letter-spacing="1.2">CROSS-CUTTING</text>`);
+  }
+  const labels=[];
+  edges.forEach(e=>{const a=pos[e.source],b=pos[e.target];if(!a||!b||a===b)return;
+    const k=edgeKind(e.label),p=edgePath(a,b),mi=["#4a9eff","#a855f7","#f0883e","#3fb950"].indexOf(k.c);
+    used.add(k.n);
+    P.push(`<path d="${p.d}" fill="none" stroke="${k.c}" stroke-width="1.9" stroke-dasharray="${k.d}" marker-end="url(#ah${mi<0?0:mi})" opacity=".85"/>`);
+    if(e.label)labels.push({x:p.lx,y:p.ly,t:clip(e.label,26)});
+  });
+  // Nudge labels apart so overlapping connectors stay readable.
+  labels.forEach((l,i)=>{let guard=0;
+    while(guard++<24&&labels.some((o,j)=>j<i&&Math.abs(o.x-l.x)<Math.max(l.t.length,o.t.length)*5.4&&Math.abs(o.y-l.y)<13))
+      l.y+=13;});
+  labels.forEach(l=>P.push(`<text x="${l.x}" y="${l.y}" fill="#c9d4e2" font-size="11" text-anchor="middle" paint-order="stroke" stroke="#0b0e13" stroke-width="4" stroke-linejoin="round">${esc(l.t)}</text>`));
+  nodes.forEach(n=>{const p=pos[n.id];if(!p)return;const ic=icons[n.service||n.label];
+    P.push(`<g><rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="11" fill="#171b22" stroke="#39414f"/>`);
+    if(ic)P.push(`<image x="${p.x+13}" y="${p.y+p.h/2-17}" width="34" height="34" href="${ic}"/>`);
+    P.push(`<text x="${p.x+57}" y="${p.y+36}" fill="#e6edf3" font-size="13" font-weight="700">${esc(clip(n.label,18))}</text>`);
+    P.push(`<text x="${p.x+57}" y="${p.y+54}" fill="#8ab4f8" font-size="11">${esc(clip(n.service,20))}</text>`);
+    if(n.sizing)P.push(`<text x="${p.x+57}" y="${p.y+72}" fill="#8b95a5" font-size="10">${esc(clip(n.sizing,22))}</text>`);
+    P.push(`</g>`);
+  });
+  let lx=LEFT-10;const ly=H-14;
+  [...used].forEach(nm=>{const k=EDGE_KINDS.find(x=>x[3]===nm),c=k?k[1]:"#4a9eff",d=k?k[2]:"";
+    P.push(`<line x1="${lx}" y1="${ly-6}" x2="${lx+22}" y2="${ly-6}" stroke="${c}" stroke-width="1.9" stroke-dasharray="${d}"/>`);
+    P.push(`<text x="${lx+28}" y="${ly-2}" fill="#8b95a5" font-size="10.5">${esc(nm)}</text>`);
+    lx+=42+nm.length*6;});
+  P.push(`</svg>`);
+  el.innerHTML=P.join("");
+}
+function renderCode(el){el.innerHTML=`<pre class="mermaid">${esc(decodeURIComponent(el.dataset.mermaid||""))}</pre>`;
   const p=el.querySelector(".mermaid");if(p&&p.textContent.trim()){try{mermaid.run({nodes:[p]});}catch(e){}}}
-function diagramCard(graph,mermaidCode){const id="dg"+(++seq);
-  return `<div class="card"><h3 class="sec">Architecture — interactive 3D</h3>
-    <div class="diag3d" id="${id}" data-graph="${encodeURIComponent(JSON.stringify(graph||{nodes:[],edges:[]}))}" data-mermaid="${encodeURIComponent(mermaidCode||"")}"></div></div>`;}
+async function showView(id,view){
+  const el=document.getElementById(id);if(!el)return;
+  let graph={};try{graph=JSON.parse(decodeURIComponent(el.dataset.graph||"%7B%7D"));}catch(e){}
+  if(liveDiag&&liveDiag.el===el){try{liveDiag.dispose();}catch(e){}liveDiag=null;}
+  el.className="diagwrap "+(view==="d3"?"d3":view==="code"?"code":"bp");el.innerHTML="";
+  const tabs=document.querySelector('.dgtabs[data-for="'+id+'"]');
+  if(tabs)tabs.querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.view===view));
+  if(view==="code")return renderCode(el);
+  if(view==="d3"){if(liveDiag){try{liveDiag.dispose();}catch(e){}liveDiag=null;}
+    try{liveDiag={el,dispose:buildThree(el,graph)};}catch(e){renderCode(el);}return;}
+  try{await buildBlueprint(el,graph,(PAYLOADS[id]||{}).question);}catch(e){renderCode(el);}
+}
+function diagramCard(graph,mermaidCode,payload){const id="dg"+(++seq);PAYLOADS[id]=payload||null;
+  return `<div class="card">
+    <div class="dghead"><h3 class="sec">Architecture</h3>
+      <div class="dgtabs" data-for="${id}"><button class="on" data-view="bp">Blueprint</button><button data-view="d3">3D</button><button data-view="code">Code</button></div>
+      <div class="dgexp"><button class="expbtn" data-for="${id}">Export ▾</button>
+        <div class="expmenu" data-for="${id}">
+          <div class="gl">Document</div>
+          <button data-fmt="md">Markdown (.md)</button><button data-fmt="json">JSON (.json)</button>
+          <button data-fmt="yaml">YAML (.yaml)</button><button data-fmt="csv">Components (.csv)</button>
+          <div class="gl">Diagram</div>
+          <button data-fmt="png">Image (.png)</button><button data-fmt="svg">Vector (.svg)</button>
+          <button data-fmt="mmd">Mermaid (.mmd)</button><button data-fmt="drawio">draw.io (.drawio)</button>
+          <div class="gl">Infrastructure</div>
+          <button data-fmt="tf">Terraform (.tf)</button>
+        </div></div></div>
+    <div class="diagwrap bp" id="${id}" data-graph="${encodeURIComponent(JSON.stringify(graph||{nodes:[],edges:[]}))}" data-mermaid="${encodeURIComponent(mermaidCode||"")}"></div></div>`;}
 function activateDiagrams(){
-  thread.querySelectorAll(".diag3d:not([data-done])").forEach(el=>{el.setAttribute("data-done","1");
+  thread.querySelectorAll(".diagwrap:not([data-done])").forEach(el=>{el.setAttribute("data-done","1");
     let graph={};try{graph=JSON.parse(decodeURIComponent(el.dataset.graph||"%7B%7D"));}catch(e){}
-    if(!graph.nodes||!graph.nodes.length){render2D(el);return;}
-    if(liveDiag){try{liveDiag.dispose();}catch(e){}render2D(liveDiag.el);liveDiag=null;}  // keep one live WebGL scene
-    try{liveDiag={el,dispose:buildThree(el,graph)};}catch(e){render2D(el);}});
+    if(!graph.nodes||!graph.nodes.length){renderCode(el);return;}
+    showView(el.id,"bp");});
+  thread.querySelectorAll(".dgtabs:not([data-w])").forEach(t=>{t.setAttribute("data-w","1");
+    t.querySelectorAll("button").forEach(b=>b.onclick=()=>showView(t.dataset.for,b.dataset.view));});
+  thread.querySelectorAll(".expbtn:not([data-w])").forEach(b=>{b.setAttribute("data-w","1");
+    b.onclick=e=>{e.stopPropagation();const m=document.querySelector('.expmenu[data-for="'+b.dataset.for+'"]');
+      document.querySelectorAll(".expmenu").forEach(x=>{if(x!==m)x.classList.remove("open");});m.classList.toggle("open");};});
+  thread.querySelectorAll(".expmenu:not([data-w])").forEach(m=>{m.setAttribute("data-w","1");
+    m.querySelectorAll("button").forEach(b=>b.onclick=()=>{m.classList.remove("open");exportAs(m.dataset.for,b.dataset.fmt);});});
+}
+document.addEventListener("click",()=>document.querySelectorAll(".expmenu").forEach(m=>m.classList.remove("open")));
+
+/* ---------- Export: document, diagram and infrastructure formats ---------- */
+const escAttr=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/\n/g,"&#10;");
+function dl(name,content,type){const b=new Blob([content],{type:type||"text/plain;charset=utf-8"});
+  const u=URL.createObjectURL(b),a=document.createElement("a");a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);}
+const mdCell=s=>String(s||"").replace(/\|/g,"\\|").replace(/\n/g," ");
+function toMarkdown(d){const L=[];
+  L.push("# "+(d.question||"Architecture"),"");
+  if(d.overview)L.push(d.overview,"");
+  if((d.assumptions||[]).length){L.push("## Assumptions","");d.assumptions.forEach(a=>L.push("- "+a));L.push("");}
+  if((d.clarifying_questions||[]).length){L.push("## Questions to confirm","");d.clarifying_questions.forEach(q=>L.push("- "+q));L.push("");}
+  if((d.components||[]).length){L.push("## Components","","| Tier | Component | Service | Sizing | Why this choice |","|---|---|---|---|---|");
+    d.components.forEach(c=>L.push(`| ${mdCell(c.tier)} | ${mdCell(c.name)} | ${mdCell(c.service)} | ${mdCell(c.sizing)} | ${mdCell(c.purpose)} |`));L.push("");}
+  if((d.connections||[]).length){L.push("## Connections","");d.connections.forEach(c=>L.push(`- ${c.source} → ${c.target}${c.label?" — "+c.label:""}`));L.push("");}
+  if((d.data_flow||[]).length){L.push("## Data flow","");d.data_flow.forEach((f,i)=>L.push(`${i+1}. ${f.step}${f.why?" — _"+f.why+"_":""}`));L.push("");}
+  if((d.non_functional||[]).length){L.push("## Non-functional requirements","","| Aspect | Approach |","|---|---|");
+    d.non_functional.forEach(n=>L.push(`| ${mdCell(n.aspect)} | ${mdCell(n.approach)} |`));L.push("");}
+  if((d.considerations||[]).length){L.push("## Trade-offs & considerations","");d.considerations.forEach(c=>L.push("- "+c));L.push("");}
+  if(d.architecture_mermaid)L.push("## Diagram","","```mermaid",d.architecture_mermaid,"```","");
+  if((d.sources||[]).length){L.push("## Sources","");
+    d.sources.forEach(s=>L.push(`- [${s.id}] ${s.service||s.file||""}${s.guide?" — "+s.guide:""}${s.url?" <"+s.url+">":""}`));L.push("");}
+  L.push("---","Generated by AgentCloud AI — grounded in official cloud documentation.");
+  return L.join("\n");}
+function toCSV(d){const rows=[["tier","component","service","sizing","rationale","sources"]];
+  (d.components||[]).forEach(c=>rows.push([c.tier||"",c.name||"",c.service||"",c.sizing||"",(c.purpose||"").replace(/\n/g," "),(c.source_ids||[]).join(" ")]));
+  return rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\n");}
+function toDrawio(d){const comps=d.components||[];
+  const idx=n=>comps.findIndex(c=>c.name===n||c.service===n);
+  let cells="";
+  comps.forEach((c,i)=>{cells+=`<mxCell id="n${i}" value="${escAttr(c.name+"\n"+(c.service||""))}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#171b22;strokeColor=#39414f;fontColor=#e6edf3;" vertex="1" parent="1"><mxGeometry x="${40+(i%4)*230}" y="${40+Math.floor(i/4)*150}" width="190" height="80" as="geometry"/></mxCell>`;});
+  (d.connections||[]).forEach((e,i)=>{const s=idx(e.source),t=idx(e.target);if(s<0||t<0||s===t)return;
+    cells+=`<mxCell id="e${i}" value="${escAttr(e.label||"")}" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="n${s}" target="n${t}"><mxGeometry relative="1" as="geometry"/></mxCell>`;});
+  return `<mxfile host="agentcloud"><diagram name="Architecture"><mxGraphModel dx="1100" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826"><root><mxCell id="0"/><mxCell id="1" parent="0"/>${cells}</root></mxGraphModel></diagram></mxfile>`;}
+async function exportAs(id,fmt){
+  const d=PAYLOADS[id]||{},el=document.getElementById(id),base="architecture";
+  try{
+    if(fmt==="json")return dl(base+".json",JSON.stringify(d,null,2),"application/json");
+    if(fmt==="yaml")return dl(base+".yaml",window.jsyaml?jsyaml.dump(d):JSON.stringify(d,null,2),"text/yaml");
+    if(fmt==="md")return dl(base+".md",toMarkdown(d),"text/markdown");
+    if(fmt==="csv")return dl(base+"-components.csv",toCSV(d),"text/csv");
+    if(fmt==="mmd")return dl(base+".mmd",d.architecture_mermaid||"","text/plain");
+    if(fmt==="drawio")return dl(base+".drawio",toDrawio(d),"application/xml");
+    if(fmt==="svg"||fmt==="png"){
+      let svg=el&&el.querySelector("svg.bpsvg");
+      if(!svg){await showView(id,"bp");svg=el&&el.querySelector("svg.bpsvg");}
+      if(!svg)return alert("No blueprint to export yet.");
+      const xml=new XMLSerializer().serializeToString(svg);
+      if(fmt==="svg")return dl(base+".svg",xml,"image/svg+xml");
+      const w=+svg.getAttribute("width")||1180,h=+svg.getAttribute("height")||700,sc=2,img=new Image();
+      img.onload=()=>{const c=document.createElement("canvas");c.width=w*sc;c.height=h*sc;
+        const g=c.getContext("2d");g.fillStyle="#0b0e13";g.fillRect(0,0,c.width,c.height);g.drawImage(img,0,0,c.width,c.height);
+        c.toBlob(bl=>{const u=URL.createObjectURL(bl),a=document.createElement("a");a.href=u;a.download=base+".png";a.click();setTimeout(()=>URL.revokeObjectURL(u),1500);},"image/png");};
+      img.onerror=()=>alert("PNG rasterizing failed — the .svg export still works.");
+      img.src="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(xml)));
+      return;
+    }
+    if(fmt==="tf"){
+      const btn=document.querySelector('.expbtn[data-for="'+id+'"]');if(btn){btn.textContent="Generating…";btn.disabled=true;}
+      try{
+        const r=await fetch("/api/export/terraform",{method:"POST",headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({design:d,cloud:selectedCloud==="all"?null:selectedCloud})});
+        const j=await r.json();
+        if(j.error)alert("Terraform export failed: "+j.error);else dl("main.tf",j.terraform||"","text/plain");
+      }finally{if(btn){btn.textContent="Export ▾";btn.disabled=false;}}
+      return;
+    }
+  }catch(e){alert("Export failed: "+e);}
 }
 
 async function send(){
   const raw=qEl.value.trim();if(!raw)return;addUser(raw);qEl.value="";askBtn.disabled=true;
   let query=raw;if(designCtx){designCtx.addl.push(raw);query=designCtx.base+"\n\nAdditional requirements from the user: "+designCtx.addl.join("; ");}
   const isDesign=/\b(design|architect|data lake|data warehouse|platform|highly available|disaster recovery|multi[- ]region|scalab|end[- ]to[- ]end|well[- ]architected)\b/i.test(raw);
-  const msg0=isDesign?"Designing the architecture — components, data flow &amp; 3D model":"Searching AWS docs &amp; whitepapers";
+  const msg0=isDesign?"Designing the architecture — components, data flow &amp; blueprint":"Searching official cloud docs";
   const ld=document.createElement("div");ld.className="msg";
-  ld.innerHTML=`<div class="bubble bot"><div class="card"><span class="spinner"></span> &nbsp;${msg0}… <span id="ldsec" class="muted"></span>${isDesign?`<div class="muted" style="margin-top:6px;font-size:12.5px">grounding in AWS docs &amp; whitepapers — designs take ~15s</div>`:""}</div></div>`;
+  ld.innerHTML=`<div class="bubble bot"><div class="card"><span class="spinner"></span> &nbsp;${msg0}… <span id="ldsec" class="muted"></span>${isDesign?`<div class="muted" style="margin-top:6px;font-size:12.5px">grounding in official cloud docs · reviewing and refining the design — ~25s</div>`:""}</div></div>`;
   thread.appendChild(ld);down();
   let secs=0;const timer=setInterval(()=>{secs++;const e=document.getElementById("ldsec");if(e)e.textContent="("+secs+"s)";},1000);
   try{const res=await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:query,service:svcEl.value||null,cloud:selectedCloud==="all"?null:selectedCloud})});
@@ -371,7 +601,7 @@ function renderAnswer(d){if(d.error)return `<div class="card">Error: ${esc(d.err
   const steps=(d.steps||[]).map(s=>`<li>${esc(s.text)}<span>${(s.sources||[]).map(id=>`<span class="chip">${esc(id)}</span>`).join("")}</span></li>`).join("");
   return `<div class="card"><div class="answer">${esc(d.answer)}</div></div>
     ${steps?`<div class="card"><h3 class="sec">Steps</h3><ol class="steps">${steps}</ol></div>`:""}
-    ${(d.graph&&d.graph.nodes&&d.graph.nodes.length)?diagramCard(d.graph,d.architecture_mermaid):""}
+    ${(d.graph&&d.graph.nodes&&d.graph.nodes.length)?diagramCard(d.graph,d.architecture_mermaid,d):""}
     ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}
     ${fbBar(d.interaction_id)}`;}
 function renderDesign(d){if(d.error)return `<div class="card">Error: ${esc(d.error)}</div>`;
@@ -380,11 +610,13 @@ function renderDesign(d){if(d.error)return `<div class="card">Error: ${esc(d.err
   const comps=(d.components||[]).map(c=>`<div class="comp"><span class="h">${esc(c.name)}</span>${c.service?`<span class="svc">${esc(c.service)}</span>`:""}${(c.source_ids||[]).map(id=>`<span class="chip">${esc(id)}</span>`).join("")}<div class="p">${esc(c.purpose)}</div></div>`).join("");
   const flow=(d.data_flow||[]).map(f=>`<li>${esc(f.step)} ${(f.source_ids||[]).map(id=>`<span class="chip">${esc(id)}</span>`).join("")}${f.why?`<div class="why">↳ ${esc(f.why)}</div>`:""}</li>`).join("");
   const cons=(d.considerations||[]).map(c=>`<li>${esc(c)}</li>`).join(""),asm=(d.assumptions||[]).map(a=>`<li>${esc(a)}</li>`).join("");
+  const nfr=(d.non_functional||[]).map(n=>`<div class="comp"><span class="h">${esc(n.aspect)}</span><div class="p">${esc(n.approach)}</div></div>`).join("");
   return `<div class="card"><h3 class="sec">Architecture design <span class="badge">design</span></h3><div class="answer">${esc(d.overview)}</div></div>
-    ${asks?`<div class="card ask"><h3>To tailor this — click one or type below:</h3><div class="qs">${asks}</div><div class="tip">Your answers refine the design &amp; its 3D model in place.</div></div>`:""}
-    ${(d.graph&&d.graph.nodes&&d.graph.nodes.length)?diagramCard(d.graph,d.architecture_mermaid):""}
+    ${asks?`<div class="card ask"><h3>To tailor this — click one or type below:</h3><div class="qs">${asks}</div><div class="tip">Your answers refine the design &amp; its blueprint in place.</div></div>`:""}
+    ${(d.graph&&d.graph.nodes&&d.graph.nodes.length)?diagramCard(d.graph,d.architecture_mermaid,d):""}
     ${comps?`<div class="card"><h3 class="sec">Components &amp; why</h3>${comps}</div>`:""}
     ${flow?`<div class="card"><h3 class="sec">Data flow</h3><ul class="flow">${flow}</ul></div>`:""}
+    ${nfr?`<div class="card"><h3 class="sec">Non-functional requirements</h3>${nfr}</div>`:""}
     ${cons?`<div class="card"><h3 class="sec">Key considerations (cost · scale · security · reliability)</h3><ul class="plain">${cons}</ul></div>`:""}
     ${asm?`<div class="card"><h3 class="sec">Assumptions</h3><ul class="plain">${asm}</ul></div>`:""}
     ${d.sources&&d.sources.length?`<div class="card"><h3 class="sec">Sources</h3>${srcHtml(d.sources)}</div>`:""}

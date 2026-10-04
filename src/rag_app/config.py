@@ -64,6 +64,11 @@ class Settings(BaseSettings):
     rerank_per_query: int = 4    # best chunks kept from EACH sub-query (ensures breadth)
     rerank_top_n: int = 12       # final chunks passed to the LLM as context (more = fuller answers)
 
+    # --- Design (solutions-architect mode) ---
+    # Draft -> critique -> refine. Costs ~2 extra LLM calls per design but materially
+    # improves completeness; set RAG_DESIGN_REFINE=false for a single cheap pass.
+    design_refine: bool = True
+
     # --- Generation ---
     llm_provider: str = "openai"               # "openai" | "vllm"
     llm_model: str = "gpt-4o-mini"

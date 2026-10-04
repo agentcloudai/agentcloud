@@ -1,4 +1,5 @@
-"""FastAPI app serving the local UI and the query/diagram/art endpoints."""
+"""FastAPI app serving the local UI and the query/diagram/export endpoints."""
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -29,6 +30,11 @@ class AskRequest(BaseModel):
     cloud: str | None = None       # aws | azure | gcp | all (scopes retrieval to one provider)
 
 
+class TerraformRequest(BaseModel):
+    design: dict
+    cloud: str | None = None
+
+
 class ArtRequest(BaseModel):
     question: str
     services: list[str] = []
@@ -42,7 +48,7 @@ class FeedbackRequest(BaseModel):
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="rag-app", description="Ask AWS how-to questions with cited, visualized answers")
+    app = FastAPI(title="rag-app", description="Multi-cloud solutions architect: cited how-tos, architecture designs and exports")
 
     @app.get("/")
     def index():
@@ -87,6 +93,42 @@ def create_app() -> FastAPI:
             payload["graph"] = {"nodes": [], "edges": []}
         payload["interaction_id"] = log_interaction(req.question, "answer", payload)
         return payload
+
+    @app.post("/api/export/terraform")
+    def export_terraform(req: TerraformRequest):
+        """Turn a design payload into a Terraform skeleton (uses the user's own LLM key)."""
+        comps = req.design.get("components") or []
+        if not comps:
+            return JSONResponse({"error": "no components to export"}, status_code=400)
+        from llama_index.core import PromptTemplate
+
+        lines = [f"- [{c.get('tier','')}] {c.get('name','')} using {c.get('service','')}"
+                 f"{(' (' + c['sizing'] + ')') if c.get('sizing') else ''}" for c in comps]
+        conns = [f"- {c.get('source','')} -> {c.get('target','')} ({c.get('label','')})"
+                 for c in (req.design.get("connections") or [])]
+        prompt = PromptTemplate(
+            "Write Terraform for the architecture below. Output ONLY HCL, no prose and no code fences.\n"
+            "Requirements:\n"
+            "- Use the correct provider for the services named ({cloud}).\n"
+            "- Include a terraform block with required_providers, the provider block, and variables "
+            "for region/project/names with sensible defaults.\n"
+            "- One resource per component, wired together via references where the connections imply it.\n"
+            "- Add a short comment above each resource saying which component it implements.\n"
+            "- Where a resource needs details the design does not specify, add a TODO comment rather "
+            "than inventing values.\n\n"
+            "Architecture: {overview}\n\nComponents:\n{components}\n\nConnections:\n{connections}\n"
+        )
+        try:
+            hcl = str(_service().llm.predict(
+                prompt, cloud=req.cloud or "infer from the service names",
+                overview=req.design.get("overview", ""),
+                components="\n".join(lines), connections="\n".join(conns) or "(none given)",
+            ))
+        except Exception as exc:  # noqa: BLE001
+            log.warning("terraform export failed: %s", exc)
+            return JSONResponse({"error": str(exc)}, status_code=500)
+        hcl = re.sub(r"^\s*```[a-zA-Z]*\n|\n```\s*$", "", hcl).strip()
+        return {"terraform": hcl}
 
     @app.post("/api/feedback")
     def feedback(req: FeedbackRequest):
