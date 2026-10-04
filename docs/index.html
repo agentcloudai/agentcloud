@@ -119,7 +119,7 @@
 
 <section id="get-started"><div class="wrap">
   <h2 class="sec">Get started</h2>
-  <p class="lead">Two commands. No Python, no database, and nothing to index &mdash; the agent arrives already knowing AWS, Azure and Google Cloud.</p>
+  <p class="lead">Two commands and it&rsquo;s running &mdash; nothing to install, nothing to configure. It arrives already knowing AWS, Azure and Google Cloud.</p>
   <pre class="code"><span class="c"># 1. grab the compose file</span>
 curl -LfO https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docker-compose.yml
 
@@ -128,8 +128,8 @@ docker compose up -d
 
 <span class="c"># then open http://localhost:8000 and paste your OpenAI key when it asks</span>
 </pre>
-  <p class="note">On first boot it downloads the prebuilt index &mdash; <b>440,000 chunks across all three clouds</b> (~3.6&nbsp;GB, once) &mdash; into a Docker volume. Embedding and reranking models are baked into the image, so nothing else is fetched at query time. Your key is stored only on your machine. Upgrade with <code>docker compose pull &amp;&amp; docker compose up -d</code>.</p>
-  <p class="note">Prefer Python? <code>pip install agtcld</code> then <code>agtcld</code> &mdash; and <code>rag-app fetch-index</code> pulls the same prebuilt index.</p>
+  <p class="note">The first launch takes a few minutes while it downloads itself and everything it knows about AWS, Azure and Google Cloud. After that it opens instantly &mdash; and runs entirely on your machine, so your questions and your key never leave it.</p>
+  <p class="note">Prefer Python? <code>pip install agtcld</code></p>
 </div></section>
 
 <footer><div class="wrap">
