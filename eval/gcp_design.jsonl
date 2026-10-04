@@ -1,0 +1,5 @@
+{"question": "Design a serverless web application on Google Cloud with a static frontend, an API, and a database.", "cloud": "GCP", "expected_component_services": ["Cloud Run", "Cloud Storage"]}
+{"question": "Design a data analytics pipeline on Google Cloud that loads and queries large datasets.", "cloud": "GCP", "expected_component_services": ["BigQuery", "Cloud Storage"]}
+{"question": "Design a scalable containerized microservices platform on Google Cloud.", "cloud": "GCP", "expected_component_services": ["Kubernetes", "Cloud Run"]}
+{"question": "Design a globally distributed web app on Google Cloud with caching and a managed database.", "cloud": "GCP", "expected_component_services": ["Cloud CDN", "Cloud SQL"]}
+{"question": "Design a secure multi-tier application on Google Cloud with network isolation and IAM.", "cloud": "GCP", "expected_component_services": ["VPC", "IAM"]}

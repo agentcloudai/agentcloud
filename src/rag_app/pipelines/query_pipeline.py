@@ -21,6 +21,41 @@ from rag_app.storage.vector_store import build_vector_store
 
 log = get_logger(__name__)
 
+# With AWS + Azure + GCP in one index, a query naming one cloud's service can be
+# swamped by another cloud's semantically-similar docs (e.g. "Cloud SQL" pulling
+# Amazon RDS). When the question clearly targets one provider, scope retrieval to
+# that provider's docs. AWS dominates the index, so AWS queries need no filter;
+# Azure/GCP are matched on their distinct `guide` value.
+_GCP_MARKERS = (
+    "gcp", "google cloud", "cloud run", "bigquery", "cloud sql", "gke",
+    "kubernetes engine", "compute engine", "cloud storage", "cloud cdn", "apigee",
+    "looker", "cloud spanner", "cloud bigtable", "cloud logging", "cloud monitoring",
+)
+_AZURE_MARKERS = (
+    "azure", "aks", "cosmos", "blob storage", "app service", "container apps",
+    "service bus", "event hub", "event grid", "logic apps", "synapse", "data factory",
+    "front door", "api management", "static web app",
+)
+
+
+def _cloud_filter(question: str) -> dict[str, str] | None:
+    q = question.lower()
+    gcp = any(m in q for m in _GCP_MARKERS)
+    az = any(m in q for m in _AZURE_MARKERS)
+    if gcp and not az:
+        return {"guide": "Google Cloud documentation"}
+    if az and not gcp:
+        return {"guide": "Azure documentation"}
+    return None
+
+
+def _merge_cloud_filter(question: str, filters: dict[str, str] | None) -> dict[str, str] | None:
+    """Add a provider scope inferred from the question, unless the caller set one."""
+    cf = _cloud_filter(question)
+    if not cf:
+        return filters
+    return {**cf, **(filters or {})}  # explicit caller filters win
+
 
 @dataclass
 class QueryResult:
@@ -103,6 +138,7 @@ class RAGService:
             return [question]
 
     def retrieve(self, question: str, filters: dict[str, str] | None = None) -> list[NodeWithScore]:
+        filters = _merge_cloud_filter(question, filters)
         retriever = build_retriever(self.vector_store, self.embed_model, self.s, filters)
         # Rerank EACH sub-query's hits against the original question and keep its best
         # few. This guarantees every option/component (e.g. DynamoDB AND RDS) is

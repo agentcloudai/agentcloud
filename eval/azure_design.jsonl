@@ -1,0 +1,5 @@
+{"question": "Design a serverless web application on Azure with a static frontend, an API, and a database.", "cloud": "Azure", "expected_component_services": ["Functions", "Storage"]}
+{"question": "Design an event-driven data processing pipeline on Azure.", "cloud": "Azure", "expected_component_services": ["Functions", "Storage"]}
+{"question": "Design a scalable containerized microservices architecture on Azure.", "cloud": "Azure", "expected_component_services": ["Container Apps"]}
+{"question": "Design a real-time analytics pipeline on Azure that ingests streaming events.", "cloud": "Azure", "expected_component_services": ["Event", "Analytics"]}
+{"question": "Design a secure public web app on Azure with global routing and an API gateway.", "cloud": "Azure", "expected_component_services": ["Front Door", "API Management"]}

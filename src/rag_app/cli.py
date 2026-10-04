@@ -222,6 +222,24 @@ def cmd_eval_answers(args) -> None:
                 print(f"       missing: {', '.join(r['missing_terms'])}")
 
 
+def cmd_eval_design(args) -> None:
+    from rag_app.evaluation.design_eval import run_design_eval
+    from rag_app.pipelines.query_pipeline import RAGService
+
+    s = get_settings()
+    summary = run_design_eval(RAGService(s), s, path=args.file, k=args.k)
+    print(json.dumps({k: v for k, v in summary.items() if k != "rows"}, indent=2))
+    print("\nPer-question:")
+    for r in summary["rows"]:
+        flag = "OK " if r["has_diagram"] and not r["insufficient"] else "!! "
+        cov = f"{r['component_coverage']:.0%}" if r["component_coverage"] is not None else "n/a"
+        print(f"  {flag}diagram={r['has_diagram']} nodes={r['n_nodes']} edges={r['n_edges']} "
+              f"flow={r['has_data_flow']} cov={cov}  {r['question'][:50]}")
+        if r.get("missing_components"):
+            print(f"       missing: {', '.join(r['missing_components'])}")
+        print(f"       components: {', '.join(s for s in r['component_services'] if s)}")
+
+
 def main() -> None:
     setup_logging()
     parser = argparse.ArgumentParser(prog="rag-app", description="Modular RAG with LlamaIndex + pgvector")
@@ -294,6 +312,11 @@ def main() -> None:
     p_evala.add_argument("--k", type=int, default=5)
     p_evala.add_argument("--judge", action="store_true", help="Use an LLM to grade step correctness")
     p_evala.set_defaults(func=cmd_eval_answers)
+
+    p_evald = sub.add_parser("eval-design", help="Check design mode produces grounded architecture diagrams (needs LLM key)")
+    p_evald.add_argument("--file", default="eval/azure_design.jsonl", help="Design eval JSONL")
+    p_evald.add_argument("--k", type=int, default=5)
+    p_evald.set_defaults(func=cmd_eval_design)
 
     args = parser.parse_args()
     args.func(args)

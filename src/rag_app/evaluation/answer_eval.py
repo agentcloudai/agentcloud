@@ -76,15 +76,25 @@ def run_answer_eval(service, s: Settings, path: str | Path | None = None, k: int
         answer_text = " ".join([result.answer.summary, *(c.text for c in result.answer.claims)])
         retrieved_files = {n.node.metadata.get("file_name", "") for n in result.sources.values()}
         retrieved_services = {n.node.metadata.get("service", "") for n in result.sources.values()}
+        # file_name + source_url text, so Azure/GCP (no PDF names) can match on a
+        # service-folder substring, e.g. "container-apps" or "/run/docs/".
+        retrieved_blob = " ".join(
+            f"{n.node.metadata.get('file_name', '')} {n.node.metadata.get('source_url', '')}"
+            for n in result.sources.values()
+        ).lower()
 
         expected_files = set(item.get("expected_files", []))
         expected_services = set(item.get("expected_services", []))
+        expected_substrs = item.get("expected_source_substr", [])
         key_terms = item.get("key_terms", [])
         coverage, missing = _coverage(answer_text, key_terms)
+        retrieval_hit = bool(expected_files & retrieved_files) or any(
+            ss.lower() in retrieved_blob for ss in expected_substrs
+        )
 
         row = {
             "question": q,
-            "retrieval_hit": bool(expected_files & retrieved_files),
+            "retrieval_hit": retrieval_hit,
             "service_match": bool(expected_services & retrieved_services) if expected_services else None,
             "step_coverage": round(coverage, 3),
             "missing_terms": missing,
