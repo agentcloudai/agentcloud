@@ -76,9 +76,9 @@
 <header class="hero"><div class="wrap">
   <img class="logo" src="logo.png" alt="AgentCloud AI" />
   <h1>One agent for <span class="a">every cloud</span></h1>
-  <p class="sub">Ask how-to questions and get answers where every step cites its source — then say “design …” and watch your architecture build itself in live 3D. Grounded in official cloud docs, runs on your machine.</p>
+  <p class="sub">Ask how-to questions and get answers where every step cites its source — then say “design …” and get a full architecture blueprint you can export. Grounded in official AWS, Azure and Google Cloud docs. Runs on your machine, and arrives already knowing all three.</p>
   <div class="cta">
-    <span class="install"><span class="pfx">$</span><code id="cmd">pip install agtcld</code><button onclick="copyCmd()">copy</button></span>
+    <span class="install"><span class="pfx">$</span><code id="cmd">docker compose up -d</code><button onclick="copyCmd()">copy</button></span>
     <a class="btn" href="#get-started">Get started →</a>
   </div>
 
@@ -119,19 +119,17 @@
 
 <section id="get-started"><div class="wrap">
   <h2 class="sec">Get started</h2>
-  <p class="lead">Only Python is required — no Docker, no database. AWS and Azure are available today.</p>
-  <pre class="code"><span class="c"># install</span>
-pip install agtcld
+  <p class="lead">Two commands. No Python, no database, and nothing to index &mdash; the agent arrives already knowing AWS, Azure and Google Cloud.</p>
+  <pre class="code"><span class="c"># 1. grab the compose file</span>
+curl -LfO https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docker-compose.yml
 
-<span class="c"># launch the agent — it asks: terminal or the web app?</span>
-agtcld
+<span class="c"># 2. start it</span>
+docker compose up -d
 
-<span class="c"># or one-off commands</span>
-rag-app index                 <span class="c"># build the local knowledge base</span>
-rag-app ask <span class="k">"How do I enable S3 versioning?"</span>
-rag-app serve                 <span class="c"># http://127.0.0.1:8000 (immersive web UI)</span>
+<span class="c"># then open http://localhost:8000 and paste your OpenAI key when it asks</span>
 </pre>
-  <p class="note">On first run AgentCloud asks for your LLM key and explains storage. AWS, Azure &amp; Google Cloud are all supported.</p>
+  <p class="note">On first boot it downloads the prebuilt index &mdash; <b>440,000 chunks across all three clouds</b> (~3.6&nbsp;GB, once) &mdash; into a Docker volume. Embedding and reranking models are baked into the image, so nothing else is fetched at query time. Your key is stored only on your machine. Upgrade with <code>docker compose pull &amp;&amp; docker compose up -d</code>.</p>
+  <p class="note">Prefer Python? <code>pip install agtcld</code> then <code>agtcld</code> &mdash; and <code>rag-app fetch-index</code> pulls the same prebuilt index.</p>
 </div></section>
 
 <footer><div class="wrap">
@@ -142,7 +140,9 @@ rag-app serve                 <span class="c"># http://127.0.0.1:8000 (immersive
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-function copyCmd(){navigator.clipboard&&navigator.clipboard.writeText("pip install agtcld");}
+function copyCmd(){const c="curl -LfO https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docker-compose.yml && docker compose up -d";
+  if(navigator.clipboard)navigator.clipboard.writeText(c);
+  const b=event&&event.target;if(b){const t=b.textContent;b.textContent="copied!";setTimeout(()=>b.textContent=t,1400);}}
 /* ---- particle background ---- */
 (function(){const cv=document.getElementById("bg"),x=cv.getContext("2d");let w,h,pts;
   function size(){w=cv.width=innerWidth;h=cv.height=innerHeight;}size();addEventListener("resize",size);
