@@ -1,190 +1,150 @@
-# rag-app: modular RAG with LlamaIndex
+<div align="center">
 
-Ask questions about your own documents and get answers where **every sentence cites its source**.
-Each RAG step is its own Python package, so you can build, test and swap one step at a time.
+<img src="https://raw.githubusercontent.com/ruturajdixit99/agentcloud/main/docs/logo.png" alt="AgentCloud AI" width="320" />
 
-**Runs with no database by default** — an embedded, file-based vector store (Chroma) ships in
-the box, so a plain `pip install` just works. Switch to PostgreSQL/pgvector when you need scale
-or multi-tenancy (see [Vector store backends](#vector-store-backends)).
+# AgentCloud AI
 
-## Flow
+**Your private cloud solutions agent — ask how-tos with cited steps, then watch it design the architecture in live 3D. Grounded in official cloud docs. Runs on your machine.**
 
-```
-INDEX:  data/raw > ingest > chunking > embedding > storage (Chroma or pgvector)
-QUERY:  question > retrieval > reranking > generation (cited JSON) > answer
-EVAL:   eval/questions.jsonl > retrieval + reranking > recall@k, precision@k, MRR > eval/results/*.json
-```
+[![PyPI](https://img.shields.io/pypi/v/agtcld.svg)](https://pypi.org/project/agtcld/)
+[![Python](https://img.shields.io/pypi/pyversions/agtcld.svg)](https://pypi.org/project/agtcld/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live demo](https://img.shields.io/badge/live-3D%20demo-ff9900.svg)](https://ruturajdixit99.github.io/agentcloud/)
 
-## Project layout
+[**▶ Try the live 3D demo**](https://ruturajdixit99.github.io/agentcloud/) · [Install](#install) · [What makes it different](#what-makes-it-different) · [Cloud support](#cloud-support)
 
-```
-src/rag_app/
-  config.py              all settings (env vars with RAG_ prefix or .env)
-  logging_utils.py       shared logging
-  ingest/loaders.py      STEP 1  load files / URLs, content hash, dedupe
-  chunking/splitter.py   STEP 2  SentenceSplitter (chunk size + overlap)
-  embedding/embedder.py  STEP 3  HuggingFace (local) or OpenAI embeddings
-  storage/vector_store.py STEP 4 PGVectorStore: HNSW index + full-text column
-  retrieval/retriever.py STEP 5  hybrid search + metadata filters
-  reranking/reranker.py  STEP 6  cross-encoder reranker
-  generation/            STEP 7  schemas.py (Pydantic), prompts.py (versioned), generator.py (LLM + citation check)
-  evaluation/            STEP 8  metrics.py (pure Python), runner.py (runs eval set, saves results)
-  pipelines/             wires steps: index_pipeline.py, query_pipeline.py (RAGService)
-  cli.py                 rag-app index | ask | eval
-tests/                   unit tests for metrics and citation validation
-```
+</div>
 
-## AgentCloud AI
+---
 
-Your private AWS solutions agent — ask how-tos (cited steps) or "design …" (a 3D
-architecture you can orbit), grounded in AWS docs & whitepapers.
+AgentCloud answers questions about building on the cloud **from the official documentation** — every step cites the exact source page, so you get real APIs and real steps, not hallucinations. Ask a *how-to* and get cited steps; say *"design …"* and it proposes a full architecture (components, data flow, trade-offs, the questions it needs answered) and renders it as an **interactive 3D diagram** you can orbit and zoom. It runs **locally** with an embedded vector store — no database, no Docker, your questions stay yours.
+
+> **AWS is available today. Azure & Google Cloud are coming next** — same agent, same 3D designs, grounded in each provider's docs.
+
+## Install
 
 ```bash
-pip install agtcld            # (from PyPI once published; or `pip install -e .` from this repo)
-agtcld                        # shows the logo, asks: work in the terminal, or open the web app?
+pip install agtcld
+agtcld            # shows the logo, asks: work in the terminal, or open the web app?
 ```
 
-- **Terminal mode** → an interactive agent right in your shell (`(~) agentcloud >`).
-- **Web app** → the immersive localhost UI with the live 3D architecture view.
+Only **Python 3.10+** is required — no Docker, no database. On first run it asks for your LLM key and explains storage.
 
-## Quick start (no database, no Docker)
+- **Terminal mode** → an interactive agent in your shell (`(~) agentcloud >`).
+- **Web app** → `http://127.0.0.1:8000` with the live 3D architecture view (`rag-app serve`, or choose "web").
 
-Only Python 3.10+ is required. The vector store is embedded, so there is nothing to run.
+## What makes it different
+
+| | |
+|---|---|
+| 📑 **Cited, not guessed** | Answers are built from the cloud's official docs & whitepapers; every step links to its source. |
+| 🧊 **Live 3D architecture** | "design …" → real service icons as 3D tiles, arrowed data flow, real topology — orbit, zoom, hover for the *why*. |
+| 🔒 **Private & local** | Embedded vector store (Chroma). No database, no Docker, nothing leaves your machine. |
+| 💬 **Terminal or web** | Use `agtcld` in your shell or the immersive web UI. Answer the agent's follow-ups to refine a design in place. |
+| ♻️ **Improves over time** | Built-in 👍/👎 + "better answer" capture → export SFT / preference datasets for fine-tuning (RLHF). |
+
+## Cloud support
+
+| Cloud | Status |
+|---|---|
+| **AWS** | ✅ Available |
+| **Azure** | 🔜 Coming soon |
+| **Google Cloud** | 🔜 Coming soon |
+
+## Quickstart with your own docs
 
 ```bash
-git clone <this-repo> && cd rag_app
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e ".[dev]"             # installs the `agtcld` command (web UI included); add ,browser for `crawl`
-
-# Add your own PDFs/TXT/MD to ./data/raw, then:
-rag-app index                       # chunks + embeds into an embedded Chroma store under data/
-agtcld                              # launch the agent (terminal or web)
-rag-app ask "What was decided about the solar project?"   # one-off query
+pip install agtcld
+# put your PDFs / TXT / MD in ./data/raw, then:
+rag-app index                       # chunk + embed locally (GPU-accelerated if available)
+rag-app ask "What does our return policy say about refunds?"
+rag-app serve                       # or launch the web UI
 ```
 
-`rag-app ask` needs an LLM: set `OPENAI_API_KEY=sk-...` (in `.env` or your shell), or point
-`RAG_LLM_PROVIDER=vllm` at your own server. **Indexing needs no API key** (local embedding model).
+`ask`/`design` need an LLM — set `OPENAI_API_KEY` (in `.env` or your shell), or point `RAG_LLM_PROVIDER=vllm` at your own server. **Indexing needs no API key** (local embedding model).
 
-Pull AWS's service docs (373 services) and query just one of them — every chunk is tagged with its service:
+### Or load AWS's docs (373 services)
 
 ```bash
-rag-app download --csv aws_service_guides.csv
+rag-app download --csv aws_service_guides.csv        # or --service "AWS Lambda" for a subset
 rag-app index
 rag-app ask "How do I enable S3 versioning?" --filter service="Amazon Simple Storage Service"
 ```
 
-### Run it in Docker instead (optional)
+Every chunk is tagged with its service, so you can scope any question to one service. The CSVs (service guides, whitepapers, Well-Architected, prescriptive guidance) were generated from AWS's documentation sitemap.
 
-Only needs [Docker](https://www.docker.com/products/docker-desktop/); still no database.
+## How it works
+
+```
+INDEX:   your docs ──▶ parse (PyMuPDF) ──▶ chunk ──▶ embed ──▶ store (Chroma / pgvector)
+ANSWER:  question ──▶ multi-query retrieval ──▶ rerank ──▶ cited answer  (+ grounding repair)
+DESIGN:  request  ──▶ retrieve across services ──▶ components + flow + trade-offs ──▶ 3D diagram
+```
+
+## Feedback & RLHF
+
+Interactions and feedback are captured locally for continuous improvement:
 
 ```bash
-docker compose up -d --build        # builds + starts the app (embedded store)
+rag-app feedback            # stats (👍/👎, corrections)
+rag-app feedback --export   # → sft.jsonl (prompt→response) + preferences.jsonl (chosen/rejected)
+```
+
+Opt-in automated collection: set `RAG_FEEDBACK_SUBMIT=true` and `RAG_FEEDBACK_ENDPOINT=<your collector>` (PII-scrubbed before upload). Host the collector with `rag-app collect-server`.
+
+## Configuration (selected)
+
+All settings are env vars with the `RAG_` prefix (or a `.env` file):
+
+| Setting | Default | Notes |
+|---|---|---|
+| `OPENAI_API_KEY` | – | needed for `ask`/`design` |
+| `RAG_VECTOR_BACKEND` | `chroma` | `chroma` (embedded) or `pgvector` |
+| `RAG_LLM_MODEL` | `gpt-4o-mini` | any OpenAI model; or `RAG_LLM_PROVIDER=vllm` |
+| `RAG_EMBED_MODEL` | `BAAI/bge-small-en-v1.5` | local embeddings |
+| `RAG_DEVICE` | `auto` | `cuda` when a GPU is present, else `cpu` |
+
+## Advanced
+
+<details>
+<summary><b>Scale: PostgreSQL / pgvector</b></summary>
+
+For large / multi-tenant deployments, `pip install "agtcld[postgres]"`, set `RAG_VECTOR_BACKEND=pgvector`, and start Postgres (e.g. `RAG_VECTOR_BACKEND=pgvector docker compose --profile pgvector up -d`). The table + extension are created on first index; pgvector also enables hybrid (vector + full-text) search.
+</details>
+
+<details>
+<summary><b>Crawl JavaScript-rendered doc sites</b></summary>
+
+```bash
+pip install "agtcld[browser]" && playwright install chromium
+rag-app crawl https://aws.amazon.com/whitepapers/ --limit 5
+```
+Site adapters live in `src/rag_app/ingest/sites/`; the fallback keeps any `.pdf` link.
+</details>
+
+<details>
+<summary><b>Run in Docker</b></summary>
+
+```bash
+docker compose up -d --build
 docker compose exec app rag-app index
-docker compose exec app rag-app ask "..."
 ```
+Still no database — the embedded store lives on a mounted volume.
+</details>
 
-Shortcuts with `make`: `make up`, `make download`, `make index`, `make ask Q="..."`, `make test`.
-
-## Web UI (`rag-app serve`)
-
-A local web app to ask AWS how-to questions and get a **crisp cited answer + an
-architecture diagram** — plus an optional AI-art render.
+<details>
+<summary><b>Evaluate quality</b></summary>
 
 ```bash
-pip install agtcld              # web UI + API are built in (fastapi/uvicorn)
-rag-app serve                  # http://127.0.0.1:8000   (or: agtcld → choose web)
+rag-app eval --file eval/architecture_questions.jsonl     # recall@k / precision@k / MRR
+rag-app eval-answers --judge                               # LLM-judged step coverage
 ```
+</details>
 
-What it shows per question:
-- a one-line **answer** and numbered **steps**, each with clickable source citations
-- a **structured architecture diagram** (Mermaid, with AWS service symbols) and a setup-steps flow — accurate, instant
-- an optional **"AI art view"** (HuggingFace SD-Turbo) — a stylized render; the structured diagram is the accurate one. Needs `.[image]`; the model (~2.5 GB) downloads on first use. For gated models set `HF_TOKEN` in `.env`.
-- a **service filter** so you can scope a question to one of the 363 services
+## Contributing
 
-## Vector store backends
+Issues and PRs welcome — new cloud providers, site adapters, chunking/retrieval strategies, and eval sets especially. `pip install -e ".[dev]"` then `pytest`.
 
-Set `RAG_VECTOR_BACKEND` (default `chroma`):
+## License
 
-| Backend | Needs | Good for |
-| --- | --- | --- |
-| `chroma` (default) | nothing — embedded, stored under `data/chroma` | laptops, demos, open-source, small/medium corpora |
-| `pgvector` | a Postgres with the pgvector extension | large corpora, concurrency, multi-tenant / SaaS; adds hybrid (vector + full-text) search |
-
-To use pgvector: `pip install -e ".[postgres]"`, set `RAG_VECTOR_BACKEND=pgvector`, and start a
-database — e.g. `RAG_VECTOR_BACKEND=pgvector docker compose --profile pgvector up -d` (exposes it on
-host port 5544). The table/extension are created automatically on first index.
-
-## Crawling JavaScript sites
-
-Some document listings (e.g. the [AWS whitepapers](https://aws.amazon.com/whitepapers/))
-are rendered with JavaScript and paginated, so plain HTTP fetching finds no links.
-`rag-app crawl` drives a real Chromium browser (Playwright) to render and page
-through the listing, then downloads the PDFs into `data/raw/` ready for `rag-app index`.
-
-```bash
-# one-time setup (editable install already covers the code; just add the browser)
-pip install playwright
-playwright install chromium
-
-# download up to 5 AWS whitepapers, watching the browser
-rag-app crawl https://aws.amazon.com/whitepapers/ --limit 5 --show-browser
-
-# then index them
-rag-app index
-```
-
-Options: `--max-pages N` (listing pages to visit), `--limit N` (max files to
-download), `--show-browser` (run Chromium with a visible window instead of headless).
-
-The crawler picks a **site adapter** (`src/rag_app/ingest/sites/`) based on the URL:
-`aws_whitepapers` knows how to turn whitepaper guide pages into their PDF URLs, and
-`generic_pdf` is the fallback that simply keeps any link ending in `.pdf`. To support a
-new site, add an adapter module next to those. If the crawl finds zero links, it saves
-`crawl_debug.png` so you can inspect the rendered page and adjust the selectors.
-
-## Downloading AWS service docs, chunked per service
-
-`rag-app download` fetches PDFs listed in a CSV (columns `title, guide, pdf_url`) and
-writes a `_sources.csv` manifest alongside them. On `rag-app index`, every chunk is then
-tagged with its `service`, so you can group and filter retrieval per AWS service.
-
-```bash
-# all 373 services' how-to guides (large: many GB) ...
-rag-app download --csv aws_service_guides.csv
-
-# ... or just the services you care about
-rag-app download --csv aws_service_guides.csv --service "Amazon Simple Storage Service" --service "AWS Lambda"
-
-rag-app index
-rag-app ask "How do I enable S3 versioning?" --filter service="Amazon Simple Storage Service"
-```
-
-`aws_service_guides.csv` (373 services / 439 guides) and `aws_all_doc_pdfs.csv` (1,541 incl.
-whitepapers + architecture diagrams) were generated from AWS's documentation sitemap; each
-guide's exact PDF URL comes from its `meta-inf/guide-info.json`. `aws_services.csv` is the
-per-service index.
-
-## What each step stores
-
-| Where | What |
-| --- | --- |
-| `data/raw/` | your original files |
-| `data/chroma/` (or Postgres `data_chunks` with pgvector) | chunk text, metadata (file name, page, hash, service), embedding vector |
-| `eval/results/*.json` | scores per eval run, with the config used |
-
-## Things to try (one change at a time, run `rag-app eval` after each)
-
-1. Change `RAG_CHUNK_SIZE` (256 / 512 / 1024). Re-index first.
-2. Turn hybrid search off: `RAG_HYBRID_SEARCH=false`.
-3. Turn reranking off: `RAG_RERANK_ENABLED=false`.
-4. Swap embedding model, e.g. `RAG_EMBED_MODEL=BAAI/bge-base-en-v1.5`, `RAG_EMBED_DIM=768`.
-   Use a new `RAG_PG_TABLE` because the vector size changes.
-5. Serve an open model with vLLM and set `RAG_LLM_PROVIDER=vllm`.
-
-## Where to extend
-
-- New source (e.g. scraped county agendas): add a function in `ingest/loaders.py`.
-- Structure-aware chunking (one chunk per agenda item): add a splitter in `chunking/splitter.py`.
-- Claim-level support check (LLM judge): extend `validate_citations` in `generation/generator.py`.
-- Answer-quality metrics (faithfulness): add to `evaluation/`.
-- Signal classifiers / entity linking: new packages next to the others, called from a pipeline.
+MIT © Ruturaj Dixit
