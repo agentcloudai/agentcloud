@@ -94,6 +94,19 @@
   .diagwrap.d3{height:460px;background:radial-gradient(600px 300px at 50% 0%,#141b26,#0b0e13);cursor:grab}
   .diagwrap.code{padding:10px;background:var(--panel)}
   .bpsvg{display:block;width:100%;height:auto}
+  /* First-run setup: ask for the LLM key in the UI so nobody edits .env */
+  .setup{position:fixed;inset:0;background:#0b0e13e8;backdrop-filter:blur(4px);z-index:60;display:none;align-items:center;justify-content:center}
+  .setup.on{display:flex}
+  .setupbox{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:26px 28px;max-width:470px;width:92%}
+  .setupbox h2{margin:0 0 6px;font-size:19px}
+  .setupbox p{color:var(--muted);font-size:13.5px;line-height:1.55;margin:0 0 16px}
+  .setupbox input{width:100%;background:var(--panel2);border:1px solid var(--border);color:var(--text);
+                  border-radius:11px;padding:13px 14px;font-size:14px;outline:none;box-sizing:border-box}
+  .setupbox input:focus{border-color:var(--accent2)}
+  .setuprow{display:flex;gap:10px;align-items:center;margin-top:14px}
+  .setupmsg{font-size:12.5px;margin-top:10px;min-height:16px}
+  .setupmsg.err{color:#ff7b72} .setupmsg.ok{color:#3fb950}
+  .setupbox a{color:var(--accent2)}
   .d3dhint{position:absolute;left:10px;bottom:8px;font-size:11px;color:var(--muted);background:#0b0e1399;padding:2px 8px;border-radius:10px;pointer-events:none}
   .mermaid{text-align:center}
   .muted{color:var(--muted)}
@@ -129,6 +142,20 @@
     Ask a how-to, or ask me to <b>design</b> something — I’ll cite sources, build a <b>live 3D architecture</b> you can spin &amp; zoom, and ask what I need to tailor it.</div>
   <div class="examples" id="examples"></div>
 </div></div>
+
+<div class="setup" id="setup">
+  <div class="setupbox">
+    <h2>One-time setup</h2>
+    <p>AgentCloud runs locally and answers from official cloud docs, but generating answers needs
+       an LLM. Paste your own OpenAI key — it is stored only on this machine and is never sent
+       anywhere except OpenAI. Get one at
+       <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com/api-keys</a>.</p>
+    <input id="setupkey" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+    <div class="setuprow"><button class="primary" id="setupsave">Save &amp; start</button>
+      <span class="muted" style="font-size:12.5px">or set OPENAI_API_KEY and restart</span></div>
+    <div class="setupmsg" id="setupmsg"></div>
+  </div>
+</div>
 
 <div class="inputbar">
   <div class="cloudsel" id="cloudsel">
@@ -182,6 +209,31 @@ cloudSel.querySelectorAll("button").forEach(b=>b.onclick=()=>{
   renderExamples();
 });
 fetch("/api/services").then(r=>r.json()).then(d=>{(d.services||[]).forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;svcEl.appendChild(o);});}).catch(()=>{});
+
+/* First-run: if no LLM key is configured, collect it here instead of making the
+   user edit .env and restart the container. */
+const setupEl=document.getElementById("setup"),setupKey=document.getElementById("setupkey"),
+      setupMsg=document.getElementById("setupmsg"),setupSave=document.getElementById("setupsave");
+function checkConfig(){return fetch("/api/config").then(r=>r.json()).then(c=>{
+  if(!c.llm_ready)setupEl.classList.add("on");
+  if(!c.indexed_chunks)console.info("No documents indexed yet — run an ingest command or set RAG_INDEX_URL.");
+  return c;}).catch(()=>({}));}
+async function saveKey(){
+  const k=setupKey.value.trim();
+  setupMsg.className="setupmsg";setupMsg.textContent="";
+  if(!k){setupMsg.className="setupmsg err";setupMsg.textContent="Paste a key first.";return;}
+  setupSave.disabled=true;setupSave.textContent="Saving…";
+  try{
+    const r=await fetch("/api/config",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({openai_api_key:k})});
+    const j=await r.json();
+    if(j.error){setupMsg.className="setupmsg err";setupMsg.textContent=j.error;}
+    else{setupMsg.className="setupmsg ok";setupMsg.textContent="Saved — you're ready.";
+         setTimeout(()=>setupEl.classList.remove("on"),650);}
+  }catch(e){setupMsg.className="setupmsg err";setupMsg.textContent="Could not save: "+e;}
+  setupSave.disabled=false;setupSave.textContent="Save & start";
+}
+setupSave.onclick=saveKey;setupKey.addEventListener("keydown",e=>{if(e.key==="Enter")saveKey();});
+checkConfig();
 qEl.addEventListener("keydown",e=>{if(e.key==="Enter")send();});askBtn.onclick=send;
 
 const esc=s=>(s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));

@@ -1,4 +1,5 @@
 """FastAPI app serving the local UI and the query/diagram/export endpoints."""
+import os
 import re
 from functools import lru_cache
 from pathlib import Path
@@ -24,10 +25,40 @@ def _service():
     return RAGService()
 
 
+def _key_file() -> Path:
+    """Where a key entered in the UI is kept — inside the data volume, so it
+    survives container restarts and upgrades."""
+    return Path(get_settings().chroma_path).parent / ".agentcloud_key"
+
+
+def load_saved_key() -> None:
+    """Make a previously saved key active, unless the environment already has one."""
+    if os.environ.get("OPENAI_API_KEY"):
+        return
+    f = _key_file()
+    try:
+        if f.exists():
+            key = f.read_text(encoding="utf-8").strip()
+            if key:
+                os.environ["OPENAI_API_KEY"] = key
+                log.info("Loaded saved LLM key from %s", f)
+    except OSError as exc:
+        log.warning("Could not read saved key: %s", exc)
+
+
+def llm_ready() -> bool:
+    s = get_settings()
+    return bool(s.openai_api_key or os.environ.get("OPENAI_API_KEY") or s.llm_provider.lower() == "vllm")
+
+
 class AskRequest(BaseModel):
     question: str
     service: str | None = None
     cloud: str | None = None       # aws | azure | gcp | all (scopes retrieval to one provider)
+
+
+class ConfigRequest(BaseModel):
+    openai_api_key: str | None = None
 
 
 class TerraformRequest(BaseModel):
@@ -53,6 +84,39 @@ def create_app() -> FastAPI:
     @app.get("/")
     def index():
         return FileResponse(_STATIC / "index.html", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+
+    @app.get("/api/config")
+    def get_config():
+        """First-run state for the UI: is an LLM key configured, and is the index loaded?"""
+        indexed = 0
+        try:
+            indexed = _service().vector_store._collection.count()  # noqa: SLF001
+        except Exception:  # noqa: BLE001 - an empty/absent store is a valid state
+            pass
+        return {"llm_ready": llm_ready(), "indexed_chunks": indexed,
+                "index_url_configured": bool(os.environ.get("RAG_INDEX_URL"))}
+
+    @app.post("/api/config")
+    def set_config(req: ConfigRequest):
+        """Accept an LLM key from the UI so users never have to edit .env."""
+        key = (req.openai_api_key or "").strip()
+        if not key.startswith("sk-") or len(key) < 20:
+            return JSONResponse({"error": "That doesn't look like an OpenAI key (expected sk-…)."},
+                                status_code=400)
+        os.environ["OPENAI_API_KEY"] = key
+        try:
+            f = _key_file()
+            f.parent.mkdir(parents=True, exist_ok=True)
+            f.write_text(key, encoding="utf-8")
+            try:
+                f.chmod(0o600)
+            except OSError:
+                pass            # best effort; not supported on every filesystem
+        except OSError as exc:
+            log.warning("Could not persist key (it is active for this run): %s", exc)
+        get_settings.cache_clear()  # rebuild Settings so the key is picked up
+        _service.cache_clear()      # and rebuild the LLM
+        return {"ok": True, "llm_ready": llm_ready()}
 
     @app.get("/api/services")
     def services():
@@ -160,6 +224,7 @@ def create_app() -> FastAPI:
 def serve(host: str = "127.0.0.1", port: int = 8000) -> None:
     import uvicorn
 
+    load_saved_key()   # a key entered in the UI on a previous run stays active
     app = create_app()
     # Warm up embed + rerank models at startup so the FIRST user query isn't a
     # cold start (otherwise the reranker loads on first request, adding ~10s).
