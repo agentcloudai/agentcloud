@@ -54,7 +54,7 @@ Only Python 3.10+ is required. The vector store is embedded, so there is nothing
 ```bash
 git clone <this-repo> && cd rag_app
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e ".[ui,dev]"          # installs the `agtcld` command; add ,browser for `crawl`
+pip install -e ".[dev]"             # installs the `agtcld` command (web UI included); add ,browser for `crawl`
 
 # Add your own PDFs/TXT/MD to ./data/raw, then:
 rag-app index                       # chunks + embeds into an embedded Chroma store under data/
@@ -91,8 +91,8 @@ A local web app to ask AWS how-to questions and get a **crisp cited answer + an
 architecture diagram** — plus an optional AI-art render.
 
 ```bash
-pip install -e ".[ui]"          # fastapi + uvicorn;  add ,image for AI-art (diffusers)
-rag-app serve                   # http://127.0.0.1:8000
+pip install agtcld              # web UI + API are built in (fastapi/uvicorn)
+rag-app serve                  # http://127.0.0.1:8000   (or: agtcld → choose web)
 ```
 
 What it shows per question:

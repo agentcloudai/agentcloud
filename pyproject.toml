@@ -31,15 +31,17 @@ dependencies = [
   "sentence-transformers",                 # cross-encoder reranker
   "httpx",                                 # downloader
   "pydantic-settings>=2",
+  "fastapi",                               # web UI + API (rag-app serve / agtcld)
+  "uvicorn",                               # ASGI server
+  "python-multipart",
 ]
 
 [project.optional-dependencies]
 postgres = ["llama-index-vector-stores-postgres"]   # RAG_VECTOR_BACKEND=pgvector
-web = ["llama-index-readers-web"]
-browser = ["playwright"]
-ui = ["fastapi", "uvicorn", "python-multipart"]     # rag-app serve (local web UI)
-image = ["diffusers", "accelerate"]                 # optional AI-art render in the UI
-dev = ["pytest"]
+web = ["llama-index-readers-web"]                   # index web pages (SimpleWebPageReader)
+browser = ["playwright"]                            # crawl JS-rendered sites
+image = ["diffusers", "accelerate"]                 # optional AI-art render
+dev = ["pytest", "build"]
 
 [project.scripts]
 agtcld = "rag_app.agent_cli:main"
