@@ -37,6 +37,8 @@ services:
       # three clouds with no indexing step. Override with your own bundle, or set
       # it empty to start blank and build one with the ingest commands.
       RAG_INDEX_URL: ${RAG_INDEX_URL:-https://huggingface.co/datasets/rdprojects/agentcloud/resolve/main/agentcloud-index.tar.gz}
+      # Verifies the download; a corrupted or swapped bundle is rejected.
+      RAG_INDEX_SHA256: ${RAG_INDEX_SHA256:-fce9bcfa63d5318f00491e63ffeb619016e7aa01debf4c29aa3de001a7d06222}
       # Used only when RAG_VECTOR_BACKEND=pgvector:
       RAG_PG_HOST: db
       RAG_PG_PORT: "5432"

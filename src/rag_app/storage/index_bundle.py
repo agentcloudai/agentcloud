@@ -6,9 +6,11 @@ data volume on first boot. ``export_index`` makes the bundle; ``fetch_index``
 downloads + extracts it. Any HTTPS host works (HuggingFace Hub resolve URL, an
 object store, a GitHub release asset) — set ``RAG_INDEX_URL`` to point at it.
 """
+import hashlib
 import os
+import shutil
 import tarfile
-import tempfile
+import time
 from pathlib import Path
 
 import httpx
@@ -23,10 +25,78 @@ def _chroma_dir(s: Settings) -> Path:
     return Path(s.chroma_path)
 
 
+def _complete_marker(s: Settings) -> Path:
+    return _chroma_dir(s) / ".index_complete"
+
+
 def index_present(s: Settings) -> bool:
-    """True if a non-empty Chroma index already exists on disk."""
+    """True if a COMPLETE Chroma index exists on disk.
+
+    The marker matters: a half-extracted bundle still leaves a chroma.sqlite3
+    behind, and without this check we would treat that corrupt index as valid
+    forever and never re-fetch it.
+    """
     db = _chroma_dir(s) / "chroma.sqlite3"
-    return db.exists() and db.stat().st_size > 0
+    if not (db.exists() and db.stat().st_size > 0):
+        return False
+    # Indexes built locally by `rag-app index` have no marker, so accept those —
+    # unless a download was clearly interrupted mid-extract.
+    return _complete_marker(s).exists() or not (_chroma_dir(s).parent / ".chroma_incoming").exists()
+
+
+def _safe_extract(tar: tarfile.TarFile, dest: Path) -> None:
+    """Extract with the 'data' filter, which blocks absolute paths, .. traversal and links."""
+    members = []
+    for m in tar.getmembers():
+        name = m.name.split("chroma/", 1)[-1] if "chroma/" in m.name else m.name
+        if not name or name.startswith("/") or ".." in Path(name).parts:
+            log.warning("Skipping unsafe path in bundle: %s", m.name)
+            continue
+        m.name = name
+        members.append(m)
+    try:
+        tar.extractall(dest, members=members, filter="data")
+    except TypeError:                      # Python < 3.12 has no filter argument
+        tar.extractall(dest, members=members)
+
+
+def _download(url: str, dest: Path, expect_sha256: str | None = None) -> None:
+    """Stream to `dest`, resuming with a Range request and retrying transient failures."""
+    attempts = 4
+    for attempt in range(1, attempts + 1):
+        got = dest.stat().st_size if dest.exists() else 0
+        headers = {"Range": f"bytes={got}-"} if got else {}
+        try:
+            with httpx.stream("GET", url, follow_redirects=True, timeout=60.0, headers=headers) as r:
+                if got and r.status_code == 200:   # server ignored Range: restart
+                    got = 0
+                    dest.unlink(missing_ok=True)
+                r.raise_for_status()
+                total = int(r.headers.get("content-length", 0)) + got
+                with open(dest, "ab" if got else "wb") as fh:
+                    last = got
+                    for chunk in r.iter_bytes(chunk_size=1 << 20):
+                        fh.write(chunk)
+                        got += len(chunk)
+                        if got - last >= (250 << 20):
+                            last = got
+                            log.info("  downloaded %.1f/%.1f GB", got / 1e9, total / 1e9)
+            break
+        except (httpx.HTTPError, OSError) as exc:
+            if attempt == attempts:
+                raise
+            log.warning("Download failed (%s); retrying %d/%d…", exc, attempt + 1, attempts)
+            time.sleep(2 * attempt)
+
+    if expect_sha256:
+        log.info("Verifying checksum…")
+        h = hashlib.sha256()
+        with open(dest, "rb") as fh:
+            for block in iter(lambda: fh.read(1 << 20), b""):
+                h.update(block)
+        if h.hexdigest().lower() != expect_sha256.strip().lower():
+            raise ValueError(f"Index checksum mismatch: got {h.hexdigest()}, expected {expect_sha256}")
+        log.info("Checksum OK.")
 
 
 def export_index(out_path: str | Path, s: Settings | None = None) -> Path:
@@ -49,7 +119,9 @@ def fetch_index(url: str | None = None, s: Settings | None = None, force: bool =
     """Download + extract a prebuilt index bundle into the Chroma path.
 
     Returns True if it installed an index, False if it skipped (already present, or
-    no URL given). Safe to call on every container start.
+    no URL given). Safe to call on every container start: the index is swapped into
+    place only after it has fully extracted, so an interrupted run never leaves a
+    half-written index behind. Set RAG_INDEX_SHA256 to verify the download.
     """
     s = s or get_settings()
     url = url or os.environ.get("RAG_INDEX_URL")
@@ -61,30 +133,37 @@ def fetch_index(url: str | None = None, s: Settings | None = None, force: bool =
         log.info("No RAG_INDEX_URL set — starting with an empty index.")
         return False
 
-    dst.mkdir(parents=True, exist_ok=True)
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    staging = dst.parent / ".chroma_incoming"
+    tmp_path = dst.parent / ".index_download.tar.gz"
     log.info("Fetching prebuilt index from %s …", url)
-    with tempfile.NamedTemporaryFile(suffix=".tar.gz", delete=False) as tmp:
-        tmp_path = Path(tmp.name)
-        try:
-            with httpx.stream("GET", url, follow_redirects=True, timeout=None) as r:
-                r.raise_for_status()
-                total = int(r.headers.get("content-length", 0))
-                got = 0
-                for chunk in r.iter_bytes(chunk_size=1 << 20):
-                    tmp.write(chunk)
-                    got += len(chunk)
-                    if total and got % (200 << 20) < (1 << 20):
-                        log.info("  downloaded %.1f/%.1f GB", got / 1e9, total / 1e9)
-            tmp.flush()
-            log.info("Extracting index into %s …", dst)
-            with tarfile.open(tmp_path, "r:gz") as tar:
-                members = tar.getmembers()
-                # Bundles are created with a top-level "chroma/" prefix; strip it so
-                # files land directly in the configured chroma_path.
-                for m in members:
-                    m.name = m.name.split("chroma/", 1)[-1] if "chroma/" in m.name else m.name
-                tar.extractall(dst, members=[m for m in members if m.name])
-        finally:
-            tmp_path.unlink(missing_ok=True)
+    try:
+        _download(url, tmp_path, os.environ.get("RAG_INDEX_SHA256"))
+
+        free = shutil.disk_usage(dst.parent).free
+        need = tmp_path.stat().st_size * 3      # archive + expanded copy, with headroom
+        if free < need:
+            raise OSError(f"Not enough disk space to unpack the index: "
+                          f"{free/1e9:.1f} GB free, about {need/1e9:.1f} GB needed")
+
+        shutil.rmtree(staging, ignore_errors=True)
+        staging.mkdir(parents=True)
+        log.info("Extracting index …")
+        with tarfile.open(tmp_path, "r:gz") as tar:
+            _safe_extract(tar, staging)
+        if not (staging / "chroma.sqlite3").exists():
+            raise ValueError("Bundle did not contain chroma.sqlite3 — wrong archive?")
+
+        # Swap last, so the live index is replaced only by a complete one.
+        if dst.exists():
+            old = dst.parent / ".chroma_old"
+            shutil.rmtree(old, ignore_errors=True)
+            dst.rename(old)
+            shutil.rmtree(old, ignore_errors=True)
+        staging.rename(dst)
+        (dst / ".index_complete").write_text("ok", encoding="utf-8")
+    finally:
+        tmp_path.unlink(missing_ok=True)
+        shutil.rmtree(staging, ignore_errors=True)
     log.info("Index ready at %s", dst)
     return True
