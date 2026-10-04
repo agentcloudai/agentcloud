@@ -12,7 +12,7 @@ def build_retriever(
     vector_store: BasePydanticVectorStore,
     embed_model: BaseEmbedding,
     s: Settings,
-    filters: dict[str, str] | None = None,
+    filters: dict[str, str] | MetadataFilters | None = None,
 ) -> BaseRetriever:
     index = VectorStoreIndex.from_vector_store(vector_store, embed_model=embed_model)
 
@@ -22,8 +22,9 @@ def build_retriever(
     if s.hybrid_search and s.vector_backend.lower() == "pgvector":
         kwargs.update(vector_store_query_mode="hybrid", sparse_top_k=s.retrieve_top_k)
     if filters:
-        # e.g. {"file_name": "agenda_march.pdf"} -> SQL WHERE on metadata
-        kwargs["filters"] = MetadataFilters(
+        # Accept a prebuilt MetadataFilters (e.g. a cloud scope using NIN) or a
+        # simple {key: value} dict of exact matches, e.g. {"file_name": "x.pdf"}.
+        kwargs["filters"] = filters if isinstance(filters, MetadataFilters) else MetadataFilters(
             filters=[ExactMatchFilter(key=k, value=v) for k, v in filters.items()]
         )
     return index.as_retriever(**kwargs)

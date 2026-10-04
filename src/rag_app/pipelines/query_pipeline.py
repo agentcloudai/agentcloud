@@ -38,23 +38,47 @@ _AZURE_MARKERS = (
 )
 
 
-def _cloud_filter(question: str) -> dict[str, str] | None:
+_AZURE_GUIDE = "Azure documentation"
+_GCP_GUIDE = "Google Cloud documentation"
+
+
+def _detect_cloud(question: str) -> str | None:
+    """Infer the target provider from the question text (used when none is chosen)."""
     q = question.lower()
     gcp = any(m in q for m in _GCP_MARKERS)
     az = any(m in q for m in _AZURE_MARKERS)
     if gcp and not az:
-        return {"guide": "Google Cloud documentation"}
+        return "gcp"
     if az and not gcp:
-        return {"guide": "Azure documentation"}
+        return "azure"
     return None
 
 
-def _merge_cloud_filter(question: str, filters: dict[str, str] | None) -> dict[str, str] | None:
-    """Add a provider scope inferred from the question, unless the caller set one."""
-    cf = _cloud_filter(question)
-    if not cf:
-        return filters
-    return {**cf, **(filters or {})}  # explicit caller filters win
+def build_filters(question: str, filters: dict[str, str] | None, cloud: str | None):
+    """Scope retrieval to a provider + any exact-match filters, as MetadataFilters.
+
+    ``cloud`` is the user's explicit choice (aws/azure/gcp/all). When unset we infer
+    it from the question so a stray "Cloud SQL" doesn't pull Amazon RDS. AWS is
+    expressed as "not Azure and not GCP" since its docs have many guide values.
+    """
+    from llama_index.core.vector_stores.types import (
+        FilterOperator, MetadataFilter, MetadataFilters,
+    )
+
+    cloud = (cloud or "").lower().strip()
+    if cloud not in {"aws", "azure", "gcp"}:
+        cloud = _detect_cloud(question) or "all"
+
+    mfs: list = []
+    if cloud == "azure":
+        mfs.append(MetadataFilter(key="guide", value=_AZURE_GUIDE, operator=FilterOperator.EQ))
+    elif cloud == "gcp":
+        mfs.append(MetadataFilter(key="guide", value=_GCP_GUIDE, operator=FilterOperator.EQ))
+    elif cloud == "aws":
+        mfs.append(MetadataFilter(key="guide", value=[_AZURE_GUIDE, _GCP_GUIDE], operator=FilterOperator.NIN))
+    for k, v in (filters or {}).items():
+        mfs.append(MetadataFilter(key=k, value=v, operator=FilterOperator.EQ))
+    return MetadataFilters(filters=mfs) if mfs else None
 
 
 @dataclass
@@ -137,9 +161,10 @@ class RAGService:
             log.warning("query planning skipped: %s", exc)
             return [question]
 
-    def retrieve(self, question: str, filters: dict[str, str] | None = None) -> list[NodeWithScore]:
-        filters = _merge_cloud_filter(question, filters)
-        retriever = build_retriever(self.vector_store, self.embed_model, self.s, filters)
+    def retrieve(self, question: str, filters: dict[str, str] | None = None,
+                 cloud: str | None = None) -> list[NodeWithScore]:
+        mf = build_filters(question, filters, cloud)
+        retriever = build_retriever(self.vector_store, self.embed_model, self.s, mf)
         # Rerank EACH sub-query's hits against the original question and keep its best
         # few. This guarantees every option/component (e.g. DynamoDB AND RDS) is
         # represented, instead of the global top-N collapsing onto one service.
@@ -168,12 +193,13 @@ class RAGService:
             })
         return rows
 
-    def design(self, question: str, filters: dict[str, str] | None = None) -> dict:
+    def design(self, question: str, filters: dict[str, str] | None = None,
+               cloud: str | None = None) -> dict:
         """Detailed architecture-design payload (components + rationale + data flow + diagram)."""
         from rag_app.generation.design import design_graph, design_to_mermaid, generate_design
 
         t0 = time.perf_counter()
-        nodes = self.retrieve(question, filters)
+        nodes = self.retrieve(question, filters, cloud)
         t1 = time.perf_counter()
         d, source_map = generate_design(self.llm, question, nodes, embed_model=self.embed_model)
         t2 = time.perf_counter()
@@ -196,9 +222,10 @@ class RAGService:
             "timings_ms": {"retrieve": round((t1 - t0) * 1000), "generate": round((t2 - t1) * 1000)},
         }
 
-    def ask(self, question: str, filters: dict[str, str] | None = None) -> QueryResult:
+    def ask(self, question: str, filters: dict[str, str] | None = None,
+            cloud: str | None = None) -> QueryResult:
         t0 = time.perf_counter()
-        nodes = self.retrieve(question, filters)
+        nodes = self.retrieve(question, filters, cloud)
         t1 = time.perf_counter()
         answer, sources = generate_answer(self.llm, question, nodes, embed_model=self.embed_model)
         t2 = time.perf_counter()

@@ -42,6 +42,11 @@
   button.primary{background:linear-gradient(180deg,#ffae33,#ff9900);color:#1a1200;border:0;border-radius:12px;padding:12px 22px;font-weight:700;font-size:15px;cursor:pointer}
   button.primary:disabled{opacity:.6;cursor:default}
   .ctxpill{max-width:960px;margin:0 auto 8px;font-size:12.5px;color:var(--muted)} .ctxpill b{color:var(--accent)} .ctxpill a{color:var(--accent2);cursor:pointer;margin-left:8px}
+  .cloudsel{max-width:960px;margin:0 auto 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .cloudsel .lbl{font-size:12.5px;color:var(--muted);margin-right:2px}
+  .cloudsel button{display:flex;align-items:center;gap:7px;background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:11px;padding:8px 13px;font-weight:600;font-size:13.5px;cursor:pointer}
+  .cloudsel button img{height:17px;width:17px;object-fit:contain}
+  .cloudsel button.on{border-color:var(--accent2);color:var(--text);box-shadow:0 0 0 2px rgba(74,158,255,.18)}
   .card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-top:14px} .card:first-child{margin-top:0}
   .answer{font-size:16px;line-height:1.55}
   h3.sec{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}
@@ -105,6 +110,13 @@
 </div></div>
 
 <div class="inputbar">
+  <div class="cloudsel" id="cloudsel">
+    <span class="lbl">Cloud:</span>
+    <button data-cloud="all" class="on">All clouds</button>
+    <button data-cloud="aws"><img src="https://api.iconify.design/logos/aws.svg?height=17" alt=""/>AWS</button>
+    <button data-cloud="azure"><img src="https://api.iconify.design/logos/microsoft-azure.svg?height=17" alt=""/>Azure</button>
+    <button data-cloud="gcp"><img src="https://api.iconify.design/logos/google-cloud.svg?height=17" alt=""/>Google Cloud</button>
+  </div>
   <div class="ctxpill" id="ctxpill" style="display:none"></div>
   <div class="inputrow">
     <input id="q" type="text" placeholder="Ask a question, or “design a …”.  Answer my follow-ups here to refine." autocomplete="off" />
@@ -123,10 +135,30 @@ const chat=document.getElementById("chat"),thread=document.getElementById("threa
       svcEl=document.getElementById("service"),askBtn=document.getElementById("askBtn"),ctxpill=document.getElementById("ctxpill");
 let designCtx=null,seq=0,liveDiag=null;
 
-const EXAMPLES=["Design a data warehouse for financial analytics on AWS","Design a highly available, auto-scaling web application",
-  "How do I build a serverless image thumbnail pipeline?","How do I enable versioning on an S3 bucket?"];
+let selectedCloud="all";
+const CLOUD_EXAMPLES={
+  all:["Design a highly available, auto-scaling web application","Design a serverless web app on Azure",
+    "Design a data analytics pipeline on Google Cloud","How do I build a serverless image thumbnail pipeline?"],
+  aws:["Design a data warehouse for financial analytics on AWS","Design a highly available, auto-scaling web app on AWS",
+    "How do I build a serverless REST API with API Gateway and Lambda?","How do I enable versioning on an S3 bucket?"],
+  azure:["Design a serverless web app on Azure","Design an event-driven microservices platform on Azure",
+    "How do I deploy a container to Azure Container Apps?","How do I create an HTTP-triggered Azure Function?"],
+  gcp:["Design a data analytics pipeline on Google Cloud","Design an ML training and serving platform on Google Cloud",
+    "How do I deploy a container to Cloud Run?","How do I create a BigQuery dataset and run a query?"],
+};
 const exWrap=document.getElementById("examples");
-EXAMPLES.forEach(t=>{const s=document.createElement("span");s.textContent=t;s.onclick=()=>{qEl.value=t;send();};exWrap.appendChild(s);});
+function renderExamples(){exWrap.innerHTML="";(CLOUD_EXAMPLES[selectedCloud]||CLOUD_EXAMPLES.all).forEach(t=>{const s=document.createElement("span");s.textContent=t;s.onclick=()=>{qEl.value=t;send();};exWrap.appendChild(s);});}
+renderExamples();
+const cloudSel=document.getElementById("cloudsel");
+cloudSel.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  selectedCloud=b.dataset.cloud;
+  cloudSel.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  svcEl.style.display=(selectedCloud==="aws"||selectedCloud==="all")?"":"none";  // service list is AWS-only
+  qEl.placeholder=selectedCloud==="all"
+    ? "Ask a question, or “design a …”.  Answer my follow-ups here to refine."
+    : "Ask about "+b.textContent.trim()+", or “design a …”.";
+  renderExamples();
+});
 fetch("/api/services").then(r=>r.json()).then(d=>{(d.services||[]).forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;svcEl.appendChild(o);});}).catch(()=>{});
 qEl.addEventListener("keydown",e=>{if(e.key==="Enter")send();});askBtn.onclick=send;
 
@@ -327,7 +359,7 @@ async function send(){
   ld.innerHTML=`<div class="bubble bot"><div class="card"><span class="spinner"></span> &nbsp;${msg0}… <span id="ldsec" class="muted"></span>${isDesign?`<div class="muted" style="margin-top:6px;font-size:12.5px">grounding in AWS docs &amp; whitepapers — designs take ~15s</div>`:""}</div></div>`;
   thread.appendChild(ld);down();
   let secs=0;const timer=setInterval(()=>{secs++;const e=document.getElementById("ldsec");if(e)e.textContent="("+secs+"s)";},1000);
-  try{const res=await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:query,service:svcEl.value||null})});
+  try{const res=await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:query,service:svcEl.value||null,cloud:selectedCloud==="all"?null:selectedCloud})});
     const d=await res.json();clearInterval(timer);ld.remove();
     if(d.mode==="design"){if(!designCtx)designCtx={base:raw,addl:[]};setCtx();addBot(renderDesign(d));}else addBot(renderAnswer(d));
     activateDiagrams();

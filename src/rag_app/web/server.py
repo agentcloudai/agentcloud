@@ -26,6 +26,7 @@ def _service():
 class AskRequest(BaseModel):
     question: str
     service: str | None = None
+    cloud: str | None = None       # aws | azure | gcp | all (scopes retrieval to one provider)
 
 
 class ArtRequest(BaseModel):
@@ -69,11 +70,11 @@ def create_app() -> FastAPI:
 
         # Architecture/design questions get the detailed design payload.
         if is_design_question(req.question):
-            payload = svc.design(req.question, filters)
+            payload = svc.design(req.question, filters, cloud=req.cloud)
             payload["interaction_id"] = log_interaction(req.question, "design", payload)
             return payload
 
-        result = svc.ask(req.question, filters)
+        result = svc.ask(req.question, filters, cloud=req.cloud)
         payload = result.to_payload()
         payload["mode"] = "answer"
         if not payload["insufficient_context"]:
