@@ -33,11 +33,15 @@ COPY pyproject.toml README.md ./
 COPY src ./src
 RUN pip install --no-cache-dir ".[postgres]"
 
-# Pre-download the embedding + reranker models into the baked model dir.
+# Pre-download the embedding + reranker models into the baked model dir. These repos
+# ship the same weights in several runtimes (ONNX, OpenVINO, TensorFlow); we only use
+# PyTorch, so skipping the rest cuts roughly 1GB from the image.
 RUN python - <<'PY'
 from huggingface_hub import snapshot_download
+IGNORE = ["*.onnx", "onnx/*", "onnx_*/*", "openvino/*", "*openvino*", "*.h5",
+          "tf_model*", "*.msgpack", "rust_model*", "*.ot", "*.xml"]
 for repo in ("BAAI/bge-small-en-v1.5", "cross-encoder/ms-marco-MiniLM-L-6-v2"):
-    snapshot_download(repo)
+    snapshot_download(repo, ignore_patterns=IGNORE)
     print("cached", repo)
 PY
 
