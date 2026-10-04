@@ -55,6 +55,6 @@ where = ["src"]
 rag_app = ["web/static/*"]
 
 [project.urls]
-Homepage = "https://ruturajdixit99.github.io/agentcloud/"
-Repository = "https://github.com/ruturajdixit99/agentcloud"
-Issues = "https://github.com/ruturajdixit99/agentcloud/issues"
+Homepage = "https://agentcloudai.github.io/"
+Repository = "https://github.com/agentcloudai/agentcloud"
+Issues = "https://github.com/agentcloudai/agentcloud/issues"

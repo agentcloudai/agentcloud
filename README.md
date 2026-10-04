@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/ruturajdixit99/agentcloud/main/docs/logo.png" alt="AgentCloud AI" width="320" />
+<img src="https://raw.githubusercontent.com/agentcloudai/agentcloud/main/docs/logo.png" alt="AgentCloud AI" width="320" />
 
 # AgentCloud AI
 
@@ -9,9 +9,9 @@
 [![PyPI](https://img.shields.io/pypi/v/agtcld.svg)](https://pypi.org/project/agtcld/)
 [![Python](https://img.shields.io/pypi/pyversions/agtcld.svg)](https://pypi.org/project/agtcld/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Live demo](https://img.shields.io/badge/live-3D%20demo-ff9900.svg)](https://ruturajdixit99.github.io/agentcloud/)
+[![Live demo](https://img.shields.io/badge/live-3D%20demo-ff9900.svg)](https://agentcloudai.github.io/)
 
-[**▶ Try the live 3D demo**](https://ruturajdixit99.github.io/agentcloud/) · [Install](#install) · [What makes it different](#what-makes-it-different) · [Cloud support](#cloud-support)
+[**▶ Try the live 3D demo**](https://agentcloudai.github.io/) · [Install](#install) · [What makes it different](#what-makes-it-different) · [Cloud support](#cloud-support)
 
 </div>
 
