@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agtcld"
-version = "0.1.0"
-description = "AgentCloud AI — your private AWS solutions agent (ask, design & visualize, grounded in AWS docs)"
+version = "0.1.1"
+description = "AgentCloud AI — your private cloud solutions agent: ask, design & visualize cloud architectures, grounded in official docs (AWS today; Azure & GCP coming soon)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
