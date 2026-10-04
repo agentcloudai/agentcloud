@@ -22,8 +22,13 @@ ENV HF_HOME=/opt/models \
     RAG_CHROMA_PATH=/app/data/chroma \
     PYTHONUNBUFFERED=1
 
-# Install the package first (cached across code edits). Include the postgres extra
-# so RAG_VECTOR_BACKEND=pgvector also works; the default embedded Chroma needs no DB.
+# CPU-only torch FIRST: the default PyPI wheel drags in ~3GB of CUDA libraries this
+# container can never use. Installing it up front means sentence-transformers sees
+# torch as satisfied and won't pull the GPU build. (Run natively via pip for GPU.)
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
+
+# Install the package (cached across code edits). Include the postgres extra so
+# RAG_VECTOR_BACKEND=pgvector also works; the default embedded Chroma needs no DB.
 COPY pyproject.toml README.md ./
 COPY src ./src
 RUN pip install --no-cache-dir ".[postgres]"
