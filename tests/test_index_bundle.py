@@ -66,9 +66,21 @@ def test_interrupted_extract_is_refetched(tmp_path, served):
     assert chroma.joinpath(".index_complete").exists()
 
 
-def test_no_url_is_not_an_error(tmp_path, monkeypatch):
-    monkeypatch.delenv("RAG_INDEX_URL", raising=False)
+def test_empty_env_url_means_do_not_fetch(tmp_path, monkeypatch):
+    """Set-but-empty is a deliberate opt-out, not 'use the default'."""
+    monkeypatch.setenv("RAG_INDEX_URL", "")
     assert ib.fetch_index(None, _settings(tmp_path)) is False
+
+
+def test_unset_url_falls_back_to_published_bundle(tmp_path, monkeypatch):
+    """pip users with no configuration still get the published index."""
+    monkeypatch.delenv("RAG_INDEX_URL", raising=False)
+    used = {}
+    monkeypatch.setattr(ib, "_download", lambda u, d, sha=None: used.update(url=u, sha=sha))
+    with pytest.raises(Exception):      # no real archive lands, which is fine here
+        ib.fetch_index(None, _settings(tmp_path))
+    assert used["url"] == ib.DEFAULT_INDEX_URL
+    assert used["sha"] == ib.DEFAULT_INDEX_SHA256
 
 
 def test_checksum_mismatch_rejected(tmp_path, served, monkeypatch):
