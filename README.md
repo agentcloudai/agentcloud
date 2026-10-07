@@ -32,14 +32,14 @@ docker compose up -d
 
 Then open **http://localhost:8000** and paste your OpenAI key when it asks. That's the whole setup.
 
-On first boot the container downloads the **prebuilt index — 440k chunks covering AWS, Azure and Google Cloud** (~3.6 GB, once) into its volume, so the agent already knows all three clouds. The embedding and reranker models are baked into the image, so nothing else is fetched at query time.
+The image **contains the vector index — 440k chunks covering AWS, Azure and Google Cloud** — along with the embedding and reranker models. Nothing is downloaded at run time, so it works on a machine with no internet access (you only need network for the LLM itself). The pull is ~5 GB.
 
 | | |
 |---|---|
 | **Your key** | Entered once in the UI and kept in the container's volume (`0600`), never in the image. Prefer a file? Put `OPENAI_API_KEY=sk-...` in `.env` and it skips the prompt. |
-| **Persistence** | Index, key and feedback live in a Docker volume — they survive restarts and upgrades. |
+| **Persistence** | Your key, feedback and anything you ingest live in a Docker volume and survive restarts and upgrades. |
 | **Upgrading** | `docker compose pull && docker compose up -d` |
-| **Start empty instead** | Set `RAG_INDEX_URL=` (blank) to skip the download and build your own with the ingest commands below. |
+| **Start empty instead** | Build a slim image with `docker build --build-arg WITH_INDEX=false .` and build your own index with the ingest commands below. |
 
 <details>
 <summary><b>Build your own index instead of using the prebuilt one</b></summary>

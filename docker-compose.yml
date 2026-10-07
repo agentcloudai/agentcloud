@@ -6,11 +6,13 @@
 # Then open http://localhost:8000 and paste your OpenAI key when it asks (or put
 # OPENAI_API_KEY=sk-... in a .env file next to this one to skip the prompt).
 #
-# First boot downloads the prebuilt index — AWS, Azure and Google Cloud — into the
-# volume, so there is nothing to ingest. Upgrade with:
+# The image already contains the vector index for AWS, Azure and Google Cloud, so
+# there is nothing to download or ingest and it works with no internet access.
+# Upgrade with:
 #   docker compose pull && docker compose up -d
 #
-# To build your OWN index instead, set RAG_INDEX_URL= (blank) and run any of:
+# To build your OWN index instead, use a slim image
+# (docker build --build-arg WITH_INDEX=false) and run any of:
 #   docker compose run --rm app rag-app ingest-gcp
 #   docker compose run --rm app rag-app download --csv aws_service_guides.csv
 #   docker compose run --rm app rag-app index
@@ -30,15 +32,14 @@ services:
     environment:
       RAG_VECTOR_BACKEND: ${RAG_VECTOR_BACKEND:-chroma}
       RAG_DATA_DIR: /app/data
-      RAG_CHROMA_PATH: /app/data/chroma
+      # NOTE: do not set RAG_CHROMA_PATH here — the image points it at the
+      # baked-in index (/opt/index). Overriding it hides that index.
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      # Prebuilt multi-cloud index (AWS + Azure + GCP, 440k chunks). On first boot
-      # the container downloads it into the volume, so the app already knows all
-      # three clouds with no indexing step. Override with your own bundle, or set
-      # it empty to start blank and build one with the ingest commands.
-      RAG_INDEX_URL: ${RAG_INDEX_URL:-https://huggingface.co/datasets/rdprojects/agentcloud/resolve/main/agentcloud-index.tar.gz}
-      # Verifies the download; a corrupted or swapped bundle is rejected.
-      RAG_INDEX_SHA256: ${RAG_INDEX_SHA256:-fce9bcfa63d5318f00491e63ffeb619016e7aa01debf4c29aa3de001a7d06222}
+      # Only used by slim images that ship without the index baked in: point these
+      # at your own bundle and it is downloaded (and checksum-verified) on first
+      # boot. The default image needs neither.
+      RAG_INDEX_URL: ${RAG_INDEX_URL:-}
+      RAG_INDEX_SHA256: ${RAG_INDEX_SHA256:-}
       # Used only when RAG_VECTOR_BACKEND=pgvector:
       RAG_PG_HOST: db
       RAG_PG_PORT: "5432"
@@ -46,7 +47,7 @@ services:
       RAG_PG_PASSWORD: rag
       RAG_PG_DATABASE: rag
     volumes:
-      - agentcloud-data:/app/data   # the vector index + downloaded docs persist here
+      - agentcloud-data:/app/data   # your key, feedback and anything you ingest
     restart: unless-stopped
 
   # Optional: only started with `--profile pgvector`.

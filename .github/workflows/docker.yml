@@ -15,6 +15,18 @@ jobs:
       contents: read
       packages: write          # push to ghcr.io
     steps:
+      # The image bakes in the ~9GB vector index, which does not fit in the
+      # ~14GB a default runner leaves free.
+      - name: Free up disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+
       - uses: actions/checkout@v4
 
       - name: Log in to GHCR
@@ -45,5 +57,3 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max

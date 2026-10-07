@@ -26,9 +26,10 @@ def _service():
 
 
 def _key_file() -> Path:
-    """Where a key entered in the UI is kept — inside the data volume, so it
-    survives container restarts and upgrades."""
-    return Path(get_settings().chroma_path).parent / ".agentcloud_key"
+    """Where a key entered in the UI is kept — in the writable data dir, which is
+    the mounted volume, so it survives restarts and upgrades. (Deliberately not
+    beside the index: that may be a read-only path baked into the image.)"""
+    return Path(get_settings().data_dir) / ".agentcloud_key"
 
 
 def load_saved_key() -> None:
@@ -226,11 +227,20 @@ def serve(host: str = "127.0.0.1", port: int = 8000) -> None:
 
     load_saved_key()   # a key entered in the UI on a previous run stays active
     app = create_app()
-    # Warm up embed + rerank models at startup so the FIRST user query isn't a
-    # cold start (otherwise the reranker loads on first request, adding ~10s).
+    # Warm the LOCAL models so the first query isn't a cold start (the reranker
+    # alone costs ~10s). Deliberately not the whole service: that builds the LLM
+    # client too, which has nothing to preload and just stalls when the machine
+    # is offline or has no key yet.
     log.info("Warming up models…")
     try:
-        _service()
+        from rag_app.config import get_settings as _gs
+        from rag_app.embedding.embedder import build_embed_model
+        from rag_app.reranking.reranker import build_reranker
+
+        _s = _gs()
+        build_embed_model(_s)
+        if _s.rerank_enabled:
+            build_reranker(_s)
         log.info("Models ready.")
     except Exception as exc:  # noqa: BLE001
         log.warning("Warmup skipped: %s", exc)
